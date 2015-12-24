@@ -9,17 +9,15 @@ import javafx.stage.Stage;
 
 public class ButtonController {
 
-	final String ADMIN_LOGIN = "admin.dat";
+	final static String ADMIN_LOGIN = "admin.dat";
 	@FXML
 	private javafx.scene.control.Button button;
 
 	@FXML
 	private void adminButtonAction() {
-		if (fileExists(ADMIN_LOGIN))
-			showLogin();
-		else {
+		showLogin();
+		if (!fileExists(ADMIN_LOGIN))
 			showRegister();
-		}
 	}
 
 	private void showLogin() {
