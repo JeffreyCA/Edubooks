@@ -1,83 +1,68 @@
 package application;
 
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.property.SimpleStringProperty;
+
 public class Book {
 
-	private String author;
-	private Categories category;
-	private String title;
-	private double price;
-	private int quantity;
-	private int year;
+	private SimpleStringProperty author;
+	private SimpleStringProperty category;
+	private SimpleStringProperty title;
+	private SimpleLongProperty quantity;
+	private SimpleDoubleProperty price;
 
-	enum Categories {
-		ENGLISH, MATH, SCIENCE, HISTORY, OTHER, NONE
+	public Book(String title, String author, String category, int quantity,
+			double price) {
+		this.title = new SimpleStringProperty(title);
+		this.author = new SimpleStringProperty(author);
+		this.category = new SimpleStringProperty(category);
+		this.quantity = new SimpleLongProperty(quantity);
+		this.price = new SimpleDoubleProperty(price);
 	}
 
-	// Default constructor
-	public Book() {
-		author = "";
-		title = "";
-		setCategory(Categories.NONE);
-		price = 0;
-		quantity = 0;
-		year = 0;
-	}
-
-	public Book(String author, String title, Categories category, double price,
-			int quantity, int year) {
-		this.author = author;
-		this.title = title;
-		this.setCategory(category);
-		this.price = price;
-		this.quantity = quantity;
-		this.year = year;
+	@Override
+	public String toString() {
+		return title.get() + " by " + author.get() + ", $" + price.get();
 	}
 
 	public String getAuthor() {
-		return author;
+		return author.get();
 	}
 
 	public void setAuthor(String author) {
-		this.author = author;
+		this.author.set(author);
 	}
 
 	public String getTitle() {
-		return title;
+		return title.get();
 	}
 
 	public void setTitle(String title) {
-		this.title = title;
+		this.title.set(title);
 	}
 
 	public double getPrice() {
-		return price;
+		return price.get();
 	}
 
 	public void setPrice(double price) {
-		this.price = price;
+		this.price.set(price);
 	}
 
-	public int getQuantity() {
-		return quantity;
+	public long getQuantity() {
+		return quantity.get();
 	}
 
-	public void setQuantity(int quantity) {
-		this.quantity = quantity;
+	public void setQuantity(long l) {
+		this.quantity.set(l);
 	}
 
-	public int getYear() {
-		return year;
+	public String getCategory() {
+		return category.get();
 	}
 
-	public void setYear(int year) {
-		this.year = year;
-	}
-
-	public Categories getCategory() {
-		return category;
-	}
-
-	public void setCategory(Categories category) {
-		this.category = category;
+	public void setCategory(String category) {
+		this.category.set(category);
 	}
 }
