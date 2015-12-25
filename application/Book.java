@@ -12,7 +12,7 @@ public class Book {
 	private SimpleLongProperty quantity;
 	private SimpleDoubleProperty price;
 
-	public Book(String title, String author, String category, int quantity,
+	public Book(String title, String author, String category, long quantity,
 			double price) {
 		this.title = new SimpleStringProperty(title);
 		this.author = new SimpleStringProperty(author);

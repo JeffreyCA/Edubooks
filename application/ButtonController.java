@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class ButtonController {
@@ -22,12 +23,11 @@ public class ButtonController {
 
 	private void showLogin() {
 		try {
-			FXMLLoader fxmlLoader = new FXMLLoader(
-					getClass().getResource("Admin.fxml"));
-			Parent root1 = (Parent) fxmlLoader.load();
+			Parent root = (Parent) new FXMLLoader(
+					getClass().getResource("Admin.fxml")).load();
 			Stage stage = new Stage();
 			stage.setTitle("Admin Panel");
-			stage.setScene(new Scene(root1));
+			stage.setScene(new Scene(root));
 			stage.setResizable(false);
 			stage.show();
 		}
@@ -38,12 +38,12 @@ public class ButtonController {
 
 	private void showRegister() {
 		try {
-			FXMLLoader fxmlLoader = new FXMLLoader(
-					getClass().getResource("AdminPassword.fxml"));
-			Parent root1 = (Parent) fxmlLoader.load();
+			Parent root = (Parent) new FXMLLoader(
+					getClass().getResource("AdminPassword.fxml")).load();
 			Stage stage = new Stage();
 			stage.setTitle("Admin Panel");
-			stage.setScene(new Scene(root1));
+			stage.setScene(new Scene(root));
+			stage.initModality(Modality.APPLICATION_MODAL);
 			stage.setResizable(false);
 			stage.show();
 		}
