@@ -35,7 +35,7 @@ import javafx.stage.StageStyle;
 import javafx.util.Callback;
 import javafx.util.converter.NumberStringConverter;
 
-public class ListController implements Initializable {
+public class ItemTable implements Initializable {
 
 	@FXML
 	private javafx.scene.control.TextField search;

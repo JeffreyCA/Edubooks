@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 
 public class AdminController {
 
+	// Declare FXML elements
 	@FXML
 	private javafx.scene.control.Button back_button;
 	@FXML
@@ -18,17 +19,22 @@ public class AdminController {
 	@FXML
 	private javafx.scene.control.PasswordField pw;
 
+	/**
+	 * Close window when back button is pressed
+	 */
 	@FXML
 	private void closeButtonAction() {
-		// get a handle to the stage
 		Stage stage = (Stage) back_button.getScene().getWindow();
-		// do what you have to do
 		stage.close();
 	}
 
+	/**
+	 * Validate password entered after login button is pressed
+	 */
 	@FXML
 	private void loginButtonAction() {
 		try {
+			// Read random access password file
 			RandomAccessFile file = new RandomAccessFile(
 					ButtonController.ADMIN_LOGIN, "r");
 			String password = file.readLine();
@@ -38,18 +44,21 @@ public class AdminController {
 				switchScene();
 			}
 			else {
+				// Display incorrect password alert
 				Alert alert = new Alert(Alert.AlertType.INFORMATION);
 				alert.setContentText("Invalid Password!");
 				alert.showAndWait();
 			}
 		}
 		catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Error!");
 		}
 	}
 
-	public void switchScene() {
+	/**
+	 * Enter admin panel scene
+	 */
+	private void switchScene() {
 		AnchorPane l;
 		try {
 			l = (AnchorPane) FXMLLoader
@@ -61,9 +70,7 @@ public class AdminController {
 			stage.show();
 		}
 		catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Error!");
 		}
-
 	}
 }

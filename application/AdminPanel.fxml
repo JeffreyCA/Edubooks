@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.GridPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.ListController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.ItemTable">
    <children>
       <TabPane prefHeight="500.0" prefWidth="800.0" side="LEFT" tabClosingPolicy="UNAVAILABLE" tabMinWidth="230.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <tabs>
@@ -44,7 +44,7 @@
                               </Button>
                               <Pane prefHeight="200.0" prefWidth="200.0">
                                  <children>
-                                    <TextField fx:id="search" layoutX="555.0" layoutY="22.0" prefHeight="25.0" prefWidth="177.0" promptText="Filter text" />
+                                    <TextField fx:id="search" layoutX="555.0" layoutY="22.0" prefHeight="25.0" prefWidth="177.0" promptText="Filter title, author, or category" />
                                     <Label layoutX="509.0" layoutY="26.0" text="Search: " />
                                  </children>
                               </Pane>

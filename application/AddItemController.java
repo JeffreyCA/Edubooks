@@ -46,7 +46,7 @@ public class AddItemController implements Initializable {
 					Double.valueOf(price.getText()));
 			data.add(nextIndex, new_book);
 			items.getSelectionModel().select(nextIndex);
-			ListController.saveData(ListController.BOOK_FILE, items.getItems());
+			ItemTable.saveData(ItemTable.BOOK_FILE, items.getItems());
 			Stage stage = (Stage) ok.getScene().getWindow();
 			stage.close();
 		}

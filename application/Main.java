@@ -25,8 +25,9 @@ public class Main extends Application {
 	}
 
 	/**
-	* Shows the person overview inside the root layout.
-	*/
+	 * Application landing screen
+	 * Customer login and admin login
+	 */
 	public void showLandingScreen() {
 		try {
 			AnchorPane l = (AnchorPane) FXMLLoader
@@ -40,15 +41,7 @@ public class Main extends Application {
 
 		}
 		catch (IOException e) {
-			e.printStackTrace();
+			System.out.println("Error!");
 		}
-	}
-
-	/**
-	 * Returns the main stage.
-	 * @return
-	 */
-	public Stage getPrimaryStage() {
-		return primaryStage;
 	}
 }

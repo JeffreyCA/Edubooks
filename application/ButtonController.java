@@ -17,14 +17,18 @@ public class ButtonController {
 	@FXML
 	private void adminButtonAction() {
 		showLogin();
-		if (!fileExists(ADMIN_LOGIN))
+		// Create admin account if first time accessing the admin panel
+		if (!new File(ADMIN_LOGIN).isFile())
 			showRegister();
 	}
 
+	/**
+	 * Show admin login screen
+	 */
 	private void showLogin() {
 		try {
 			Parent root = (Parent) new FXMLLoader(
-					getClass().getResource("Admin.fxml")).load();
+					getClass().getResource("AdminLogin.fxml")).load();
 			Stage stage = new Stage();
 			stage.setTitle("Admin Panel");
 			stage.setScene(new Scene(root));
@@ -36,23 +40,23 @@ public class ButtonController {
 		}
 	}
 
+	/**
+	 * Show admin registration screen
+	 * Asks for admin password to be used for the admin panel
+	 */
 	private void showRegister() {
 		try {
 			Parent root = (Parent) new FXMLLoader(
-					getClass().getResource("AdminPassword.fxml")).load();
+					getClass().getResource("AdminFirstTime.fxml")).load();
 			Stage stage = new Stage();
-			stage.setTitle("Admin Panel");
+			stage.setTitle("Admin Setup");
 			stage.setScene(new Scene(root));
 			stage.initModality(Modality.APPLICATION_MODAL);
 			stage.setResizable(false);
 			stage.show();
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			System.out.println("Error!");
 		}
-	}
-
-	public boolean fileExists(String filename) {
-		return new File(filename).isFile();
 	}
 }
