@@ -6,7 +6,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import com.sun.prism.impl.Disposer.Record;
@@ -187,28 +186,23 @@ public class ListController implements Initializable {
 						saveData();
 					}
 				});
-		try {
-			quantity.setCellValueFactory(
-					new PropertyValueFactory<Book, Number>("quantity"));
-			quantity.setCellFactory(
-					TextFieldTableCell.<Book, Number> forTableColumn(
-							new NumberStringConverter()));
-			quantity.setOnEditCommit(
-					new EventHandler<CellEditEvent<Book, Number>>() {
-						@Override
-						public void handle(CellEditEvent<Book, Number> t) {
 
-							t.getTableView().getItems()
-									.get(t.getTablePosition().getRow())
-									.setQuantity((long) t.getNewValue());
-							saveData();
+		quantity.setCellValueFactory(
+				new PropertyValueFactory<Book, Number>("quantity"));
+		quantity.setCellFactory(TextFieldTableCell
+				.<Book, Number> forTableColumn(new NumberStringConverter()));
+		quantity.setOnEditCommit(
+				new EventHandler<CellEditEvent<Book, Number>>() {
+					@Override
+					public void handle(CellEditEvent<Book, Number> t) {
 
-						}
-					});
-		}
-		catch (ParseException e) {
+						t.getTableView().getItems()
+								.get(t.getTablePosition().getRow())
+								.setQuantity((long) t.getNewValue());
+						saveData();
 
-		}
+					}
+				});
 
 		// Format prices to two decimal places
 		price.setCellValueFactory(film -> {
