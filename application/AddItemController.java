@@ -3,6 +3,7 @@ package application;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.binding.BooleanBinding;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -27,13 +28,13 @@ public class AddItemController implements Initializable {
 	private javafx.scene.control.TextField price;
 
 	private javafx.scene.control.TableView<Book> items;
+	private ObservableList<Book> data;
 
 	@FXML
 	private void closeButtonAction() {
 		// get a handle to the stage
 		Stage stage = (Stage) cancel.getScene().getWindow();
 		stage.close();
-
 	}
 
 	@FXML
@@ -43,7 +44,7 @@ public class AddItemController implements Initializable {
 			Book new_book = new Book(title.getText(), author.getText(),
 					category.getText(), Long.valueOf(quantity.getText()),
 					Double.valueOf(price.getText()));
-			items.getItems().add(nextIndex, new_book);
+			data.add(nextIndex, new_book);
 			items.getSelectionModel().select(nextIndex);
 			ListController.saveData(ListController.BOOK_FILE, items.getItems());
 			Stage stage = (Stage) ok.getScene().getWindow();
@@ -58,7 +59,6 @@ public class AddItemController implements Initializable {
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-
 		BooleanBinding filled = title.textProperty().isEqualTo("")
 				.or(author.textProperty().isEqualTo(""))
 				.or(category.textProperty().isEqualTo(""))
@@ -69,7 +69,11 @@ public class AddItemController implements Initializable {
 		ok.disableProperty().bind(filled);
 	}
 
-	public void setTable(TableView<Book> t) {
-		items = t;
+	public void setTable(TableView<Book> table) {
+		items = table;
+	}
+
+	public void setList(ObservableList<Book> list) {
+		data = list;
 	}
 }

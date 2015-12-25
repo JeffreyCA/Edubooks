@@ -9,35 +9,26 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import com.sun.prism.impl.Disposer.Record;
-import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.HBoxBuilder;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -46,6 +37,8 @@ import javafx.util.converter.NumberStringConverter;
 
 public class ListController implements Initializable {
 
+	@FXML
+	private javafx.scene.control.TextField search;
 	@FXML
 	private javafx.scene.control.TableView<Book> items;
 	@FXML
@@ -63,6 +56,7 @@ public class ListController implements Initializable {
 
 	ArrayList<Book> list = new ArrayList<Book>();
 	ObservableList<Book> data;
+	SortedList<Book> sortedData;
 	final static String BOOK_FILE = "books.txt";
 
 	public int countLines(String filename) {
@@ -229,6 +223,46 @@ public class ListController implements Initializable {
 					String.format("%.2f", film.getValue().getPrice()));
 			return property;
 		});
+		price.setCellFactory(TextFieldTableCell.forTableColumn());
+		price.setOnEditCommit(new EventHandler<CellEditEvent<Book, String>>() {
+			@Override
+			public void handle(CellEditEvent<Book, String> t) {
+				t.getTableView().getItems().get(t.getTablePosition().getRow())
+						.setPrice(Double.valueOf(t.getNewValue()));
+				saveData(BOOK_FILE, data);
+			}
+		});
+
+		// 1. Wrap the ObservableList in a FilteredList (initially display all
+		// data).
+		FilteredList<Book> filteredData = new FilteredList<>(data, p -> true);
+		// 2. Set the filter Predicate whenever the filter changes.
+		search.textProperty().addListener((observable, oldValue, newValue) -> {
+			filteredData.setPredicate(book -> {
+				// If filter text is empty, display all persons.
+				if (newValue == null || newValue.isEmpty()) {
+					return true;
+				}
+
+				// Compare book title, author, and category of every book with
+				// filter text
+				String filter = newValue.toLowerCase();
+
+				// Filter matches title
+				if (book.getTitle().toLowerCase().contains(filter)
+						|| book.getAuthor().toLowerCase().contains(filter)
+						|| book.getCategory().toLowerCase().contains(filter)) {
+					return true;
+				}
+				// Filter does not match
+				return false;
+			});
+		});
+
+		// 3. Wrap the FilteredList in a SortedList.
+		sortedData = new SortedList<Book>(filteredData);
+		// 4. Bind the SortedList comparator to the TableView comparator.
+		sortedData.comparatorProperty().bind(items.comparatorProperty());
 
 		// Insert Button
 		TableColumn col_action = new TableColumn<>("Action");
@@ -256,8 +290,7 @@ public class ListController implements Initializable {
 					}
 
 				});
-
-		items.setItems(data);
+		items.setItems(sortedData);
 
 	}
 
@@ -335,6 +368,7 @@ public class ListController implements Initializable {
 			Parent root = (Parent) loader.load();
 			AddItemController controller = loader.getController();
 			controller.setTable(items);
+			controller.setList(data);
 
 			Stage stage = new Stage();
 			stage.setTitle("Add Item");
@@ -345,83 +379,6 @@ public class ListController implements Initializable {
 			stage.show();
 		}
 		catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
-	}
-
-	private void showAddPersonDialog(final TableView<Book> table) {
-		// initialize the dialog.
-		final Stage dialog = new Stage();
-		dialog.setTitle("Add Item");
-		dialog.initModality(Modality.WINDOW_MODAL);
-		dialog.initStyle(StageStyle.DECORATED);
-		dialog.setResizable(false);
-
-		// create a grid for the data entry.
-		GridPane grid = new GridPane();
-		final TextField title = new TextField();
-		final TextField author = new TextField();
-		final TextField category = new TextField();
-		final TextField quantity = new TextField();
-		final TextField price = new TextField();
-
-		grid.addRow(0, new Label("Title:"), title);
-		grid.addRow(1, new Label("Author:"), author);
-		grid.addRow(2, new Label("Category:"), category);
-		grid.addRow(3, new Label("Quantity:"), quantity);
-		grid.addRow(4, new Label("Price:"), price);
-
-		grid.setHgap(10);
-		grid.setVgap(10);
-		GridPane.setHgrow(title, Priority.ALWAYS);
-		GridPane.setHgrow(author, Priority.ALWAYS);
-		GridPane.setHgrow(category, Priority.ALWAYS);
-		GridPane.setHgrow(quantity, Priority.ALWAYS);
-		GridPane.setHgrow(price, Priority.ALWAYS);
-
-		// create action buttons for the dialog.
-		Button ok = new Button("Ok");
-		ok.setDefaultButton(true);
-		Button cancel = new Button("Cancel");
-		cancel.setCancelButton(true);
-
-		BooleanBinding filled = title.textProperty().isEqualTo("")
-				.or(author.textProperty().isEqualTo(""))
-				.or(author.textProperty().isEqualTo(""));
-
-		// only enable the ok button when there has been some text entered.
-		ok.disableProperty().bind(title.textProperty().isEqualTo("")
-				.or(author.textProperty().isEqualTo("")));
-
-		// add action handlers for the dialog buttons.
-		ok.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent actionEvent) {
-				int nextIndex = table.getSelectionModel().getSelectedIndex()
-						+ 1;
-				/*
-				 * table.getItems().add(nextIndex, new Person(
-				 * firstNameField.getText(), lastNameField.getText()));
-				 * table.getSelectionModel().select(nextIndex);
-				 */
-				dialog.close();
-			}
-		});
-		cancel.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent actionEvent) {
-				dialog.close();
-			}
-		});
-
-		// layout the dialog.
-		HBox buttons = HBoxBuilder.create().spacing(10).children(ok, cancel)
-				.alignment(Pos.CENTER_RIGHT).build();
-		VBox layout = new VBox(10);
-		layout.getChildren().addAll(grid, buttons);
-		layout.setPadding(new Insets(5));
-		dialog.setScene(new Scene(layout));
-		dialog.show();
 	}
 }

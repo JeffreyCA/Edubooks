@@ -44,8 +44,8 @@
                               </Button>
                               <Pane prefHeight="200.0" prefWidth="200.0">
                                  <children>
-                                    <TextField layoutX="498.0" layoutY="22.0" prefHeight="25.0" prefWidth="177.0" promptText="Search" />
-                                    <Button layoutX="681.0" layoutY="22.0" mnemonicParsing="false" text="Search" />
+                                    <TextField fx:id="search" layoutX="555.0" layoutY="22.0" prefHeight="25.0" prefWidth="177.0" promptText="Filter text" />
+                                    <Label layoutX="509.0" layoutY="26.0" text="Search: " />
                                  </children>
                               </Pane>
                            </children>
