@@ -10,12 +10,12 @@
    <children>
       <Pane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Button layoutX="100.0" layoutY="150.0" mnemonicParsing="false" prefHeight="200.0" prefWidth="200.0" text="Customers" textAlignment="CENTER" wrapText="true">
+            <Button fx:id="customer" layoutX="100.0" layoutY="150.0" mnemonicParsing="false" onAction="#customerButtonAction" prefHeight="200.0" prefWidth="200.0" text="Customers" textAlignment="CENTER" wrapText="true">
                <font>
                   <Font size="20.0" />
                </font>
             </Button>
-            <Button fx:id="button" layoutX="500.0" layoutY="150.0" mnemonicParsing="false" onAction="#adminButtonAction" prefHeight="200.0" prefWidth="200.0" text="Administrator" textAlignment="CENTER" wrapText="true">
+            <Button fx:id="admin" layoutX="500.0" layoutY="150.0" mnemonicParsing="false" onAction="#adminButtonAction" prefHeight="200.0" prefWidth="200.0" text="Administrator" textAlignment="CENTER" wrapText="true">
                <font>
                   <Font size="19.0" />
                </font>

@@ -2,9 +2,12 @@ package application;
 
 public class Account {
 
-	public static void main(String[] args) {
-		String s = "password";
-		System.out.println(Account.rot13(s));
+	private String email;
+	private String password;
+
+	public Account(String email, String password) {
+		this.setEmail(email);
+		this.setPassword(password);
 	}
 
 	public static String rot13(String s) {
@@ -24,5 +27,21 @@ public class Account {
 			rot_string += c;
 		}
 		return rot_string;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 }

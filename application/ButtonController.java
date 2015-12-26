@@ -12,20 +12,45 @@ public class ButtonController {
 
 	final static String ADMIN_LOGIN = "admin.dat";
 	@FXML
-	private javafx.scene.control.Button button;
+	private javafx.scene.control.Button admin;
+	@FXML
+	private javafx.scene.control.Button customer;
+
+	@FXML
+	private void customerButtonAction() {
+		showCustomerScreen();
+	}
 
 	@FXML
 	private void adminButtonAction() {
-		showLogin();
+		showAdminLogin();
 		// Create admin account if first time accessing the admin panel
 		if (!new File(ADMIN_LOGIN).isFile())
-			showRegister();
+			showAdminRegister();
+	}
+
+	/**
+	 * Show customer login screen
+	 */
+	private void showCustomerScreen() {
+		try {
+			Parent root = (Parent) new FXMLLoader(
+					getClass().getResource("Customer.fxml")).load();
+			Stage stage = new Stage();
+			stage.setTitle("Customer Entrance");
+			stage.setScene(new Scene(root));
+			stage.setResizable(false);
+			stage.show();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
 	 * Show admin login screen
 	 */
-	private void showLogin() {
+	private void showAdminLogin() {
 		try {
 			Parent root = (Parent) new FXMLLoader(
 					getClass().getResource("AdminLogin.fxml")).load();
@@ -44,7 +69,7 @@ public class ButtonController {
 	 * Show admin registration screen
 	 * Asks for admin password to be used for the admin panel
 	 */
-	private void showRegister() {
+	public void showAdminRegister() {
 		try {
 			Parent root = (Parent) new FXMLLoader(
 					getClass().getResource("AdminFirstTime.fxml")).load();

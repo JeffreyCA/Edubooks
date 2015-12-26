@@ -13,7 +13,7 @@ public class AdminController {
 
 	// Declare FXML elements
 	@FXML
-	private javafx.scene.control.Button back_button;
+	private javafx.scene.control.Button back;
 	@FXML
 	private javafx.scene.control.Button login;
 	@FXML
@@ -24,7 +24,7 @@ public class AdminController {
 	 */
 	@FXML
 	private void closeButtonAction() {
-		Stage stage = (Stage) back_button.getScene().getWindow();
+		Stage stage = (Stage) back.getScene().getWindow();
 		stage.close();
 	}
 
@@ -51,7 +51,7 @@ public class AdminController {
 			}
 		}
 		catch (IOException e) {
-			System.out.println("Error!");
+			new ButtonController().showAdminRegister();
 		}
 	}
 

@@ -14,7 +14,7 @@
             <PasswordField fx:id="pw" layoutX="342.0" layoutY="238.0" />
             <Text layoutX="282.0" layoutY="255.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password:" />
             <Button fx:id="login" defaultButton="true" layoutX="445.0" layoutY="278.0" mnemonicParsing="false" onAction="#loginButtonAction" text="Login" />
-            <Button fx:id="back_button" cancelButton="true" layoutX="342.0" layoutY="278.0" mnemonicParsing="false" onAction="#closeButtonAction" text="Back" />
+            <Button fx:id="back" cancelButton="true" layoutX="342.0" layoutY="278.0" mnemonicParsing="false" onAction="#closeButtonAction" text="Back" />
          </children>
       </Pane>
    </children>
