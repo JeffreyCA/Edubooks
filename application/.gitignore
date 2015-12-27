@@ -34,3 +34,6 @@
 /ItemTable.class
 /AdminPasswordController.class
 /CustomerEntranceController.class
+/CustomerEntrance.class
+/StoreFront.class
+/Utilities.class

@@ -41,6 +41,10 @@ public class Account {
 		return password;
 	}
 
+	public String getEncryptedPassword() {
+		return rot13(password);
+	}
+
 	public void setPassword(String password) {
 		this.password = password;
 	}

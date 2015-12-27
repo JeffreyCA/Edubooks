@@ -1,7 +1,9 @@
 package application;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -9,7 +11,10 @@ import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 
@@ -49,15 +54,18 @@ public class CustomerEntrance implements Initializable {
 		String email_address = email.getText();
 		String password = pw.getText();
 		boolean success = false;
-		Account customer;
+		String error = "Invalid login information";
+		Account customer = null;
 
+		// Empty email
+		if (email_address.length() == 0)
+			error = "Please enter an email!";
+		// Empty password
+		else if (password.length() == 0)
+			error = "Please enter a password!";
 		// Improper email format
-		if (!isEmail(email_address)) {
-			// Display alert
-			Alert alert = new Alert(Alert.AlertType.INFORMATION);
-			alert.setContentText("Improper email format!");
-			alert.showAndWait();
-		}
+		else if (!isEmail(email_address))
+			error = "Improper email format!";
 		else {
 			for (Account a : list) {
 				if (a.getEmail().toLowerCase()
@@ -68,12 +76,32 @@ public class CustomerEntrance implements Initializable {
 					break;
 				}
 			}
-			if (!success) {
-				// Display alert
-				Alert alert = new Alert(Alert.AlertType.INFORMATION);
-				alert.setContentText("Invalid login info.");
-				alert.showAndWait();
-			}
+		}
+		if (!success) {
+			Alert alert = new Alert(Alert.AlertType.INFORMATION);
+			alert.setContentText(error);
+			alert.showAndWait();
+		}
+		else {
+			launchStore(customer);
+		}
+	}
+
+	private void launchStore(Account a) {
+		try {
+			FXMLLoader loader = new FXMLLoader(
+					getClass().getResource("StoreFront.fxml"));
+			Parent root = (Parent) loader.load();
+			StoreFront controller = loader.getController();
+			Stage stage = (Stage) login.getScene().getWindow();
+			Scene scene = new Scene(root);
+
+			stage.setTitle("Edubooks Store");
+			controller.setAccount(a);
+			stage.setScene(scene);
+			stage.show();
+		}
+		catch (IOException e) {
 		}
 	}
 
@@ -81,36 +109,44 @@ public class CustomerEntrance implements Initializable {
 	private void registerButtonAction() {
 		String email_address = email.getText();
 		String password = pw.getText();
+		String alert = "";
+		boolean success = true;
 
-		// Improper email format
-		if (!isEmail(email_address)) {
-			// Display alert
-			Alert alert = new Alert(Alert.AlertType.INFORMATION);
-			alert.setContentText("Improper email format!");
-			alert.showAndWait();
+		// Empty email
+		if (email_address.length() == 0) {
+			alert = "Please enter an email!";
+			success = false;
 		}
+		// Empty password
 		else if (password.length() == 0) {
-			// Display alert
-			Alert alert = new Alert(Alert.AlertType.INFORMATION);
-			alert.setContentText("Please enter a password!");
-			alert.showAndWait();
+			alert = "Please enter a password!";
+			success = false;
+		}
+		// Improper email format
+		else if (!isEmail(email_address)) {
+			alert = "Improper email format!";
+			success = false;
 		}
 		else {
 			for (Account a : list) {
+				// Email matches an account
 				if (a.getEmail().toLowerCase()
 						.equals(email_address.toLowerCase())) {
-					Alert alert = new Alert(Alert.AlertType.INFORMATION);
-					alert.setContentText("You already have an account!");
-					alert.showAndWait();
+					alert = "You already have an account!";
+					success = false;
 					break;
-				}
-				// Create account
-				else {
-					list.add(new Account(email_address, password));
-
 				}
 			}
 		}
+		// Display message
+		if (success) {
+			list.add(new Account(email_address, password));
+			saveData(CUSTOMER_FILE, list);
+			alert = "Account created! You may login now.";
+		}
+		Alert dialog = new Alert(Alert.AlertType.INFORMATION);
+		dialog.setContentText(alert);
+		dialog.showAndWait();
 	}
 
 	/**
@@ -197,7 +233,29 @@ public class CustomerEntrance implements Initializable {
 		}
 	}
 
-	private void updateAccounts() {
+	private void saveData(String customer_file, ArrayList<Account> data) {
+		// File writers
+		FileWriter file;
+		BufferedWriter writer;
 
+		try {
+			// Initialize file writers
+			file = new FileWriter(customer_file, false);
+			writer = new BufferedWriter(file);
+
+			for (Account a : data) {
+				writer.write(a.getEmail());
+				writer.newLine();
+				writer.write(a.getEncryptedPassword());
+				writer.newLine();
+			}
+
+			// Save and close file
+			writer.close();
+			file.close();
+		}
+		catch (IOException e) {
+			System.out.println("File write error");
+		}
 	}
 }

@@ -59,46 +59,6 @@ public class ItemTable implements Initializable {
 	SortedList<Book> sortedData;
 	final static String BOOK_FILE = "books.txt";
 
-	public int countLines(String filename) {
-		// Declaration
-		FileReader file;
-		BufferedReader reader;
-		int counter = 0;
-		String line;
-
-		try {
-			file = new FileReader(filename);
-			reader = new BufferedReader(file);
-
-			while ((line = reader.readLine()) != null) {
-				// Increment line count
-				counter++;
-			}
-		}
-		catch (IOException e) {
-			System.out.println("File read error");
-		}
-		return counter;
-	}
-
-	/**
-	 * Checks if the given string is a number
-	 *
-	 * @param value A string containing a value
-	 * @return true, if it is able to be parsed into a double, otherwise false
-	 */
-	public boolean isNumber(String value) {
-		try {
-			double test = Double.parseDouble(value);
-		}
-		// If there is an exception caught, then the value is not numeric
-		catch (NumberFormatException e) {
-			return false;
-		}
-		// It is numeric if no exception is thrown
-		return true;
-	}
-
 	public void processBooks() {
 
 		// Constant Declaration
@@ -109,7 +69,7 @@ public class ItemTable implements Initializable {
 		boolean valid;
 		// Calculate number of customers from the number of lines in the
 		// customer data file
-		int lines = countLines(BOOK_FILE);
+		int lines = Utilities.countLines(BOOK_FILE);
 		int books = lines / LINES_PER_BOOK;
 		String title;
 		String author;
@@ -133,11 +93,11 @@ public class ItemTable implements Initializable {
 				author = reader.readLine();
 				category = reader.readLine();
 				quantity = reader.readLine();
-				if (!isNumber(quantity))
+				if (!Utilities.isNumber(quantity))
 					valid = false;
 
 				price = reader.readLine();
-				if (!isNumber(price))
+				if (!Utilities.isNumber(price))
 					valid = false;
 
 				if (valid)
@@ -362,9 +322,9 @@ public class ItemTable implements Initializable {
 
 	@FXML
 	private void addButtonAction() {
-		FXMLLoader loader = new FXMLLoader(
-				getClass().getResource("AddItem.fxml"));
 		try {
+			FXMLLoader loader = new FXMLLoader(
+					getClass().getResource("AddItem.fxml"));
 			Parent root = (Parent) loader.load();
 			AddItemController controller = loader.getController();
 			controller.setTable(items);

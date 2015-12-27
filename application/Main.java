@@ -31,7 +31,7 @@ public class Main extends Application {
 	public void showLandingScreen() {
 		try {
 			AnchorPane l = (AnchorPane) FXMLLoader
-					.load(Main.class.getResource("Landing.fxml"));
+					.load(getClass().getResource("Landing.fxml"));
 
 			// Show the scene containing the root layout.
 			Scene scene = new Scene(l);
