@@ -1,1 +1,26 @@
 /* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
+.list-cell:filled:selected:focused, .list-cell:filled:selected {
+    /*-fx-background-color: linear-gradient(#328BDB 0%, #207BCF 25%, #1973C9 75%, #0A65BF 100%); */
+    -fx-background-color: #add8e6;
+    -fx-text-fill: black;
+}
+
+.list-cell:filled:hover {
+    -fx-background-color: #f0f0f0;
+    -fx-text-fill: black;
+}
+
+.table-view:focused .table-row-cell:selected {  
+    -fx-background-color: #add8e6; 
+    -fx-text-background-color: black;
+}
+
+.table-view:row-selection .table-row-cell:filled:hover {
+	-fx-background-color: #f0f0f0;
+}
+
+/* Selected row hovered */
+.table-view:focused .table-row-cell:filled:focused:selected:hover {
+    -fx-background-color: #add8e6; 
+    -fx-text-background-color: black;
+}

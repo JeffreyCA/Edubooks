@@ -60,7 +60,6 @@ public class ItemTable implements Initializable {
 	final static String BOOK_FILE = "books.txt";
 
 	public void processBooks() {
-
 		// Constant Declaration
 		final int LINES_PER_BOOK = 5;
 		final String ERROR = "Error reading file.";

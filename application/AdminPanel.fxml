@@ -25,7 +25,7 @@
                               <RowConstraints maxHeight="439.0" minHeight="10.0" prefHeight="68.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <TableView fx:id="items" editable="true" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+                              <TableView fx:id="items" editable="true" prefHeight="200.0" prefWidth="200.0" stylesheets="@application.css" GridPane.rowIndex="1">
                                 <columns>
                                   <TableColumn fx:id="title" prefWidth="77.0" style="-fx-alignment: CENTER;" text="Title" />
                                   <TableColumn fx:id="author" prefWidth="73.0" style="-fx-alignment: CENTER;" text="Author" />
