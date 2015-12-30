@@ -36,7 +36,7 @@ public class AdminPasswordController {
 		else {
 			try {
 				RandomAccessFile file = new RandomAccessFile(
-						ButtonController.ADMIN_LOGIN, "rw");
+						Utilities.ADMIN_LOGIN, "rw");
 				file.write(Account.rot13(pw.getText()).getBytes());
 				file.close();
 			}

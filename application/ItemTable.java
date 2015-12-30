@@ -32,6 +32,7 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import javafx.util.converter.NumberStringConverter;
 
@@ -57,7 +58,6 @@ public class ItemTable implements Initializable {
 	ArrayList<Book> list = new ArrayList<Book>();
 	ObservableList<Book> data;
 	SortedList<Book> sortedData;
-	final static String BOOK_FILE = "books.txt";
 
 	public void processBooks() {
 		// Constant Declaration
@@ -68,7 +68,7 @@ public class ItemTable implements Initializable {
 		boolean valid;
 		// Calculate number of customers from the number of lines in the
 		// customer data file
-		int lines = Utilities.countLines(BOOK_FILE);
+		int lines = Utilities.countLines(Utilities.BOOK_FILE);
 		int books = lines / LINES_PER_BOOK;
 		String title;
 		String author;
@@ -81,7 +81,7 @@ public class ItemTable implements Initializable {
 
 		try {
 			// Initialize file readers for customer file
-			file_reader = new FileReader(BOOK_FILE);
+			file_reader = new FileReader(Utilities.BOOK_FILE);
 			reader = new BufferedReader(file_reader);
 
 			// Loop through all customers
@@ -129,7 +129,7 @@ public class ItemTable implements Initializable {
 			public void handle(CellEditEvent<Book, String> t) {
 				t.getTableView().getItems().get(t.getTablePosition().getRow())
 						.setTitle(t.getNewValue());
-				saveData(BOOK_FILE, data);
+				saveData(data);
 			}
 		});
 
@@ -141,7 +141,7 @@ public class ItemTable implements Initializable {
 			public void handle(CellEditEvent<Book, String> t) {
 				t.getTableView().getItems().get(t.getTablePosition().getRow())
 						.setAuthor(t.getNewValue());
-				saveData(BOOK_FILE, data);
+				saveData(data);
 			}
 		});
 		category.setCellValueFactory(
@@ -154,7 +154,7 @@ public class ItemTable implements Initializable {
 						t.getTableView().getItems()
 								.get(t.getTablePosition().getRow())
 								.setCategory(t.getNewValue());
-						saveData(BOOK_FILE, data);
+						saveData(data);
 					}
 				});
 
@@ -170,7 +170,7 @@ public class ItemTable implements Initializable {
 						t.getTableView().getItems()
 								.get(t.getTablePosition().getRow())
 								.setQuantity((long) t.getNewValue());
-						saveData(BOOK_FILE, data);
+						saveData(data);
 
 					}
 				});
@@ -188,7 +188,7 @@ public class ItemTable implements Initializable {
 			public void handle(CellEditEvent<Book, String> t) {
 				t.getTableView().getItems().get(t.getTablePosition().getRow())
 						.setPrice(Double.valueOf(t.getNewValue()));
-				saveData(BOOK_FILE, data);
+				saveData(data);
 			}
 		});
 
@@ -268,7 +268,7 @@ public class ItemTable implements Initializable {
 							.get(ButtonCell.this.getIndex());
 					// remove selected item from the table list
 					data.remove(book);
-					saveData(BOOK_FILE, data);
+					saveData(data);
 				}
 			});
 		}
@@ -286,14 +286,14 @@ public class ItemTable implements Initializable {
 		}
 	}
 
-	public static void saveData(String book_file, ObservableList<Book> data) {
+	public void saveData(ObservableList<Book> data) {
 		// File writers
 		FileWriter file;
 		BufferedWriter writer;
 
 		try {
 			// Initialize file writers
-			file = new FileWriter(book_file, false);
+			file = new FileWriter(Utilities.BOOK_FILE, false);
 			writer = new BufferedWriter(file);
 
 			for (Book b : data) {
@@ -336,6 +336,14 @@ public class ItemTable implements Initializable {
 			stage.initModality(Modality.WINDOW_MODAL);
 			stage.setResizable(false);
 			stage.show();
+
+			stage.setOnHiding(new EventHandler<WindowEvent>() {
+				@Override
+				public void handle(WindowEvent we) {
+					saveData(data);
+				}
+			});
+
 		}
 		catch (IOException e) {
 		}

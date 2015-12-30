@@ -9,8 +9,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class ButtonController {
-
-	final static String ADMIN_LOGIN = "admin.dat";
 	@FXML
 	private javafx.scene.control.Button admin;
 	@FXML
@@ -25,7 +23,7 @@ public class ButtonController {
 	private void adminButtonAction() {
 		showAdminLogin();
 		// Create admin account if first time accessing the admin panel
-		if (!new File(ADMIN_LOGIN).isFile())
+		if (!new File(Utilities.ADMIN_LOGIN).isFile())
 			showAdminRegister();
 	}
 

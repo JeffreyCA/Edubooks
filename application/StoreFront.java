@@ -15,27 +15,33 @@ import javafx.scene.control.ListView;
 import javafx.util.Callback;
 
 public class StoreFront implements Initializable {
-
-	final static String BOOK_FILE = "books.txt";
-
 	@FXML
 	private javafx.scene.control.ListView<Book> books;
-	private Account account;
+	Instance i;
 	ArrayList<Book> list = new ArrayList<Book>();
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		processBooks();
+		i = new Instance(list);
 
 		ObservableList<Book> items = FXCollections.observableArrayList(list);
 		books.setCellFactory(
 				new Callback<ListView<Book>, javafx.scene.control.ListCell<Book>>() {
 					@Override
 					public ListCell<Book> call(ListView<Book> listView) {
-						return new BookCell();
+						return new BookCell(i);
 					}
 				});
 		books.setItems(items);
+	}
+
+	public Instance getInstance() {
+		return i;
+	}
+
+	public void setInstance(Instance i) {
+		this.i = i;
 	}
 
 	public void processBooks() {
@@ -47,7 +53,7 @@ public class StoreFront implements Initializable {
 		boolean valid;
 		// Calculate number of customers from the number of lines in the
 		// customer data file
-		int lines = Utilities.countLines(BOOK_FILE);
+		int lines = Utilities.countLines(Utilities.BOOK_FILE);
 		int books = lines / LINES_PER_BOOK;
 		String title;
 		String author;
@@ -60,7 +66,7 @@ public class StoreFront implements Initializable {
 
 		try {
 			// Initialize file readers for customer file
-			file_reader = new FileReader(BOOK_FILE);
+			file_reader = new FileReader(Utilities.BOOK_FILE);
 			reader = new BufferedReader(file_reader);
 
 			// Loop through all customers
@@ -93,13 +99,4 @@ public class StoreFront implements Initializable {
 			System.out.println(ERROR);
 		}
 	}
-
-	public Account getAccount() {
-		return account;
-	}
-
-	public void setAccount(Account account) {
-		this.account = account;
-	}
-
 }

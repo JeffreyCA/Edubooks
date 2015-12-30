@@ -20,8 +20,6 @@ import javafx.stage.Stage;
 
 public class CustomerEntrance implements Initializable {
 
-	final private String CUSTOMER_FILE = "customer.dat";
-
 	@FXML
 	private javafx.scene.control.Button back;
 	@FXML
@@ -95,13 +93,16 @@ public class CustomerEntrance implements Initializable {
 			StoreFront controller = loader.getController();
 			Stage stage = (Stage) login.getScene().getWindow();
 			Scene scene = new Scene(root);
+			Instance i = controller.getInstance();
+			i.account = a;
+			i.loadData();
 
 			stage.setTitle("Edubooks Store");
-			controller.setAccount(a);
 			stage.setScene(scene);
 			stage.show();
 		}
 		catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -141,7 +142,7 @@ public class CustomerEntrance implements Initializable {
 		// Display message
 		if (success) {
 			list.add(new Account(email_address, password));
-			saveData(CUSTOMER_FILE, list);
+			saveData(Utilities.CUSTOMER_FILE, list);
 			alert = "Account created! You may login now.";
 		}
 		Alert dialog = new Alert(Alert.AlertType.INFORMATION);
@@ -166,28 +167,6 @@ public class CustomerEntrance implements Initializable {
 		return is_email;
 	}
 
-	public int countLines(String filename) {
-		// Declaration
-		FileReader file;
-		BufferedReader reader;
-		int counter = 0;
-		String line;
-
-		try {
-			file = new FileReader(filename);
-			reader = new BufferedReader(file);
-
-			while ((line = reader.readLine()) != null) {
-				// Increment line count
-				counter++;
-			}
-		}
-		catch (IOException e) {
-			System.out.println("File read error");
-		}
-		return counter;
-	}
-
 	private void importAccounts() {
 		// Constant Declaration
 		final int LINES_PER_ACCOUNT = 2;
@@ -197,7 +176,7 @@ public class CustomerEntrance implements Initializable {
 		boolean valid;
 		// Calculate number of customers from the number of lines in the
 		// customer data file
-		int lines = countLines(CUSTOMER_FILE);
+		int lines = Utilities.countLines(Utilities.CUSTOMER_FILE);
 		int accounts = lines / LINES_PER_ACCOUNT;
 		String email;
 		String password;
@@ -207,7 +186,7 @@ public class CustomerEntrance implements Initializable {
 
 		try {
 			// Initialize file readers for customer file
-			file_reader = new FileReader(CUSTOMER_FILE);
+			file_reader = new FileReader(Utilities.CUSTOMER_FILE);
 			reader = new BufferedReader(file_reader);
 
 			// Loop through all customers

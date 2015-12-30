@@ -11,14 +11,7 @@ public class BookList {
 		size = 0;
 	}
 
-	// Add node in front of the list
-	public void addAtFront(Object item) {
-		head = new Node(item, head);
-		size++;
-	}
-
-	// Add node at the end of the list
-	public void addAtRear(Object item) {
+	public void add(Book item) {
 		Node node = head;
 		Node newNode = new Node(item, null);
 
@@ -34,6 +27,10 @@ public class BookList {
 			node.setLink(newNode);
 		}
 		size++;
+	}
+
+	public Book getBook(int position) {
+		return traverse(position).getValue();
 	}
 
 	// Reach and return ith node in the list
@@ -52,7 +49,7 @@ public class BookList {
 	}
 
 	// Replace contents of a node
-	public boolean replace(Object item, int position) {
+	public boolean replace(Book item, int position) {
 		Node node = traverse(position);
 
 		// Node does not exist
@@ -138,7 +135,7 @@ public class BookList {
 	}
 
 	// Insert a new node with item as data at ith place in the list
-	public boolean insert(Object item, int position) {
+	public boolean insert(Book item, int position) {
 		Node previous;
 		Node node = new Node(item);
 
@@ -159,8 +156,8 @@ public class BookList {
 		return true;
 	}
 
-	// Return object at a position
-	public Object lookUp(int position) {
+	// Return Book at a position
+	public Book lookUp(int position) {
 		Node node = traverse(position);
 		if (node == null) {
 			return null;

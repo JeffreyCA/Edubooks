@@ -1,5 +1,7 @@
 package application;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -22,9 +24,32 @@ public class BookCell extends ListCell<Book> {
 	final int SPACING = 10;
 
 	final String CART_BUTTON = "Add to cart";
-	final String BOOK_COLOUR = "#d2b394";
+	final String BOOK_COLOUR = "#D2B394"; // Light brown
+	final String IN_STOCK = "In stock";
+	final String IN_STOCK_COLOUR = "#009900"; // Green
 	final String NO_STOCK = "Out of stock";
+	final String NO_STOCK_COLOUR = "FF0000"; // Red
 	final String WISHLIST_BUTTON = "Add to wishlist";
+
+	Button cart = new Button();
+	Button wishlist = new Button();
+	Book item;
+	Account account;
+
+	public BookCell(Instance i) {
+		super();
+		account = i.getAccount();
+
+		cart.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				account.addToCart(item);
+				account.save(i);
+				cart.setDisable(true);
+
+			}
+		});
+	}
 
 	@Override
 	public void updateItem(Book b, boolean empty) {
@@ -39,9 +64,8 @@ public class BookCell extends ListCell<Book> {
 			Rectangle book_shape = new Rectangle();
 			Label text_overlay = new Label();
 			Text price = new Text();
+			Text stock_availability = new Text();
 			VBox vbox = new VBox();
-			Button cart = new Button();
-			Button wishlist = new Button();
 
 			// Set spacing between elements
 			book_info.setSpacing(SPACING);
@@ -71,6 +95,7 @@ public class BookCell extends ListCell<Book> {
 			// Add book information beside the icon
 			vbox.getChildren().add(new Text(b.getTitle()));
 			vbox.getChildren().add(new Text(b.getAuthor()));
+			vbox.getChildren().add(stock_availability);
 			book_info.getChildren().addAll(book_icon, vbox);
 
 			// Add buttons to the cell
@@ -79,12 +104,39 @@ public class BookCell extends ListCell<Book> {
 			price.setText("$" + String.format("%.2f", b.getPrice()));
 			price.setFont(new Font(PRICE_SIZE));
 
-			// wishlist.setDisable(true);
+			// Stock availability
+			if (b.getQuantity() > 0) {
+				stock_availability.setText(IN_STOCK);
+				stock_availability.setFill(Color.web(IN_STOCK_COLOUR));
+			}
+			else {
+				stock_availability.setText(NO_STOCK);
+				stock_availability.setFill(Color.web(NO_STOCK_COLOUR));
+				cart.setText("Out of stock");
+				cart.setDisable(true);
+			}
+
+			if (existsInCart(b, account.getCart())) {
+				cart.setText("Item in cart");
+				cart.setDisable(true);
+			}
+			item = b;
+
 			buttons.getChildren().addAll(price, wishlist, cart);
 			buttons.setAlignment(Pos.CENTER_RIGHT);
 			outer.getChildren().addAll(book_info, buttons);
 
 			setGraphic(outer);
 		}
+		else
+			item = null;
+	}
+
+	public boolean existsInCart(Book b, ShoppingCart c) {
+		for (int i = 0; i < c.getSize(); i++) {
+			if (b.equals(c.getBook(i)))
+				return true;
+		}
+		return false;
 	}
 }

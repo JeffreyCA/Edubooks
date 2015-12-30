@@ -35,8 +35,8 @@ public class AdminController {
 	private void loginButtonAction() {
 		try {
 			// Read random access password file
-			RandomAccessFile file = new RandomAccessFile(
-					ButtonController.ADMIN_LOGIN, "r");
+			RandomAccessFile file = new RandomAccessFile(Utilities.ADMIN_LOGIN,
+					"r");
 			String password = file.readLine();
 			file.close();
 
