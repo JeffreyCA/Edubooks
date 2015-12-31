@@ -17,6 +17,9 @@ import javafx.util.Callback;
 public class StoreFront implements Initializable {
 	@FXML
 	private javafx.scene.control.ListView<Book> books;
+	@FXML
+	private javafx.scene.control.ListView<Book> shopping_cart;
+
 	Instance i;
 	ArrayList<Book> list = new ArrayList<Book>();
 
@@ -34,6 +37,19 @@ public class StoreFront implements Initializable {
 					}
 				});
 		books.setItems(items);
+
+	}
+
+	public void initializeCart(CartList cart_list) {
+		i.cart_list = cart_list;
+		shopping_cart.setCellFactory(
+				new Callback<ListView<Book>, javafx.scene.control.ListCell<Book>>() {
+					@Override
+					public ListCell<Book> call(ListView<Book> listView) {
+						return new ShoppingCartCell(i);
+					}
+				});
+		shopping_cart.setItems(cart_list);
 	}
 
 	public Instance getInstance() {

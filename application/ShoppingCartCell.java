@@ -6,6 +6,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
+import javafx.scene.control.Spinner;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
@@ -16,39 +17,28 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
-public class BookCell extends ListCell<Book> {
+public class ShoppingCartCell extends ListCell<Book> {
 	final int ICON_WIDTH = 40;
 	final int ICON_HEIGHT = 50;
 	final int LABEL_SIZE = 10;
 	final int PRICE_SIZE = 20;
 	final int SPACING = 10;
 
-	final String CART_BUTTON = "Add to cart";
+	final String CART_BUTTON = "Remove from cart";
 	final String BOOK_COLOUR = "#D2B394"; // Light brown
 	final String IN_STOCK = "In stock";
 	final String IN_STOCK_COLOUR = "#009900"; // Green
 	final String NO_STOCK = "Out of stock";
 	final String NO_STOCK_COLOUR = "FF0000"; // Red
-	final String WISHLIST_BUTTON = "Add to wishlist";
 
-	Button cart = new Button();
-	Button wishlist = new Button();
-	Book item;
+	Button cart;
 	Account account;
+	Instance i;
 
-	public BookCell(Instance i) {
+	public ShoppingCartCell(Instance i) {
 		super();
+		this.i = i;
 		account = i.account;
-		cart.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				account.addToCart(item);
-				account.save(i);
-				i.cart_list.add(item);
-				cart.setDisable(true);
-			}
-		});
-
 	}
 
 	@Override
@@ -64,9 +54,11 @@ public class BookCell extends ListCell<Book> {
 			Rectangle book_shape = new Rectangle();
 			Label text_overlay = new Label();
 			Text price = new Text();
-			Text stock_availability = new Text();
 			VBox vbox = new VBox();
+			long q = b.getQuantity();
+			cart = new Button();
 
+			Spinner<Number> quantity = new Spinner<Number>(1, q, 1);
 			// Set spacing between elements
 			book_info.setSpacing(SPACING);
 			buttons.setSpacing(SPACING);
@@ -95,40 +87,40 @@ public class BookCell extends ListCell<Book> {
 			// Add book information beside the icon
 			vbox.getChildren().add(new Text(b.getTitle()));
 			vbox.getChildren().add(new Text(b.getAuthor()));
-			vbox.getChildren().add(stock_availability);
+			vbox.getChildren().add(quantity);
 			book_info.getChildren().addAll(book_icon, vbox);
 
 			// Add buttons to the cell
 			cart.setText(CART_BUTTON);
-			wishlist.setText(WISHLIST_BUTTON);
-			price.setText("$" + String.format("%.2f", b.getPrice()));
+			price.setText("$" + String.format("%.2f", (b.getPrice())));
 			price.setFont(new Font(PRICE_SIZE));
 
-			// Stock availability
-			if (b.getQuantity() > 0) {
-				stock_availability.setText(IN_STOCK);
-				stock_availability.setFill(Color.web(IN_STOCK_COLOUR));
-			}
-			else {
-				stock_availability.setText(NO_STOCK);
-				stock_availability.setFill(Color.web(NO_STOCK_COLOUR));
-				cart.setDisable(true);
-			}
+			quantity.valueProperty().addListener((obs, oldValue, newValue) -> {
+				price.setText("$" + String.format("%.2f",
+						(b.getPrice() * newValue.doubleValue())));
 
-			if (existsInCart(b, account.getCart())) {
-				cart.setText("Item in cart");
-				cart.setDisable(true);
-			}
-			item = b;
+			});
 
-			buttons.getChildren().addAll(price, wishlist, cart);
+			buttons.getChildren().addAll(price, cart);
 			buttons.setAlignment(Pos.CENTER_RIGHT);
 			outer.getChildren().addAll(book_info, buttons);
 
 			setGraphic(outer);
+			cart.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					System.out.println(i.cart_list.remove(b));
+					account.getCart().display();
+					System.out.println("BOOK: " + b);
+					System.out.println(account.getCart().delete(b));
+					account.save(i);
+
+				}
+			});
 		}
-		else
-			item = null;
+		else {
+			setGraphic(null);
+		}
 	}
 
 	public boolean existsInCart(Book b, ShoppingCart c) {

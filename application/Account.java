@@ -25,12 +25,14 @@ public class Account {
 	public Account(String email, String password) {
 		this.setEmail(email);
 		this.setPassword(password);
-		cart = new ShoppingCart();
-		wishlist = new Wishlist();
 	}
 
 	public void addToCart(Book book) {
 		cart.add(book);
+	}
+
+	public void removeFromCart(Book book) {
+		cart.delete(book);
 	}
 
 	public void addToWishlist(Book book) {
@@ -50,16 +52,15 @@ public class Account {
 			writer.write(String.valueOf(cart.getSize()));
 			writer.newLine();
 			for (int j = 0; j < cart.getSize(); j++) {
-				writer.write(
-						String.valueOf(i.getList().indexOf(cart.getBook(j))));
+				writer.write(String.valueOf(i.list.indexOf(cart.getBook(j))));
 				writer.newLine();
 			}
 
 			writer.write(String.valueOf(wishlist.getSize()));
 			writer.newLine();
 			for (int j = 0; j < wishlist.getSize(); j++) {
-				writer.write(String
-						.valueOf(i.getList().indexOf(wishlist.getBook(j))));
+				writer.write(
+						String.valueOf(i.list.indexOf(wishlist.getBook(j))));
 				writer.newLine();
 			}
 
@@ -77,9 +78,11 @@ public class Account {
 		// File readers
 		FileReader file_reader;
 		BufferedReader reader;
+		cart = new ShoppingCart();
+		wishlist = new Wishlist();
 
 		String name = this.email + ".dat";
-		ArrayList<Book> book_list = i.getList();
+		ArrayList<Book> book_list = i.list;
 		try {
 			// Initialize file readers for customer file
 			file_reader = new FileReader(name);
@@ -87,17 +90,14 @@ public class Account {
 
 			int cart_items = Integer.parseInt(reader.readLine());
 
-			// Loop through all customers
-			for (int j = 0; j < cart_items && j < book_list.size(); j++) {
-				cart.add(book_list.get(j));
+			for (int j = 0; j < cart_items; j++) {
+				int index = Integer.parseInt(reader.readLine());
+				if (index < book_list.size()
+						&& book_list.get(index).getQuantity() > 0)
+					cart.add(book_list.get(index));
 			}
 
 			int wishlist_items = Integer.parseInt(reader.readLine());
-
-			// Loop through all customers
-			for (int j = 0; j < wishlist_items && j < book_list.size(); j++) {
-				wishlist.add(book_list.get(j));
-			}
 
 			// Close readers
 			reader.close();
@@ -106,6 +106,10 @@ public class Account {
 		// Handle exception
 		catch (IOException e) {
 			System.out.println("error");
+			cart = new ShoppingCart();
+		}
+		catch (NumberFormatException e) {
+			cart = new ShoppingCart();
 		}
 	}
 

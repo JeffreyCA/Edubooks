@@ -11,6 +11,10 @@ public class BookList {
 		size = 0;
 	}
 
+	public Node getHead() {
+		return head;
+	}
+
 	public void add(Book item) {
 		Node node = head;
 		Node newNode = new Node(item, null);
@@ -68,37 +72,44 @@ public class BookList {
 		}
 	}
 
-	// Delete the node at a certain position
-	public boolean delete(int position) {
-		Node node = traverse(position);
-		Node previous = traverse(position - 1);
+	// public boolean delete(Book b) {
+	// Node n;
+	// Node previous;
+	// for (int i = 0; i < size; i++) {
+	// n = traverse(i).getLink();
+	// previous = traverse(i);
+	// if (n.getValue().equals(b)) {
+	// previous.setLink(n.getLink());
+	// return true;
+	// }
+	// }
+	// return false;
+	// }
+	public boolean delete(Book b) {
+		Node current = head;
+		Node previous = null;
+		System.out.println("book: " + b);
+		while (current != null) {
+			System.out.println("current: " + current.getValue());
+			System.out.println("head: " + head.getValue());
 
-		// Node does not exist at that position
-		if (node == null) {
-			return false;
+			if (current.getValue().equals(b)) {
+				if (current == head) {
+					head = head.getLink();
+				}
+				else {
+					previous.setLink(current.getLink());
+				}
+				size--;
+				return true;
+			}
+			else {
+				previous = current;
+			}
+			current = current.getLink();
+
 		}
-		// The head is removed, and the head points to another node
-		if (position == 0 && node.getLink() != null) {
-			head = node.getLink();
-			size--;
-			return true;
-		}
-		// The head does not point to another node
-		else if (node.getLink() == null) {
-			head = null;
-			size = 0;
-			return true;
-		}
-		// A node that is not the head is removed
-		else if (node.getLink() != null) {
-			previous.setLink(node.getLink());
-			node = null;
-			size--;
-			return true;
-		}
-		else {
-			return false;
-		}
+		return false;
 	}
 
 	// Display the contents of the linked list

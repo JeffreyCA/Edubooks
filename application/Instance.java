@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class Instance {
 	protected Account account;
 	protected ArrayList<Book> list;
+	protected CartList cart_list;
 
 	public Instance(ArrayList<Book> list) {
 		this.list = list;
@@ -15,19 +16,4 @@ public class Instance {
 		account.load(this);
 	}
 
-	public Account getAccount() {
-		return account;
-	}
-
-	public void setAccount(Account account) {
-		this.account = account;
-	}
-
-	public ArrayList<Book> getList() {
-		return list;
-	}
-
-	public void setList(ArrayList<Book> list) {
-		this.list = list;
-	}
 }
