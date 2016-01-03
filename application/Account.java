@@ -13,6 +13,7 @@ public class Account {
 	private String password;
 	private ShoppingCart cart;
 	private Wishlist wishlist;
+	private ArrayList<Order> orders;
 
 	public Account(String email, String password, ShoppingCart cart,
 			Wishlist wishlist) {
@@ -31,6 +32,10 @@ public class Account {
 		cart.add(book);
 	}
 
+	public void clearCart() {
+		cart.clear();
+	}
+
 	public void removeFromCart(Book book) {
 		cart.delete(book);
 	}
@@ -44,6 +49,8 @@ public class Account {
 		FileWriter file;
 		BufferedWriter writer;
 		String name = this.email + ".dat";
+		ArrayList<Book> book_list = i.list;
+
 		try {
 			// Initialize file writers
 			file = new FileWriter(name, false);
@@ -52,7 +59,8 @@ public class Account {
 			writer.write(String.valueOf(cart.getSize()));
 			writer.newLine();
 			for (int j = 0; j < cart.getSize(); j++) {
-				writer.write(String.valueOf(i.list.indexOf(cart.getBook(j))));
+				writer.write(
+						String.valueOf(book_list.indexOf(cart.getBook(j))));
 				writer.newLine();
 			}
 
@@ -60,8 +68,14 @@ public class Account {
 			writer.newLine();
 			for (int j = 0; j < wishlist.getSize(); j++) {
 				writer.write(
-						String.valueOf(i.list.indexOf(wishlist.getBook(j))));
+						String.valueOf(book_list.indexOf(wishlist.getBook(j))));
 				writer.newLine();
+			}
+
+			writer.write(i.account.orders.size());
+
+			for (Order o : i.account.orders) {
+				writer.write(o.toString());
 			}
 
 			// Save and close file
@@ -98,6 +112,7 @@ public class Account {
 			}
 
 			int wishlist_items = Integer.parseInt(reader.readLine());
+			// ADD WISHLIST IMPORT HERE
 
 			// Close readers
 			reader.close();
@@ -166,5 +181,13 @@ public class Account {
 
 	public void setWishlist(Wishlist wishlist) {
 		this.wishlist = wishlist;
+	}
+
+	public ArrayList<Order> getOrders() {
+		return orders;
+	}
+
+	public void setOrders(ArrayList<Order> orders) {
+		this.orders = orders;
 	}
 }

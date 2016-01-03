@@ -8,6 +8,7 @@ public class Utilities {
 	final static String ADMIN_LOGIN = "admin.dat";
 	final static String BOOK_FILE = "books.txt";
 	final static String CUSTOMER_FILE = "customer.dat";
+	final static double TAX = 0.13;
 
 	public static int countLines(String filename) {
 		// Declaration

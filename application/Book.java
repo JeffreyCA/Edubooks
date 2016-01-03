@@ -23,7 +23,7 @@ public class Book {
 
 	@Override
 	public String toString() {
-		return title.get() + " by " + author.get() + ", $" + price.get();
+		return title.get() + "\n" + author.get() + "\n" + price.get();
 	}
 
 	public String getAuthor() {

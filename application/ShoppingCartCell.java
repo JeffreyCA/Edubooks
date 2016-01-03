@@ -34,11 +34,19 @@ public class ShoppingCartCell extends ListCell<Book> {
 	Button cart;
 	Account account;
 	Instance i;
+	int qty;
+	Text subtotal;
+	Text tax;
+	Text total;
 
-	public ShoppingCartCell(Instance i) {
+	public ShoppingCartCell(Instance i, Text subtotal, Text tax, Text total) {
 		super();
 		this.i = i;
 		account = i.account;
+		qty = 1;
+		this.subtotal = subtotal;
+		this.tax = tax;
+		this.total = total;
 	}
 
 	@Override
@@ -57,8 +65,9 @@ public class ShoppingCartCell extends ListCell<Book> {
 			VBox vbox = new VBox();
 			long q = b.getQuantity();
 			cart = new Button();
+			qty = account.getCart().getNode(b).getQuantity();
 
-			Spinner<Number> quantity = new Spinner<Number>(1, q, 1);
+			Spinner<Number> quantity = new Spinner<Number>(1, q, qty);
 			// Set spacing between elements
 			book_info.setSpacing(SPACING);
 			buttons.setSpacing(SPACING);
@@ -92,35 +101,51 @@ public class ShoppingCartCell extends ListCell<Book> {
 
 			// Add buttons to the cell
 			cart.setText(CART_BUTTON);
-			price.setText("$" + String.format("%.2f", (b.getPrice())));
+			price.setText("$" + String.format("%.2f", (qty * b.getPrice())));
 			price.setFont(new Font(PRICE_SIZE));
+
+			updatePrices();
 
 			quantity.valueProperty().addListener((obs, oldValue, newValue) -> {
 				price.setText("$" + String.format("%.2f",
 						(b.getPrice() * newValue.doubleValue())));
-
+				qty = newValue.intValue();
+				account.getCart().getNode(b).setQuantity(qty);
+				updatePrices();
 			});
 
 			buttons.getChildren().addAll(price, cart);
 			buttons.setAlignment(Pos.CENTER_RIGHT);
 			outer.getChildren().addAll(book_info, buttons);
 
-			setGraphic(outer);
 			cart.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					System.out.println(i.cart_list.remove(b));
+					i.cart_list.remove(b);
+					account.getCart().getNode(b).setQuantity(1);
+					account.getCart().delete(b);
 					account.getCart().display();
-					System.out.println("BOOK: " + b);
-					System.out.println(account.getCart().delete(b));
 					account.save(i);
-
+					qty = 1;
+					updatePrices();
 				}
 			});
+			setGraphic(outer);
 		}
 		else {
 			setGraphic(null);
 		}
+	}
+
+	public void updatePrices() {
+		account.getCart().updateTotal();
+		double sub_price = i.account.getCart().getTotal();
+		double tax_price = Utilities.TAX * sub_price;
+		double total_price = sub_price + tax_price;
+
+		subtotal.setText(String.format("$%.2f", sub_price));
+		tax.setText(String.format("$%.2f", tax_price));
+		total.setText(String.format("$%.2f", total_price));
 	}
 
 	public boolean existsInCart(Book b, ShoppingCart c) {

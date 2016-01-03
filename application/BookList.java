@@ -2,8 +2,8 @@ package application;
 
 public class BookList {
 
-	private Node head;
-	private int size;
+	protected Node head;
+	protected int size;
 
 	// Constructor
 	public BookList() {
@@ -35,6 +35,18 @@ public class BookList {
 
 	public Book getBook(int position) {
 		return traverse(position).getValue();
+	}
+
+	public Node getNode(int position) {
+		return traverse(position);
+	}
+
+	public Node getNode(Book b) {
+		for (int i = 0; i < size; i++) {
+			if (traverse(i).getValue().equals(b))
+				return traverse(i);
+		}
+		return null;
 	}
 
 	// Reach and return ith node in the list
@@ -88,11 +100,8 @@ public class BookList {
 	public boolean delete(Book b) {
 		Node current = head;
 		Node previous = null;
-		System.out.println("book: " + b);
-		while (current != null) {
-			System.out.println("current: " + current.getValue());
-			System.out.println("head: " + head.getValue());
 
+		while (current != null) {
 			if (current.getValue().equals(b)) {
 				if (current == head) {
 					head = head.getLink();

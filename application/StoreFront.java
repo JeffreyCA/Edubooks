@@ -9,9 +9,14 @@ import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 
 public class StoreFront implements Initializable {
@@ -19,9 +24,42 @@ public class StoreFront implements Initializable {
 	private javafx.scene.control.ListView<Book> books;
 	@FXML
 	private javafx.scene.control.ListView<Book> shopping_cart;
+	@FXML
+	private javafx.scene.control.Button checkout;
+	@FXML
+	private javafx.scene.text.Text subtotal;
+	@FXML
+	private javafx.scene.text.Text tax;
+	@FXML
+	private javafx.scene.text.Text total;
 
 	Instance i;
 	ArrayList<Book> list = new ArrayList<Book>();
+
+	@FXML
+	private void checkoutButtonAction() {
+		try {
+			FXMLLoader loader = new FXMLLoader(
+					getClass().getResource("Checkout.fxml"));
+			Parent root = (Parent) loader.load();
+			Checkout controller = loader.getController();
+			Stage stage = new Stage();
+			Scene scene = new Scene(root);
+
+			controller.setInstance(i);
+
+			stage.initModality(Modality.WINDOW_MODAL);
+			stage.setTitle("Checkout");
+			stage.setScene(scene);
+			stage.setResizable(false);
+			stage.show();
+
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -37,7 +75,6 @@ public class StoreFront implements Initializable {
 					}
 				});
 		books.setItems(items);
-
 	}
 
 	public void initializeCart(CartList cart_list) {
@@ -46,10 +83,18 @@ public class StoreFront implements Initializable {
 				new Callback<ListView<Book>, javafx.scene.control.ListCell<Book>>() {
 					@Override
 					public ListCell<Book> call(ListView<Book> listView) {
-						return new ShoppingCartCell(i);
+						return new ShoppingCartCell(i, subtotal, tax, total);
 					}
 				});
 		shopping_cart.setItems(cart_list);
+
+		double sub_price = i.account.getCart().getTotal();
+		double tax_price = Utilities.TAX * sub_price;
+		double total_price = sub_price + tax_price;
+
+		subtotal.setText(String.format("$%.2f", sub_price));
+		tax.setText(String.format("$%.2f", tax_price));
+		total.setText(String.format("$%.2f", total_price));
 	}
 
 	public Instance getInstance() {

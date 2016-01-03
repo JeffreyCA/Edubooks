@@ -1,7 +1,10 @@
 package application;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -31,13 +34,17 @@ public class BookCell extends ListCell<Book> {
 	final String NO_STOCK_COLOUR = "FF0000"; // Red
 	final String WISHLIST_BUTTON = "Add to wishlist";
 
+	@FXML
+	private javafx.scene.control.ListView<Book> shopping_cart;
 	Button cart = new Button();
 	Button wishlist = new Button();
 	Book item;
 	Account account;
+	Instance i;
 
 	public BookCell(Instance i) {
 		super();
+		this.i = i;
 		account = i.account;
 		cart.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -45,16 +52,14 @@ public class BookCell extends ListCell<Book> {
 				account.addToCart(item);
 				account.save(i);
 				i.cart_list.add(item);
-				cart.setDisable(true);
 			}
 		});
-
 	}
 
 	@Override
 	public void updateItem(Book b, boolean empty) {
 		super.updateItem(b, empty);
-
+		item = b;
 		if (b != null) {
 			// Declare and initialize book cell elements
 			HBox book_info = new HBox();
@@ -112,14 +117,11 @@ public class BookCell extends ListCell<Book> {
 			else {
 				stock_availability.setText(NO_STOCK);
 				stock_availability.setFill(Color.web(NO_STOCK_COLOUR));
-				cart.setDisable(true);
 			}
 
-			if (existsInCart(b, account.getCart())) {
-				cart.setText("Item in cart");
-				cart.setDisable(true);
-			}
-			item = b;
+			BooleanBinding bb = Bindings.createBooleanBinding(
+					() -> i.cart_list.contains(b), i.cart_list);
+			cart.disableProperty().bind(bb);
 
 			buttons.getChildren().addAll(price, wishlist, cart);
 			buttons.setAlignment(Pos.CENTER_RIGHT);
@@ -127,8 +129,6 @@ public class BookCell extends ListCell<Book> {
 
 			setGraphic(outer);
 		}
-		else
-			item = null;
 	}
 
 	public boolean existsInCart(Book b, ShoppingCart c) {
