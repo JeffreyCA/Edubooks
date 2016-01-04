@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class Account {
@@ -72,10 +73,14 @@ public class Account {
 				writer.newLine();
 			}
 
-			writer.write(i.account.orders.size());
+			System.out.println("SIZE: " + orders.size());
 
-			for (Order o : i.account.orders) {
-				writer.write(o.toString());
+			writer.write(String.valueOf(orders.size()));
+			writer.newLine();
+
+			for (Order o : orders) {
+				writer.write(String.valueOf(o));
+				writer.newLine();
 			}
 
 			// Save and close file
@@ -97,6 +102,8 @@ public class Account {
 
 		String name = this.email + ".dat";
 		ArrayList<Book> book_list = i.list;
+		orders = new ArrayList<Order>();
+
 		try {
 			// Initialize file readers for customer file
 			file_reader = new FileReader(name);
@@ -112,8 +119,43 @@ public class Account {
 			}
 
 			int wishlist_items = Integer.parseInt(reader.readLine());
-			// ADD WISHLIST IMPORT HERE
+			for (int j = 0; j < wishlist_items; j++) {
+				int index = Integer.parseInt(reader.readLine());
+				if (index < book_list.size()
+						&& book_list.get(index).getQuantity() > 0)
+					cart.add(book_list.get(index));
+			}
+			int orders = Integer.parseInt(reader.readLine());
 
+			for (int j = 0; j < orders; j++) {
+				int books = Integer.parseInt(reader.readLine());
+				ShoppingCart order_cart = new ShoppingCart();
+				for (int k = 0; k < books; k++) {
+					String title = reader.readLine();
+					String author = reader.readLine();
+					String category = reader.readLine();
+					double price = Double.parseDouble(reader.readLine());
+					int quantity = Integer.parseInt(reader.readLine());
+
+					order_cart.add(new Book(title, author, category, 1, price),
+							quantity);
+				}
+				double tax = Double.parseDouble(reader.readLine());
+				LocalDateTime date = LocalDateTime.parse(reader.readLine());
+				String fullname = reader.readLine();
+				String address = reader.readLine();
+				String city = reader.readLine();
+				String province = reader.readLine();
+				String postal = reader.readLine();
+				String country = reader.readLine();
+				String phone = reader.readLine();
+
+				Order o = new Order(order_cart, tax, date, fullname, address,
+						city, province, postal, country, phone);
+				this.orders.add(o);
+
+			}
+			System.out.println("order size: " + this.orders.size());
 			// Close readers
 			reader.close();
 			file_reader.close();
@@ -124,7 +166,9 @@ public class Account {
 			cart = new ShoppingCart();
 		}
 		catch (NumberFormatException e) {
-			cart = new ShoppingCart();
+			e.printStackTrace();
+			// System.out.println("error");
+			// cart = new ShoppingCart();
 		}
 	}
 

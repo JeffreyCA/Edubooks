@@ -35,14 +35,15 @@ public class Order {
 	public String toString() {
 		String s = "";
 		s += items.size + "\n";
-
+		System.out.println("items: " + items.size);
 		for (int i = 0; i < items.size; i++) {
 			s += items.getBook(i) + "\n";
+			s += items.getNode(i).getQuantity() + "\n";
 		}
 		s += tax + "\n";
-		s += LocalDateTime.now() + "\n";
+		s += date + "\n";
 		s += name + "\n" + address + "\n" + city + "\n" + province + "\n"
-				+ postal + "\n" + country + "\n" + phone + "\n";
+				+ postal + "\n" + country + "\n" + phone;
 		return s;
 	}
 }

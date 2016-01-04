@@ -8,6 +8,25 @@ public class ShoppingCart extends BookList {
 		total = 0;
 	}
 
+	public void add(Book item, int quantity) {
+		Node node = head;
+		Node new_node = new Node(item);
+		new_node.setQuantity(quantity);
+
+		// Empty list
+		if (node == null) {
+			head = new_node;
+		}
+		// Not empty list
+		if (node != null) {
+			while (node.getLink() != null) {
+				node = node.getLink();
+			}
+			node.setLink(new_node);
+		}
+		size++;
+	}
+
 	public void clear() {
 		head = null;
 		size = 0;

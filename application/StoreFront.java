@@ -47,6 +47,9 @@ public class StoreFront implements Initializable {
 			Scene scene = new Scene(root);
 
 			controller.setInstance(i);
+			controller.setSubtotalText(subtotal);
+			controller.setTaxText(tax);
+			controller.setTotalText(total);
 
 			stage.initModality(Modality.WINDOW_MODAL);
 			stage.setTitle("Checkout");
