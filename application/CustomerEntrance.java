@@ -76,7 +76,7 @@ public class CustomerEntrance implements Initializable {
 			}
 		}
 		if (!success) {
-			Alert alert = new Alert(Alert.AlertType.INFORMATION);
+			Alert alert = new Alert(Alert.AlertType.ERROR);
 			alert.setContentText(error);
 			alert.showAndWait();
 		}

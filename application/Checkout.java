@@ -1,5 +1,10 @@
 package application;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ResourceBundle;
@@ -97,7 +102,7 @@ public class Checkout implements Initializable {
 		}
 
 		if (!error.equals("")) {
-			Alert alert = new Alert(Alert.AlertType.INFORMATION);
+			Alert alert = new Alert(Alert.AlertType.ERROR);
 			alert.setContentText(error);
 			alert.showAndWait();
 		}
@@ -110,16 +115,71 @@ public class Checkout implements Initializable {
 
 			Stage stage = (Stage) submit.getScene().getWindow();
 			stage.close();
+			Alert alert = new Alert(Alert.AlertType.INFORMATION);
+			alert.setContentText(
+					"Thank you for your purchase!\nYou will be notified about your order via phone or email.");
+			alert.showAndWait();
+		}
+	}
+
+	public void deductStock(ShoppingCart cart) {
+		for (int i = 0; i < cart.size; i++) {
+			Book b = cart.getBook(i);
+			int quantity_ordered = cart.getNode(i).getQuantity();
+			b.setQuantity(b.getQuantity() - quantity_ordered);
+			deductBook(b, quantity_ordered);
+		}
+	}
+
+	public void deductBook(Book b, int quantity) {
+
+		final int LINES_PER_BOOK = 5;
+		final int LINES_TO_SKIP = 3;
+		int index = i.cart_list.indexOf(b);
+
+		FileReader file_reader;
+		FileWriter file_writer;
+		BufferedWriter writer;
+		BufferedReader reader;
+
+		try {
+			file_reader = new FileReader(Utilities.BOOK_FILE);
+			reader = new BufferedReader(file_reader);
+			String text = "";
+
+			for (int i = 0; i < index + 1; i++) {
+				for (int j = 0; j < LINES_PER_BOOK; j++)
+					text += reader.readLine() + System.lineSeparator();
+			}
+			for (int i = 0; i < LINES_TO_SKIP; i++) {
+				text += reader.readLine() + System.lineSeparator();
+			}
+			reader.readLine();
+			text += String.valueOf(b.getQuantity()) + System.lineSeparator();
+			text += reader.readLine() + System.lineSeparator();
+
+			reader.close();
+			file_reader.close();
+
+			file_writer = new FileWriter(Utilities.BOOK_FILE, false);
+			writer = new BufferedWriter(file_writer);
+
+			file_writer.write(text);
+			writer.close();
+			file_writer.close();
+		}
+		catch (IOException e) {
+			System.out.println("File write error");
 		}
 	}
 
 	public void saveOrder(Account a, Order o) {
 		a.getOrders().add(o);
+		deductStock(i.account.getCart());
 		a.clearCart();
 		a.save(i);
-		for (int j = 0; j < i.cart_list.getSize(); j++) {
-			i.cart_list.remove(j);
-		}
+
+		i.cart_list.clear();
 		subtotal.setText(String.format("$%.2f", 0F));
 		tax.setText(String.format("$%.2f", 0F));
 		total.setText(String.format("$%.2f", 0F));

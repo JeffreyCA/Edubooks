@@ -34,7 +34,7 @@ public class Account {
 	}
 
 	public void clearCart() {
-		cart.clear();
+		cart = new ShoppingCart();
 	}
 
 	public void removeFromCart(Book book) {
@@ -123,7 +123,7 @@ public class Account {
 				int index = Integer.parseInt(reader.readLine());
 				if (index < book_list.size()
 						&& book_list.get(index).getQuantity() > 0)
-					cart.add(book_list.get(index));
+					wishlist.add(book_list.get(index));
 			}
 			int orders = Integer.parseInt(reader.readLine());
 
@@ -163,7 +163,6 @@ public class Account {
 		// Handle exception
 		catch (IOException e) {
 			System.out.println("error");
-			cart = new ShoppingCart();
 		}
 		catch (NumberFormatException e) {
 			e.printStackTrace();

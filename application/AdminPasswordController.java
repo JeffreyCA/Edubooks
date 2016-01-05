@@ -12,7 +12,7 @@ public class AdminPasswordController {
 	@FXML
 	private javafx.scene.control.Button cancel;
 	@FXML
-	private javafx.scene.control.Button next;
+	private javafx.scene.control.Button done;
 	@FXML
 	private javafx.scene.control.PasswordField pw;
 
@@ -29,8 +29,8 @@ public class AdminPasswordController {
 	private void buttonAction() {
 		if (pw.getText().length() == 0) {
 			// Display alert: Password cannot be empty
-			Alert alert = new Alert(Alert.AlertType.INFORMATION);
-			alert.setContentText("Please enter a password.");
+			Alert alert = new Alert(Alert.AlertType.WARNING);
+			alert.setContentText("Password cannot be empty.");
 			alert.showAndWait();
 		}
 		else {
@@ -47,7 +47,7 @@ public class AdminPasswordController {
 				e.printStackTrace();
 			}
 
-			Stage stage = (Stage) next.getScene().getWindow();
+			Stage stage = (Stage) done.getScene().getWindow();
 			stage.close();
 		}
 	}

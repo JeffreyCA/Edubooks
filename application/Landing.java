@@ -8,7 +8,7 @@ import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-public class ButtonController {
+public class Landing {
 	@FXML
 	private javafx.scene.control.Button admin;
 	@FXML
@@ -72,7 +72,7 @@ public class ButtonController {
 			Parent root = (Parent) new FXMLLoader(
 					getClass().getResource("AdminFirstTime.fxml")).load();
 			Stage stage = new Stage();
-			stage.setTitle("Admin Setup");
+			stage.setTitle("First Time Setup");
 			stage.setScene(new Scene(root));
 			stage.initModality(Modality.APPLICATION_MODAL);
 			stage.setResizable(false);

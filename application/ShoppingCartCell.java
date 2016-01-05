@@ -65,7 +65,13 @@ public class ShoppingCartCell extends ListCell<Book> {
 			VBox vbox = new VBox();
 			long q = b.getQuantity();
 			cart = new Button();
-			qty = account.getCart().getNode(b).getQuantity();
+
+			if (account.getCart().isEmpty()) {
+				i.cart_list.clear();
+				System.out.println("i cart: " + i.cart_list.size());
+			}
+			else
+				qty = account.getCart().getNode(b).getQuantity();
 
 			Spinner<Number> quantity = new Spinner<Number>(1, q, qty);
 			// Set spacing between elements
@@ -124,7 +130,6 @@ public class ShoppingCartCell extends ListCell<Book> {
 					i.cart_list.remove(b);
 					account.getCart().getNode(b).setQuantity(1);
 					account.getCart().delete(b);
-					account.getCart().display();
 					account.save(i);
 					qty = 1;
 					updatePrices();

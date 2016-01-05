@@ -50,7 +50,7 @@ public class AddItemController implements Initializable {
 			stage.close();
 		}
 		catch (NumberFormatException e) {
-			Alert alert = new Alert(Alert.AlertType.INFORMATION);
+			Alert alert = new Alert(Alert.AlertType.ERROR);
 			alert.setContentText("Invalid Input!");
 			alert.showAndWait();
 		}

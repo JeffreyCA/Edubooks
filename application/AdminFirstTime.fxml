@@ -40,7 +40,7 @@
             </GridPane>
             <StackPane prefHeight="-1.0" prefWidth="-1.0">
               <children>
-                <Button fx:id="next" alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#buttonAction" text="Next" StackPane.alignment="CENTER_RIGHT" />
+                <Button fx:id="done" alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#buttonAction" text="Done" StackPane.alignment="CENTER_RIGHT" />
                         <Button fx:id="cancel" cancelButton="true" mnemonicParsing="false" onAction="#cancelButtonAction" text="Cancel">
                            <StackPane.margin>
                               <Insets right="30.0" />

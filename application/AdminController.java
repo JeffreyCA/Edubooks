@@ -45,13 +45,13 @@ public class AdminController {
 			}
 			else {
 				// Display incorrect password alert
-				Alert alert = new Alert(Alert.AlertType.INFORMATION);
+				Alert alert = new Alert(Alert.AlertType.ERROR);
 				alert.setContentText("Invalid Password!");
 				alert.showAndWait();
 			}
 		}
 		catch (IOException e) {
-			new ButtonController().showAdminRegister();
+			new Landing().showAdminRegister();
 		}
 	}
 
