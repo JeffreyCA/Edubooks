@@ -27,6 +27,12 @@ public class Book {
 				+ price.get();
 	}
 
+	public String formatted() {
+		return "Title: " + title.get() + "\nAuthor: " + author.get()
+				+ "\nCategory: " + category.get() + "\nPrice: "
+				+ String.format("$%.2f", price.get()) + "\n";
+	}
+
 	public String getAuthor() {
 		return author.get();
 	}

@@ -8,6 +8,18 @@ public class ShoppingCart extends BookList {
 		subtotal = 0;
 	}
 
+	@Override
+	public String toString() {
+		String s = "";
+		BookNode node = head;
+		while (node != null) {
+			s += node.getValue().formatted() + "Quantity: "
+					+ node.getQuantity();
+			node = node.getLink();
+		}
+		return s;
+	}
+
 	public void add(Book item, int quantity) {
 		BookNode node = head;
 		BookNode new_node = new BookNode(item);

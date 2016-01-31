@@ -136,6 +136,7 @@
                      </children></AnchorPane>
               </content>
             </Tab>
+            <Tab fx:id="logout" text="Logout" />
         </tabs>
       </TabPane>
    </children>

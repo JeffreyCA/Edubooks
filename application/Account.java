@@ -144,15 +144,17 @@ public class Account {
 				double tax = Double.parseDouble(reader.readLine());
 				LocalDateTime date = LocalDateTime.parse(reader.readLine());
 				String fullname = reader.readLine();
-				String address = reader.readLine();
+				String street = reader.readLine();
 				String city = reader.readLine();
 				String province = reader.readLine();
 				String postal = reader.readLine();
 				String country = reader.readLine();
 				String phone = reader.readLine();
 
-				Order o = new Order(order_cart, tax, date, fullname, address,
-						city, province, postal, country, phone);
+				Address address = new Address(fullname, street, city, province,
+						postal, country, phone);
+
+				Order o = new Order(order_cart, tax, date, address);
 				this.order_stack.push(o);
 			}
 

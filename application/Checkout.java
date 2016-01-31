@@ -24,7 +24,7 @@ public class Checkout implements Initializable {
 	@FXML
 	private javafx.scene.control.TextField fullname;
 	@FXML
-	private javafx.scene.control.TextField address;
+	private javafx.scene.control.TextField street;
 	@FXML
 	private javafx.scene.control.TextField city;
 	@FXML
@@ -64,7 +64,7 @@ public class Checkout implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		BooleanBinding filled = fullname.textProperty().isEqualTo("")
-				.or(address.textProperty().isEqualTo(""))
+				.or(street.textProperty().isEqualTo(""))
 				.or(city.textProperty().isEqualTo(""))
 				.or(province.textProperty().isEqualTo(""))
 				.or(postal.textProperty().isEqualTo(""))
@@ -85,7 +85,7 @@ public class Checkout implements Initializable {
 	private void submitOrder() {
 		String error = "";
 		String fullname_value = fullname.getText();
-		String address_value = address.getText();
+		String street_value = street.getText();
 		String city_value = city.getText();
 		String province_value = province.getText();
 		String postal_value = postal.getText();
@@ -114,10 +114,12 @@ public class Checkout implements Initializable {
 			alert.showAndWait();
 		}
 		else {
+			Address address = new Address(fullname_value, street_value,
+					city_value, province_value, postal_value, country_value,
+					phone_value);
 			Order o = new Order(i.account.getCart(),
 					i.account.getCart().getTaxPrice(), LocalDateTime.now(),
-					fullname_value, address_value, city_value, province_value,
-					postal_value, country_value, phone_value);
+					address);
 			saveOrder(i.account, o);
 
 			Stage stage = (Stage) submit.getScene().getWindow();

@@ -1,9 +1,13 @@
 package application;
 
+import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.layout.HBox;
@@ -11,6 +15,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
 public class OrderCell extends ListCell<Order> {
 	final int ICON_WIDTH = 40;
@@ -21,7 +26,7 @@ public class OrderCell extends ListCell<Order> {
 	final int DATE_WIDTH = 145;
 	final int SPACING = 10;
 
-	final String CART_BUTTON = "View Details";
+	final String DETAILS_BUTTON = "View Details";
 	final String BOOK_COLOUR = "#D2B394"; // Light brown
 	final String IN_STOCK = "In stock";
 	final String IN_STOCK_COLOUR = "#009900"; // Green
@@ -29,7 +34,8 @@ public class OrderCell extends ListCell<Order> {
 	final String NO_STOCK_COLOUR = "FF0000"; // Red
 	final String DATE_FORMAT = "MMMM D, yyyy";
 	final String TIME_FORMAT = "hh:mm a";
-	Button cart;
+
+	Button details;
 
 	public OrderCell() {
 		super();
@@ -89,25 +95,45 @@ public class OrderCell extends ListCell<Order> {
 			prices.getChildren().add(new Text("Subtotal:\t" + subtotal));
 			prices.getChildren().add(total_text);
 
-			cart = new Button();
-			cart.setText(CART_BUTTON);
+			details = new Button();
+			details.setText(DETAILS_BUTTON);
 			right.setAlignment(Pos.CENTER_RIGHT);
 			right.getChildren().addAll(prices);
 
-			buttons.getChildren().addAll(right, cart);
+			buttons.getChildren().addAll(right, details);
 			buttons.setAlignment(Pos.CENTER_RIGHT);
 			outer.getChildren().addAll(left, buttons);
 			outer.setAlignment(Pos.CENTER);
 
-			cart.setOnAction(new EventHandler<ActionEvent>() {
+			details.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
+					viewOrderDetails(o);
 				}
 			});
 			setGraphic(outer);
 		}
 		else {
 			setGraphic(null);
+		}
+	}
+
+	public void viewOrderDetails(Order o) {
+		try {
+			FXMLLoader loader = new FXMLLoader(
+					getClass().getResource("OrderDetails.fxml"));
+			Parent root = loader.load();
+			OrderController controller = loader.getController();
+			Stage stage = new Stage();
+
+			controller.initializeOrder(o);
+			stage.setTitle("Order Details");
+			stage.setScene(new Scene(root));
+			stage.setResizable(false);
+			stage.show();
+		}
+		catch (IOException e) {
+			System.out.println("Error!");
 		}
 	}
 }

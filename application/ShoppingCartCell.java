@@ -127,7 +127,7 @@ public class ShoppingCartCell extends ListCell<Book> {
 				@Override
 				public void handle(ActionEvent event) {
 					i.cart_list.remove(b);
-					account.getCart().getNode(b).setQuantity(1);
+					// account.getCart().getNode(b).setQuantity(1);
 					account.getCart().delete(b);
 					account.save(i);
 					qty = 1;

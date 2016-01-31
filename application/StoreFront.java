@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -13,8 +15,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Tab;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -28,6 +33,8 @@ public class StoreFront implements Initializable {
 	private javafx.scene.control.ListView<Order> orders;
 	@FXML
 	private javafx.scene.control.Button checkout;
+	@FXML
+	private javafx.scene.control.Tab logout;
 	@FXML
 	private javafx.scene.text.Text subtotal;
 	@FXML
@@ -77,6 +84,11 @@ public class StoreFront implements Initializable {
 		order_list = order_stack.toArrayList();
 	}
 
+	public void closeStage() {
+		Stage stage = (Stage) logout.getTabPane().getScene().getWindow();
+		stage.close();
+	}
+
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		processBooks();
@@ -91,6 +103,28 @@ public class StoreFront implements Initializable {
 					}
 				});
 		books.setItems(items);
+
+		// Manage logout button click behaviour
+		logout.getTabPane().getSelectionModel().selectedItemProperty()
+				.addListener(new ChangeListener<Tab>() {
+					@Override
+					public void changed(
+							ObservableValue<? extends Tab> observable,
+							Tab oldTab, Tab newTab) {
+
+						if (newTab == logout) {
+							Alert alert = new Alert(
+									Alert.AlertType.CONFIRMATION);
+							alert.setContentText("Are you sure?");
+							alert.showAndWait()
+									.filter(response -> response == ButtonType.OK)
+									.ifPresent(response -> closeStage());
+
+							logout.getTabPane().getSelectionModel()
+									.select(oldTab);
+						}
+					}
+				});
 	}
 
 	public void initializeOrders(OrderStack stack) {

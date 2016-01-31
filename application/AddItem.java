@@ -10,7 +10,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 
-public class AddItemController implements Initializable {
+public class AddItem implements Initializable {
 
 	@FXML
 	private javafx.scene.control.Button ok;

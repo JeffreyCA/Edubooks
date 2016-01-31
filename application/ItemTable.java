@@ -325,7 +325,7 @@ public class ItemTable implements Initializable {
 			FXMLLoader loader = new FXMLLoader(
 					getClass().getResource("AddItem.fxml"));
 			Parent root = (Parent) loader.load();
-			AddItemController controller = loader.getController();
+			AddItem controller = loader.getController();
 			controller.setTable(items);
 			controller.setList(data);
 
