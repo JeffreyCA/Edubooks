@@ -1,16 +1,16 @@
 package application;
 
 public class ShoppingCart extends BookList {
-	private double total;
+	private double subtotal;
 
 	public ShoppingCart() {
 		super();
-		total = 0;
+		subtotal = 0;
 	}
 
 	public void add(Book item, int quantity) {
-		Node node = head;
-		Node new_node = new Node(item);
+		BookNode node = head;
+		BookNode new_node = new BookNode(item);
 		new_node.setQuantity(quantity);
 
 		// Empty list
@@ -30,21 +30,20 @@ public class ShoppingCart extends BookList {
 	public void clear() {
 		head = null;
 		size = 0;
-		total = 0;
+		subtotal = 0;
 	}
 
 	public void updateTotal() {
-		Node n;
-		total = 0;
+		BookNode n;
+		subtotal = 0;
 		for (int i = 0; i < size; i++) {
 			n = traverse(i);
-			System.out.println(n.getQuantity());
-			total += n.getQuantity() * n.getValue().getPrice();
+			subtotal += n.getQuantity() * n.getValue().getPrice();
 		}
 	}
 
 	public double getTaxPrice() {
-		return total * Utilities.TAX;
+		return subtotal * Utilities.TAX;
 	}
 
 	public boolean contains(Book b) {
@@ -56,10 +55,11 @@ public class ShoppingCart extends BookList {
 	}
 
 	public double getTotal() {
-		return total;
+		updateTotal();
+		return subtotal;
 	}
 
-	public void setTotal(double total) {
-		this.total = total;
+	public void setTotal(double subtotal) {
+		this.subtotal = subtotal;
 	}
 }

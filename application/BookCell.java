@@ -120,7 +120,8 @@ public class BookCell extends ListCell<Book> {
 			}
 
 			BooleanBinding bb = Bindings.createBooleanBinding(
-					() -> i.cart_list.contains(b), i.cart_list);
+					() -> i.cart_list.contains(b) || b.getQuantity() <= 0,
+					i.cart_list);
 			cart.disableProperty().bind(bb);
 
 			buttons.getChildren().addAll(price, wishlist, cart);

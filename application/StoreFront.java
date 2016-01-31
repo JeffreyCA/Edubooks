@@ -25,6 +25,8 @@ public class StoreFront implements Initializable {
 	@FXML
 	private javafx.scene.control.ListView<Book> shopping_cart;
 	@FXML
+	private javafx.scene.control.ListView<Order> orders;
+	@FXML
 	private javafx.scene.control.Button checkout;
 	@FXML
 	private javafx.scene.text.Text subtotal;
@@ -32,9 +34,14 @@ public class StoreFront implements Initializable {
 	private javafx.scene.text.Text tax;
 	@FXML
 	private javafx.scene.text.Text total;
+	@FXML
+	private javafx.scene.text.Text order_qty;
 
 	Instance i;
 	ArrayList<Book> list = new ArrayList<Book>();
+	ArrayList<Order> order_list = new ArrayList<Order>();
+	ObservableList<Order> data;
+	OrderStack order_stack;
 
 	@FXML
 	private void checkoutButtonAction() {
@@ -46,10 +53,12 @@ public class StoreFront implements Initializable {
 			Stage stage = new Stage();
 			Scene scene = new Scene(root);
 
+			controller.setObservableList(data);
 			controller.setInstance(i);
 			controller.setSubtotalText(subtotal);
 			controller.setTaxText(tax);
 			controller.setTotalText(total);
+			controller.setOrderQty(order_qty);
 
 			stage.initModality(Modality.WINDOW_MODAL);
 			stage.setTitle("Checkout");
@@ -61,7 +70,11 @@ public class StoreFront implements Initializable {
 		catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
 
+	public void setOrders(OrderStack order_stack) {
+		this.order_stack = order_stack;
+		order_list = order_stack.toArrayList();
 	}
 
 	@Override
@@ -78,6 +91,21 @@ public class StoreFront implements Initializable {
 					}
 				});
 		books.setItems(items);
+	}
+
+	public void initializeOrders(OrderStack stack) {
+		order_list = stack.toArrayList();
+		data = FXCollections.observableArrayList(order_list);
+
+		orders.setCellFactory(
+				new Callback<ListView<Order>, javafx.scene.control.ListCell<Order>>() {
+					@Override
+					public ListCell<Order> call(ListView<Order> listView) {
+						return new OrderCell();
+					}
+				});
+		orders.setItems(data);
+		order_qty.setText(stack.size + " Orders");
 	}
 
 	public void initializeCart(CartList cart_list) {

@@ -1,25 +1,25 @@
 package application;
 
-public class Node {
+public class BookNode {
 
 	private Book value;
 	private int quantity;
-	private Node link;
+	private BookNode link;
 
 	// Constructor
-	public Node(Book value, int quantity, Node link) {
+	public BookNode(Book value, int quantity, BookNode link) {
 		this.value = value;
 		this.quantity = quantity;
 		this.link = link;
 	}
 
-	public Node(Book value, Node link) {
+	public BookNode(Book value, BookNode link) {
 		this.value = value;
 		this.quantity = 1;
 		this.link = link;
 	}
 
-	public Node(Book value) {
+	public BookNode(Book value) {
 		this.value = value;
 		this.quantity = 1;
 		this.link = null;
@@ -34,11 +34,11 @@ public class Node {
 		this.value = value;
 	}
 
-	public Node getLink() {
+	public BookNode getLink() {
 		return link;
 	}
 
-	public void setLink(Node link) {
+	public void setLink(BookNode link) {
 		this.link = link;
 	}
 

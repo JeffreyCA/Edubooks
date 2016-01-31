@@ -9,6 +9,7 @@ import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 import javafx.beans.binding.BooleanBinding;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -38,9 +39,11 @@ public class Checkout implements Initializable {
 	Text subtotal;
 	Text tax;
 	Text total;
+	Text order_qty;
 
 	Instance i;
 	ShoppingCart cart;
+	ObservableList<Order> data;
 
 	public void setSubtotalText(Text subtotal) {
 		this.subtotal = subtotal;
@@ -52,6 +55,10 @@ public class Checkout implements Initializable {
 
 	public void setTotalText(Text total) {
 		this.total = total;
+	}
+
+	public void setOrderQty(Text order_qty) {
+		this.order_qty = order_qty;
 	}
 
 	@Override
@@ -85,7 +92,7 @@ public class Checkout implements Initializable {
 		String country_value = country.getText();
 		String phone_value = phone.getText();
 
-		if (!fullname_value.contains(" ")) {
+		if (!isValidName(fullname_value)) {
 			error += "Please enter your full name.\n";
 		}
 		if (hasNumbers(fullname_value)) {
@@ -174,7 +181,8 @@ public class Checkout implements Initializable {
 	}
 
 	public void saveOrder(Account a, Order o) {
-		a.getOrders().add(o);
+		a.addOrder(o);
+		data.add(o);
 		deductStock(i.account.getCart());
 		a.clearCart();
 		a.save(i);
@@ -183,7 +191,12 @@ public class Checkout implements Initializable {
 		subtotal.setText(String.format("$%.2f", 0F));
 		tax.setText(String.format("$%.2f", 0F));
 		total.setText(String.format("$%.2f", 0F));
+		order_qty.setText(data.size() + " Orders");
 
+	}
+
+	public void setObservableList(ObservableList<Order> data) {
+		this.data = data;
 	}
 
 	public boolean hasNumbers(String s) {
@@ -197,10 +210,17 @@ public class Checkout implements Initializable {
 	public boolean hasLetters(String s) {
 		String lower = s.toLowerCase();
 		for (int i = 0; i < s.length(); i++) {
-			if ((lower.charAt(i) > 'a' && lower.charAt(i) < 'z'))
+			if ((lower.charAt(i) >= 'a' && lower.charAt(i) <= 'z'))
 				return true;
 		}
 		return false;
+	}
+
+	public boolean isValidName(String s) {
+		String[] array = s.split(" ");
+
+		System.out.println((array.length > 1));
+		return (array.length > 1);
 	}
 
 	public void setInstance(Instance i) {

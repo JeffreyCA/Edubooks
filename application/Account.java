@@ -14,7 +14,7 @@ public class Account {
 	private String password;
 	private ShoppingCart cart;
 	private Wishlist wishlist;
-	private ArrayList<Order> orders;
+	private OrderStack order_stack;
 
 	public Account(String email, String password, ShoppingCart cart,
 			Wishlist wishlist) {
@@ -73,14 +73,15 @@ public class Account {
 				writer.newLine();
 			}
 
-			System.out.println("SIZE: " + orders.size());
-
-			writer.write(String.valueOf(orders.size()));
+			writer.write(String.valueOf(order_stack.size));
 			writer.newLine();
 
-			for (Order o : orders) {
-				writer.write(String.valueOf(o));
+			// Iterate through
+			OrderNode node = order_stack.top;
+			for (int j = 0; j < order_stack.size; j++) {
+				writer.write(String.valueOf(node.getValue()));
 				writer.newLine();
+				node = node.getLink();
 			}
 
 			// Save and close file
@@ -102,7 +103,7 @@ public class Account {
 
 		String name = this.email + ".dat";
 		ArrayList<Book> book_list = i.list;
-		orders = new ArrayList<Order>();
+		order_stack = new OrderStack();
 
 		try {
 			// Initialize file readers for customer file
@@ -152,10 +153,11 @@ public class Account {
 
 				Order o = new Order(order_cart, tax, date, fullname, address,
 						city, province, postal, country, phone);
-				this.orders.add(o);
-
+				this.order_stack.push(o);
 			}
-			System.out.println("order size: " + this.orders.size());
+
+			order_stack.reverse();
+
 			// Close readers
 			reader.close();
 			file_reader.close();
@@ -226,11 +228,15 @@ public class Account {
 		this.wishlist = wishlist;
 	}
 
-	public ArrayList<Order> getOrders() {
-		return orders;
+	public void addOrder(Order o) {
+		order_stack.push(o);
 	}
 
-	public void setOrders(ArrayList<Order> orders) {
-		this.orders = orders;
+	public OrderStack getOrderStack() {
+		return order_stack;
+	}
+
+	public void setOrderStack(OrderStack order_stack) {
+		this.order_stack = order_stack;
 	}
 }

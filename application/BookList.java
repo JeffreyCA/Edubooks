@@ -2,7 +2,7 @@ package application;
 
 public class BookList {
 
-	protected Node head;
+	protected BookNode head;
 	protected int size;
 
 	// Constructor
@@ -11,17 +11,17 @@ public class BookList {
 		size = 0;
 	}
 
-	public Node getHead() {
+	public BookNode getHead() {
 		return head;
 	}
 
 	public void add(Book item) {
-		Node node = head;
-		Node newNode = new Node(item, null);
+		BookNode node = head;
+		BookNode newNode = new BookNode(item, null);
 
 		// Empty list
 		if (node == null) {
-			head = new Node(item);
+			head = new BookNode(item);
 		}
 		// Not empty list
 		if (node != null) {
@@ -37,11 +37,11 @@ public class BookList {
 		return traverse(position).getValue();
 	}
 
-	public Node getNode(int position) {
+	public BookNode getNode(int position) {
 		return traverse(position);
 	}
 
-	public Node getNode(Book b) {
+	public BookNode getNode(Book b) {
 		for (int i = 0; i < size; i++) {
 			if (traverse(i).getValue().equals(b))
 				return traverse(i);
@@ -50,8 +50,8 @@ public class BookList {
 	}
 
 	// Reach and return ith node in the list
-	public Node traverse(int i) {
-		Node n = head;
+	public BookNode traverse(int i) {
+		BookNode n = head;
 
 		if (i < 0)
 			return null;
@@ -66,7 +66,7 @@ public class BookList {
 
 	// Replace contents of a node
 	public boolean replace(Book item, int position) {
-		Node node = traverse(position);
+		BookNode node = traverse(position);
 
 		// Node does not exist
 		if (node == null) {
@@ -84,22 +84,9 @@ public class BookList {
 		}
 	}
 
-	// public boolean delete(Book b) {
-	// Node n;
-	// Node previous;
-	// for (int i = 0; i < size; i++) {
-	// n = traverse(i).getLink();
-	// previous = traverse(i);
-	// if (n.getValue().equals(b)) {
-	// previous.setLink(n.getLink());
-	// return true;
-	// }
-	// }
-	// return false;
-	// }
 	public boolean delete(Book b) {
-		Node current = head;
-		Node previous = null;
+		BookNode current = head;
+		BookNode previous = null;
 
 		while (current != null) {
 			if (current.getValue().equals(b)) {
@@ -123,7 +110,7 @@ public class BookList {
 
 	// Display the contents of the linked list
 	public void display() {
-		Node node = head;
+		BookNode node = head;
 
 		if (node == null) {
 			System.out.println("null");
@@ -147,7 +134,7 @@ public class BookList {
 	}
 
 	// Recursion
-	private void reverse(Node node, int i) {
+	private void reverse(BookNode node, int i) {
 		if (node.getLink() != null) {
 			reverse(node.getLink(), i + 1);
 		}
@@ -156,8 +143,8 @@ public class BookList {
 
 	// Insert a new node with item as data at ith place in the list
 	public boolean insert(Book item, int position) {
-		Node previous;
-		Node node = new Node(item);
+		BookNode previous;
+		BookNode node = new BookNode(item);
 
 		// Insert new head
 		if (position == 0) {
@@ -178,7 +165,7 @@ public class BookList {
 
 	// Return Book at a position
 	public Book lookUp(int position) {
-		Node node = traverse(position);
+		BookNode node = traverse(position);
 		if (node == null) {
 			return null;
 		}
@@ -189,6 +176,17 @@ public class BookList {
 
 	public int getSize() {
 		return size;
+	}
+
+	public int getItemQuantity() {
+		BookNode node = head;
+		int counter = 0;
+
+		while (node != null) {
+			counter += node.getQuantity();
+			node = node.getLink();
+		}
+		return counter;
 	}
 
 	public boolean isEmpty() {

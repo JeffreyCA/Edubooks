@@ -68,7 +68,6 @@ public class ShoppingCartCell extends ListCell<Book> {
 
 			if (account.getCart().isEmpty()) {
 				i.cart_list.clear();
-				System.out.println("i cart: " + i.cart_list.size());
 			}
 			else
 				qty = account.getCart().getNode(b).getQuantity();
