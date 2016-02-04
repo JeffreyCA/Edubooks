@@ -45,14 +45,14 @@ public class Checkout implements Initializable {
 	Instance i;
 	ShoppingCart cart;
 	ObservableList<Order> data;
-	ListView<Book> bks;
+	ListView<Book> list_view;
 
 	public void setSubtotalText(Text subtotal) {
 		this.subtotal = subtotal;
 	}
 
-	public void setList(ListView<Book> bks) {
-		this.bks = bks;
+	public void setList(ListView<Book> list_view) {
+		this.list_view = list_view;
 	}
 
 	public void setTaxText(Text tax) {
@@ -209,7 +209,7 @@ public class Checkout implements Initializable {
 		a.addOrder(o);
 		data.add(0, o);
 		deductStock(i.account.getCart());
-		bks.refresh();
+		list_view.refresh();
 		a.clearCart();
 		a.save(i);
 

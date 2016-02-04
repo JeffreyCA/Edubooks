@@ -95,6 +95,7 @@ public class AdminPanel implements Initializable {
 
 			Stage stage = new Stage();
 			stage.setTitle("Add Item");
+			stage.getIcons().add(Utilities.ICON);
 			stage.setScene(new Scene(root));
 			stage.initStyle(StageStyle.UNIFIED);
 			stage.initModality(Modality.APPLICATION_MODAL);

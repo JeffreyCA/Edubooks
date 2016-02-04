@@ -3,6 +3,7 @@ package application;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import javafx.scene.image.Image;
 
 public class Utilities {
 	final static String DATE_FORMAT = "MMMM d, yyyy";
@@ -11,6 +12,7 @@ public class Utilities {
 	final static String BOOK_FILE = "books.txt";
 	final static String CUSTOMER_FILE = "customer.dat";
 	final static double TAX = 0.13;
+	final static Image ICON = new Image("file:icon.png");
 
 	public static int countLines(String filename) {
 		// Declaration

@@ -62,6 +62,7 @@ public class StoreFront implements Initializable {
 			Stage stage = new Stage();
 			Scene scene = new Scene(root);
 
+			// Pass data to controller
 			controller.setObservableList(data);
 			controller.setInstance(i);
 			controller.setSubtotalText(subtotal);
@@ -69,8 +70,10 @@ public class StoreFront implements Initializable {
 			controller.setTotalText(total);
 			controller.setOrderQty(order_qty);
 			controller.setList(books);
+
 			stage.initModality(Modality.WINDOW_MODAL);
 			stage.setTitle("Checkout");
+			stage.getIcons().add(Utilities.ICON);
 			stage.setScene(scene);
 			stage.setResizable(false);
 			stage.show();

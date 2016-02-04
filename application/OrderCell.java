@@ -126,6 +126,7 @@ public class OrderCell extends ListCell<Order> {
 
 			controller.initializeOrder(o);
 			stage.setTitle("Order Details");
+			stage.getIcons().add(Utilities.ICON);
 			stage.setScene(new Scene(root));
 			stage.setResizable(false);
 			stage.show();

@@ -102,7 +102,9 @@ public class CustomerEntrance implements Initializable {
 			controller.initializeCart(c);
 			controller.initializeOrders(a.getOrderStack());
 			controller.setOrders(a.getOrderStack());
+
 			stage.setTitle("Edubooks Store");
+			stage.getIcons().add(Utilities.ICON);
 			stage.setScene(scene);
 			stage.show();
 		}

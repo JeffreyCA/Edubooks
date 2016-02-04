@@ -36,6 +36,7 @@ public class Landing {
 					getClass().getResource("Customer.fxml")).load();
 			Stage stage = new Stage();
 			stage.setTitle("Customer Entrance");
+			stage.getIcons().add(Utilities.ICON);
 			stage.setScene(new Scene(root));
 			stage.setResizable(false);
 			stage.show();
@@ -54,6 +55,7 @@ public class Landing {
 					getClass().getResource("AdminLogin.fxml")).load();
 			Stage stage = new Stage();
 			stage.setTitle("Admin Panel");
+			stage.getIcons().add(Utilities.ICON);
 			stage.setScene(new Scene(root));
 			stage.setResizable(false);
 			stage.show();
@@ -70,9 +72,10 @@ public class Landing {
 	public void showAdminRegister() {
 		try {
 			Parent root = (Parent) new FXMLLoader(
-					getClass().getResource("AdminFirstTime.fxml")).load();
+					getClass().getResource("AdminRegistration.fxml")).load();
 			Stage stage = new Stage();
 			stage.setTitle("First Time Setup");
+			stage.getIcons().add(Utilities.ICON);
 			stage.setScene(new Scene(root));
 			stage.initModality(Modality.APPLICATION_MODAL);
 			stage.setResizable(false);

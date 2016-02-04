@@ -7,7 +7,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 
-public class AdminPasswordController {
+public class AdminRegistration {
 
 	@FXML
 	private javafx.scene.control.Button cancel;
