@@ -8,13 +8,29 @@ public class Order {
 	private double tax;
 	private LocalDateTime date;
 	private Address address;
+	private String email;
 
 	public Order(ShoppingCart items, double tax, LocalDateTime date,
-			Address address) {
+			Address address, String email) {
 		this.items = items;
 		this.tax = tax;
 		this.date = date;
 		this.address = address;
+		this.email = email;
+	}
+
+	@Override
+	public String toString() {
+		String s = "";
+		s += items.size + "\n";
+		for (int i = 0; i < items.size; i++) {
+			s += items.getBook(i) + "\n";
+			s += items.getNode(i).getQuantity() + "\n";
+		}
+		s += tax + "\n";
+		s += date + "\n";
+		s += address;
+		return s;
 	}
 
 	public Address getAddress() {
@@ -73,17 +89,11 @@ public class Order {
 		this.tax = tax;
 	}
 
-	@Override
-	public String toString() {
-		String s = "";
-		s += items.size + "\n";
-		for (int i = 0; i < items.size; i++) {
-			s += items.getBook(i) + "\n";
-			s += items.getNode(i).getQuantity() + "\n";
-		}
-		s += tax + "\n";
-		s += date + "\n";
-		s += address;
-		return s;
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 }

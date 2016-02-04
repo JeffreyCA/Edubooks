@@ -17,6 +17,23 @@ public class OrderStack {
 		return top == null;
 	}
 
+	public OrderStack sort() {
+		OrderStack temp = new OrderStack();
+
+		if (isEmpty())
+			return null;
+		while (!isEmpty()) {
+			Order o = pop();
+			while (!temp.isEmpty()
+					&& (temp.peek().getDate().isAfter(o.getDate()))) {
+				push(temp.pop());
+			}
+			temp.push(o);
+		}
+
+		return temp;
+	}
+
 	public Order pop() {
 		if (top != null) {
 			Order data = top.getValue();
@@ -42,6 +59,12 @@ public class OrderStack {
 		else {
 			Order data = top.getValue();
 			return data;
+		}
+	}
+
+	public void merge(OrderStack stack) {
+		while (!stack.isEmpty()) {
+			push(stack.pop());
 		}
 	}
 

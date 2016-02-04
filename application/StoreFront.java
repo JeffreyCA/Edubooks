@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -66,7 +68,7 @@ public class StoreFront implements Initializable {
 			controller.setTaxText(tax);
 			controller.setTotalText(total);
 			controller.setOrderQty(order_qty);
-
+			controller.setList(books);
 			stage.initModality(Modality.WINDOW_MODAL);
 			stage.setTitle("Checkout");
 			stage.setScene(scene);
@@ -103,7 +105,7 @@ public class StoreFront implements Initializable {
 					}
 				});
 		books.setItems(items);
-
+		// books.refresh();
 		// Manage logout button click behaviour
 		logout.getTabPane().getSelectionModel().selectedItemProperty()
 				.addListener(new ChangeListener<Tab>() {
@@ -160,6 +162,8 @@ public class StoreFront implements Initializable {
 		subtotal.setText(String.format("$%.2f", sub_price));
 		tax.setText(String.format("$%.2f", tax_price));
 		total.setText(String.format("$%.2f", total_price));
+		BooleanBinding n = Bindings.isEmpty(cart_list);
+		checkout.disableProperty().bind(n);
 	}
 
 	public Instance getInstance() {

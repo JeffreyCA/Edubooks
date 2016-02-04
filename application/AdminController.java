@@ -71,6 +71,7 @@ public class AdminController {
 		}
 		catch (IOException e) {
 			System.out.println("Error!");
+			e.printStackTrace();
 		}
 	}
 }

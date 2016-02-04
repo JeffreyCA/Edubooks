@@ -5,6 +5,8 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class Utilities {
+	final static String DATE_FORMAT = "MMMM d, yyyy";
+	final static String TIME_FORMAT = "hh:mm a";
 	final static String ADMIN_LOGIN = "admin.dat";
 	final static String BOOK_FILE = "books.txt";
 	final static String CUSTOMER_FILE = "customer.dat";

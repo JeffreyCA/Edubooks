@@ -19,16 +19,15 @@ public class OrderController {
 	// TODO Make tax not dependent on value in Utilities.TAX
 	private void formatOrder(Order o) {
 		final int LINE_BREAK_SIZE = 30;
-		final String DATE_FORMAT = "MMMM D, yyyy";
-		final String TIME_FORMAT = "hh:mm a";
 
 		String detail_text = "";
 		DateTimeFormatter date_format = DateTimeFormatter
-				.ofPattern(DATE_FORMAT);
+				.ofPattern(Utilities.DATE_FORMAT);
 		DateTimeFormatter time_format = DateTimeFormatter
-				.ofPattern(TIME_FORMAT);
+				.ofPattern(Utilities.TIME_FORMAT);
 
-		detail_text += "Order Placed: " + o.getDate().format(date_format)
+		detail_text += "Account: " + o.getEmail() + "\n";
+		detail_text += "Order placed: " + o.getDate().format(date_format)
 				+ " at " + o.getDate().format(time_format) + "\n";
 
 		for (int i = 0; i < LINE_BREAK_SIZE; i++) {

@@ -154,7 +154,7 @@ public class Account {
 				Address address = new Address(fullname, street, city, province,
 						postal, country, phone);
 
-				Order o = new Order(order_cart, tax, date, address);
+				Order o = new Order(order_cart, tax, date, address, email);
 				this.order_stack.push(o);
 			}
 

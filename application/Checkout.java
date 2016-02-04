@@ -13,6 +13,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ListView;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -44,9 +45,14 @@ public class Checkout implements Initializable {
 	Instance i;
 	ShoppingCart cart;
 	ObservableList<Order> data;
+	ListView<Book> bks;
 
 	public void setSubtotalText(Text subtotal) {
 		this.subtotal = subtotal;
+	}
+
+	public void setList(ListView<Book> bks) {
+		this.bks = bks;
 	}
 
 	public void setTaxText(Text tax) {
@@ -105,7 +111,10 @@ public class Checkout implements Initializable {
 			error += "The province field should not have any numbers.\n";
 		}
 		if (hasLetters(phone_value)) {
-			error += "The phone number field should not have any letters.";
+			error += "The phone number field should not have any letters.\n";
+		}
+		if (!isValidPhone(phone_value)) {
+			error += "The phone number does not have the appropriate amount of digits.";
 		}
 
 		if (!error.equals("")) {
@@ -114,12 +123,15 @@ public class Checkout implements Initializable {
 			alert.showAndWait();
 		}
 		else {
+			phone_value = formatPhone(phone_value);
+
 			Address address = new Address(fullname_value, street_value,
 					city_value, province_value, postal_value, country_value,
 					phone_value);
 			Order o = new Order(i.account.getCart(),
 					i.account.getCart().getTaxPrice(), LocalDateTime.now(),
-					address);
+					address, i.account.getEmail());
+			System.out.println(LocalDateTime.now());
 			saveOrder(i.account, o);
 
 			Stage stage = (Stage) submit.getScene().getWindow();
@@ -129,6 +141,17 @@ public class Checkout implements Initializable {
 					"Thank you for your purchase!\nYou will be notified about your order via phone or email.");
 			alert.showAndWait();
 		}
+	}
+
+	public String formatPhone(String s) {
+		final char DASH = '-';
+		final int SECOND_DASH_POSITION = 6;
+		final int FIRST_DASH_POSITION = 3;
+		s = removeChars(s);
+		s = s.substring(0, FIRST_DASH_POSITION) + DASH
+				+ s.substring(FIRST_DASH_POSITION, SECOND_DASH_POSITION) + DASH
+				+ s.substring(SECOND_DASH_POSITION);
+		return s;
 	}
 
 	public void deductStock(ShoppingCart cart) {
@@ -184,8 +207,9 @@ public class Checkout implements Initializable {
 
 	public void saveOrder(Account a, Order o) {
 		a.addOrder(o);
-		data.add(o);
+		data.add(0, o);
 		deductStock(i.account.getCart());
+		bks.refresh();
 		a.clearCart();
 		a.save(i);
 
@@ -223,6 +247,25 @@ public class Checkout implements Initializable {
 
 		System.out.println((array.length > 1));
 		return (array.length > 1);
+	}
+
+	public boolean isValidPhone(String s) {
+		final int PHONE_DIGITS = 10;
+		// Eliminate all characters in the phone number string
+		s = removeChars(s);
+
+		if (s.length() == PHONE_DIGITS)
+			return true;
+		return false;
+	}
+
+	public String removeChars(String s) {
+		s = s.replace("-", "");
+		s = s.replace(" ", "");
+		s = s.replace("(", "");
+		s = s.replace(")", "");
+		s = s.replace(".", "");
+		return s;
 	}
 
 	public void setInstance(Instance i) {

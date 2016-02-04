@@ -14,10 +14,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-public class OrderCell extends ListCell<Order> {
+public class AdminOrderCell extends ListCell<Order> {
 	final int ICON_WIDTH = 40;
 	final int ICON_HEIGHT = 50;
 	final int LABEL_SIZE = 10;
@@ -35,7 +36,7 @@ public class OrderCell extends ListCell<Order> {
 
 	Button details;
 
-	public OrderCell() {
+	public AdminOrderCell() {
 		super();
 	}
 
@@ -50,6 +51,7 @@ public class OrderCell extends ListCell<Order> {
 			VBox date_box = new VBox();
 			HBox buttons = new HBox();
 			HBox outer = new HBox();
+			Text account = new Text();
 			Text number_items = new Text();
 			VBox prices = new VBox();
 
@@ -58,20 +60,25 @@ public class OrderCell extends ListCell<Order> {
 			DateTimeFormatter time_format = DateTimeFormatter
 					.ofPattern(Utilities.TIME_FORMAT);
 
+			Text date = new Text();
+			Text time = new Text();
+
 			// Set spacing between elements
 			buttons.setSpacing(SPACING);
-			date_box.setSpacing(SPACING);
+			// date_box.setSpacing(SPACING);
 
 			HBox.setHgrow(buttons, Priority.ALWAYS);
 
-			Text date = new Text();
 			date.setFont(new Font(DATE_SIZE));
 			date.setText(o.getDate().format(date_format));
-			Text time = new Text();
+
 			time.setFont(new Font(DATE_SIZE));
 			time.setText(o.getDate().format(time_format));
 
-			date_box.getChildren().addAll(date, time);
+			account.setText(o.getEmail());
+			account.setFont(Font.font(null, FontWeight.BOLD, 12));
+
+			date_box.getChildren().addAll(account, date, time);
 			date_box.setAlignment(Pos.CENTER_LEFT);
 			date_box.setMinWidth(DATE_WIDTH);
 
