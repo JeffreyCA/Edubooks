@@ -114,13 +114,13 @@ public class StoreFront implements Initializable {
 		StringStack stack = new StringStack();
 
 		for (Book b : observable_books) {
-			String genre_main = b.getCategory();
+			String genre = b.getCategory();
 			if (stack.isEmpty()) {
-				stack.push(genre_main);
+				stack.push(genre);
 			}
 			else {
-				if (!stack.contains(genre_main)) {
-					stack.push(genre_main);
+				if (!stack.contains(genre)) {
+					stack.push(genre);
 				}
 			}
 		}

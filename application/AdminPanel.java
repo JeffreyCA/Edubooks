@@ -59,23 +59,24 @@ public class AdminPanel implements Initializable {
 	@FXML
 	private javafx.scene.control.ComboBox<String> category_box;
 	@FXML
+	private javafx.scene.control.ComboBox<String> accounts;
+	@FXML
 	private javafx.scene.control.Button add;
 	@FXML
 	private javafx.scene.control.ListView<Order> orders;
 
-	ArrayList<Book> list = new ArrayList<Book>();
+	ArrayList<Book> book_list = new ArrayList<Book>();
 	ArrayList<Order> order_list = new ArrayList<Order>();
 	ObservableList<Book> observable_books;
 	ObservableList<Order> observable_orders;
-	SortedList<Book> sortedData;
 
 	OrderStack order_stack;
+	final String DEFAULT_CATEGORY = "-";
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		processBooks();
-		observable_books = FXCollections.observableArrayList(list);
-
+		initializeElements();
 		initializeTitleCell();
 		initializeAuthorCell();
 		initializeCategoryCell();
@@ -83,8 +84,14 @@ public class AdminPanel implements Initializable {
 		initializePriceCell();
 		initializeCategory();
 		initializeButton();
-		initializeList();
 		initializeOrders();
+		initializeOrderAccounts();
+	}
+
+	public void initializeElements() {
+		category_box.getSelectionModel().select(DEFAULT_CATEGORY);
+		observable_books = FXCollections.observableArrayList(book_list);
+		items.setItems(observable_books);
 	}
 
 	@FXML
@@ -229,39 +236,58 @@ public class AdminPanel implements Initializable {
 				});
 	}
 
-	public void initializeList() {
+	public void changeList(String category) {
+		SortedList<Book> sorted_book_list;
 		// 1. Wrap the ObservableList in a FilteredList (initially display all
 		// data).
 		FilteredList<Book> filteredData = new FilteredList<>(observable_books,
 				p -> true);
-		// 2. Set the filter Predicate whenever the filter changes.
-		search.textProperty().addListener((observable, oldValue, newValue) -> {
-			filteredData.setPredicate(book -> {
-				// If filter text is empty, display all persons.
-				if (newValue == null || newValue.isEmpty()) {
-					return true;
-				}
 
-				// Compare book title, author, and category of every book with
-				// filter text
+		filteredData.setPredicate(book -> {
+			// If filter text is empty, display all persons.
+			String author = book.getAuthor().toLowerCase();
+			String title = book.getTitle().toLowerCase();
+			String filter = search.getText().toLowerCase();
+
+			if (book.getCategory().equals(category)
+					|| category.equals(DEFAULT_CATEGORY)) {
+				if (search.getText().isEmpty())
+					return true;
+				else if (author.contains(filter) || title.contains(filter))
+					return true;
+			}
+
+			return false;
+		});
+
+		search.textProperty().addListener((observable, oldValue, newValue) -> {
+
+			filteredData.setPredicate(book -> {
+				String author = book.getAuthor().toLowerCase();
+				String title = book.getTitle().toLowerCase();
 				String filter = newValue.toLowerCase();
 
-				// Filter matches title
-				if (book.getTitle().toLowerCase().contains(filter)
-						|| book.getAuthor().toLowerCase().contains(filter)) {
-					return true;
+				if (category.equals(DEFAULT_CATEGORY)
+						|| book.getCategory().equals(category)) {
+
+					if ((newValue == null || newValue.isEmpty()))
+						return true;
+
+					else if (title.contains(filter) || author.contains(filter))
+						return true;
 				}
+
 				// Filter does not match
 				return false;
 			});
 		});
 
 		// 3. Wrap the FilteredList in a SortedList.
-		sortedData = new SortedList<Book>(filteredData);
+		sorted_book_list = new SortedList<Book>(filteredData);
 		// 4. Bind the SortedList comparator to the TableView comparator.
-		sortedData.comparatorProperty().bind(items.comparatorProperty());
+		sorted_book_list.comparatorProperty().bind(items.comparatorProperty());
 
-		items.setItems(sortedData);
+		items.setItems(sorted_book_list);
 	}
 
 	public void initializeOrders() {
@@ -278,6 +304,55 @@ public class AdminPanel implements Initializable {
 					}
 				});
 		orders.setItems(observable_orders);
+	}
+
+	public void initializeOrderAccounts() {
+		StringStack stack = new StringStack();
+
+		for (Order o : observable_orders) {
+			String email = o.getEmail();
+			if (stack.isEmpty()) {
+				stack.push(email);
+			}
+			else {
+				if (!stack.contains(email)) {
+					stack.push(email);
+				}
+			}
+		}
+		stack.sort();
+
+		ObservableList<String> categories = FXCollections
+				.observableArrayList(stack.toArrayList());
+		accounts.getItems().add(DEFAULT_CATEGORY);
+		accounts.getItems().addAll(categories);
+
+		accounts.valueProperty()
+				.addListener((observable, oldValue, newValue) -> {
+					filterOrderList(newValue);
+				});
+
+	}
+
+	public void filterOrderList(String category) {
+		FilteredList<Order> filteredData = new FilteredList<>(observable_orders,
+				p -> true);
+
+		filteredData.setPredicate(order -> {
+			// If filter text is empty, display all persons.
+			if (category.equals(DEFAULT_CATEGORY)) {
+				return true;
+			}
+
+			// Filter matches title
+			if (order.getEmail().equals(category)) {
+				return true;
+			}
+			// Filter does not match
+			return false;
+		});
+
+		orders.setItems(filteredData);
 	}
 
 	public void initializeCategory() {
@@ -298,18 +373,18 @@ public class AdminPanel implements Initializable {
 
 		ObservableList<String> categories = FXCollections
 				.observableArrayList(stack.toArrayList());
-		category_box.getItems().add("-");
+		category_box.getItems().add(DEFAULT_CATEGORY);
 		category_box.getItems().addAll(categories);
 
 		category_box.valueProperty()
 				.addListener((observable, oldValue, newValue) -> {
-					filterList(newValue);
+					changeList(newValue);
 				});
 	}
 
 	public void filterList(String category) {
 		final String DEFAULT_CATEGORY = "-";
-
+		SortedList<Book> sorted_book_list;
 		FilteredList<Book> filteredData = new FilteredList<>(observable_books,
 				p -> true);
 
@@ -327,11 +402,11 @@ public class AdminPanel implements Initializable {
 			return false;
 		});
 		// 3. Wrap the FilteredList in a SortedList.
-		sortedData = new SortedList<Book>(filteredData);
+		sorted_book_list = new SortedList<Book>(filteredData);
 		// 4. Bind the SortedList comparator to the TableView comparator.
-		sortedData.comparatorProperty().bind(items.comparatorProperty());
+		sorted_book_list.comparatorProperty().bind(items.comparatorProperty());
 
-		items.setItems(sortedData);
+		items.setItems(sorted_book_list);
 	}
 
 	public void processBooks() {
@@ -375,7 +450,7 @@ public class AdminPanel implements Initializable {
 					valid = false;
 
 				if (valid)
-					list.add(new Book(title, author, category,
+					book_list.add(new Book(title, author, category,
 							Integer.parseInt(quantity),
 							Double.parseDouble(price)));
 
