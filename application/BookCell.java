@@ -130,6 +130,9 @@ public class BookCell extends ListCell<Book> {
 
 			setGraphic(outer);
 		}
+		else {
+			setGraphic(null);
+		}
 	}
 
 	public boolean existsInCart(Book b, ShoppingCart c) {

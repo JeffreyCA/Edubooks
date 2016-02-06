@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.image.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.text.*?>
-<?import javafx.scene.paint.*?>
-<?import javafx.scene.shape.*?>
-<?import javafx.scene.effect.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import java.lang.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.StoreFront">
+<AnchorPane prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.StoreFront">
    <children>
       <TabPane prefHeight="500.0" prefWidth="800.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <tabs>
@@ -32,9 +35,8 @@
                               <AnchorPane prefHeight="0.0" prefWidth="700.0">
                                  <children>
                                     <Label layoutX="14.0" layoutY="35.0" text="Search: " />
-                                    <TextField layoutX="56.0" layoutY="31.0" prefHeight="25.0" prefWidth="189.0" />
-                                    <Label layoutX="544.0" layoutY="35.0" text="Category: " />
-                                    <ComboBox layoutX="598.0" layoutY="31.0" prefHeight="25.0" prefWidth="189.0" promptText="Sort by category" />
+                                    <TextField fx:id="search" layoutX="56.0" layoutY="31.0" prefHeight="25.0" prefWidth="189.0" promptText="Search by author or title" />
+                                    <ComboBox fx:id="category" layoutX="588.0" layoutY="31.0" prefHeight="25.0" prefWidth="189.0" promptText="Sort by category" />
                                  </children>
                               </AnchorPane>
                               <ListView fx:id="books" prefHeight="384.0" prefWidth="554.0" stylesheets="@application.css" GridPane.rowIndex="1" />

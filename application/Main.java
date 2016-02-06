@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
-	final String VERSION = "0.1";
+	final String VERSION = "0.8";
 	private Stage primaryStage;
 
 	public static void main(String[] args) {
@@ -20,7 +20,7 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
 		this.primaryStage.getIcons().add(Utilities.ICON);
-		this.primaryStage.setTitle("Edubooks v" + VERSION);
+		this.primaryStage.setTitle("Your Bookstore v" + VERSION);
 		showLandingScreen();
 	}
 

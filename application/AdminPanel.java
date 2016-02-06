@@ -57,27 +57,31 @@ public class AdminPanel implements Initializable {
 	@FXML
 	private javafx.scene.control.TableColumn<Book, String> price;
 	@FXML
+	private javafx.scene.control.ComboBox<String> category_box;
+	@FXML
 	private javafx.scene.control.Button add;
-
 	@FXML
 	private javafx.scene.control.ListView<Order> orders;
+
 	ArrayList<Book> list = new ArrayList<Book>();
-	ObservableList<Book> book_data;
-	SortedList<Book> sortedData;
 	ArrayList<Order> order_list = new ArrayList<Order>();
-	ObservableList<Order> order_data;
+	ObservableList<Book> observable_books;
+	ObservableList<Order> observable_orders;
+	SortedList<Book> sortedData;
+
 	OrderStack order_stack;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		processBooks();
-		book_data = FXCollections.observableArrayList(list);
+		observable_books = FXCollections.observableArrayList(list);
 
-		initializeTitle();
-		initializeAuthor();
+		initializeTitleCell();
+		initializeAuthorCell();
+		initializeCategoryCell();
+		initializeQuantityCell();
+		initializePriceCell();
 		initializeCategory();
-		initializeQuantity();
-		initializePrice();
 		initializeButton();
 		initializeList();
 		initializeOrders();
@@ -91,7 +95,7 @@ public class AdminPanel implements Initializable {
 			Parent root = (Parent) loader.load();
 			AddItem controller = loader.getController();
 			controller.setTable(items);
-			controller.setList(book_data);
+			controller.setList(observable_books);
 
 			Stage stage = new Stage();
 			stage.setTitle("Add Item");
@@ -105,7 +109,7 @@ public class AdminPanel implements Initializable {
 			stage.setOnHiding(new EventHandler<WindowEvent>() {
 				@Override
 				public void handle(WindowEvent we) {
-					saveData(book_data);
+					saveData(observable_books);
 				}
 			});
 
@@ -114,7 +118,7 @@ public class AdminPanel implements Initializable {
 		}
 	}
 
-	public void initializeAuthor() {
+	public void initializeAuthorCell() {
 		author.setCellValueFactory(
 				new PropertyValueFactory<Book, String>("author"));
 		author.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -123,7 +127,75 @@ public class AdminPanel implements Initializable {
 			public void handle(CellEditEvent<Book, String> t) {
 				t.getTableView().getItems().get(t.getTablePosition().getRow())
 						.setAuthor(t.getNewValue());
-				saveData(book_data);
+				saveData(observable_books);
+			}
+		});
+	}
+
+	public void initializeCategoryCell() {
+		category.setCellValueFactory(
+				new PropertyValueFactory<Book, String>("category"));
+		category.setCellFactory(TextFieldTableCell.forTableColumn());
+		category.setOnEditCommit(
+				new EventHandler<CellEditEvent<Book, String>>() {
+					@Override
+					public void handle(CellEditEvent<Book, String> t) {
+						t.getTableView().getItems()
+								.get(t.getTablePosition().getRow())
+								.setCategory(t.getNewValue());
+						saveData(observable_books);
+					}
+				});
+	}
+
+	public void initializePriceCell() {
+		// Format prices to two decimal places
+		price.setCellValueFactory(film -> {
+			SimpleStringProperty property = new SimpleStringProperty();
+			property.setValue(
+					String.format("%.2f", film.getValue().getPrice()));
+			return property;
+		});
+		price.setCellFactory(TextFieldTableCell.forTableColumn());
+		price.setOnEditCommit(new EventHandler<CellEditEvent<Book, String>>() {
+			@Override
+			public void handle(CellEditEvent<Book, String> t) {
+				t.getTableView().getItems().get(t.getTablePosition().getRow())
+						.setPrice(Double.valueOf(t.getNewValue()));
+				saveData(observable_books);
+			}
+		});
+	}
+
+	public void initializeQuantityCell() {
+		quantity.setCellValueFactory(
+				new PropertyValueFactory<Book, Number>("quantity"));
+		quantity.setCellFactory(TextFieldTableCell
+				.<Book, Number> forTableColumn(new NumberStringConverter()));
+		quantity.setOnEditCommit(
+				new EventHandler<CellEditEvent<Book, Number>>() {
+					@Override
+					public void handle(CellEditEvent<Book, Number> t) {
+
+						t.getTableView().getItems()
+								.get(t.getTablePosition().getRow())
+								.setQuantity((long) t.getNewValue());
+						saveData(observable_books);
+
+					}
+				});
+	}
+
+	public void initializeTitleCell() {
+		title.setCellValueFactory(
+				new PropertyValueFactory<Book, String>("title"));
+		title.setCellFactory(TextFieldTableCell.forTableColumn());
+		title.setOnEditCommit(new EventHandler<CellEditEvent<Book, String>>() {
+			@Override
+			public void handle(CellEditEvent<Book, String> t) {
+				t.getTableView().getItems().get(t.getTablePosition().getRow())
+						.setTitle(t.getNewValue());
+				saveData(observable_books);
 			}
 		});
 	}
@@ -157,26 +229,10 @@ public class AdminPanel implements Initializable {
 				});
 	}
 
-	public void initializeCategory() {
-		category.setCellValueFactory(
-				new PropertyValueFactory<Book, String>("category"));
-		category.setCellFactory(TextFieldTableCell.forTableColumn());
-		category.setOnEditCommit(
-				new EventHandler<CellEditEvent<Book, String>>() {
-					@Override
-					public void handle(CellEditEvent<Book, String> t) {
-						t.getTableView().getItems()
-								.get(t.getTablePosition().getRow())
-								.setCategory(t.getNewValue());
-						saveData(book_data);
-					}
-				});
-	}
-
 	public void initializeList() {
 		// 1. Wrap the ObservableList in a FilteredList (initially display all
 		// data).
-		FilteredList<Book> filteredData = new FilteredList<>(book_data,
+		FilteredList<Book> filteredData = new FilteredList<>(observable_books,
 				p -> true);
 		// 2. Set the filter Predicate whenever the filter changes.
 		search.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -192,8 +248,7 @@ public class AdminPanel implements Initializable {
 
 				// Filter matches title
 				if (book.getTitle().toLowerCase().contains(filter)
-						|| book.getAuthor().toLowerCase().contains(filter)
-						|| book.getCategory().toLowerCase().contains(filter)) {
+						|| book.getAuthor().toLowerCase().contains(filter)) {
 					return true;
 				}
 				// Filter does not match
@@ -213,7 +268,7 @@ public class AdminPanel implements Initializable {
 		OrderStack stack = processOrders();
 
 		order_list = stack.toArrayList();
-		order_data = FXCollections.observableArrayList(order_list);
+		observable_orders = FXCollections.observableArrayList(order_list);
 
 		orders.setCellFactory(
 				new Callback<ListView<Order>, javafx.scene.control.ListCell<Order>>() {
@@ -222,59 +277,61 @@ public class AdminPanel implements Initializable {
 						return new AdminOrderCell();
 					}
 				});
-		orders.setItems(order_data);
+		orders.setItems(observable_orders);
 	}
 
-	public void initializePrice() {
-		// Format prices to two decimal places
-		price.setCellValueFactory(film -> {
-			SimpleStringProperty property = new SimpleStringProperty();
-			property.setValue(
-					String.format("%.2f", film.getValue().getPrice()));
-			return property;
-		});
-		price.setCellFactory(TextFieldTableCell.forTableColumn());
-		price.setOnEditCommit(new EventHandler<CellEditEvent<Book, String>>() {
-			@Override
-			public void handle(CellEditEvent<Book, String> t) {
-				t.getTableView().getItems().get(t.getTablePosition().getRow())
-						.setPrice(Double.valueOf(t.getNewValue()));
-				saveData(book_data);
+	public void initializeCategory() {
+		StringStack stack = new StringStack();
+
+		for (Book b : observable_books) {
+			String genre_main = b.getCategory();
+			if (stack.isEmpty()) {
+				stack.push(genre_main);
 			}
-		});
-	}
+			else {
+				if (!stack.contains(genre_main)) {
+					stack.push(genre_main);
+				}
+			}
+		}
+		stack.sort();
 
-	public void initializeQuantity() {
-		quantity.setCellValueFactory(
-				new PropertyValueFactory<Book, Number>("quantity"));
-		quantity.setCellFactory(TextFieldTableCell
-				.<Book, Number> forTableColumn(new NumberStringConverter()));
-		quantity.setOnEditCommit(
-				new EventHandler<CellEditEvent<Book, Number>>() {
-					@Override
-					public void handle(CellEditEvent<Book, Number> t) {
+		ObservableList<String> categories = FXCollections
+				.observableArrayList(stack.toArrayList());
+		category_box.getItems().add("-");
+		category_box.getItems().addAll(categories);
 
-						t.getTableView().getItems()
-								.get(t.getTablePosition().getRow())
-								.setQuantity((long) t.getNewValue());
-						saveData(book_data);
-
-					}
+		category_box.valueProperty()
+				.addListener((observable, oldValue, newValue) -> {
+					filterList(newValue);
 				});
 	}
 
-	public void initializeTitle() {
-		title.setCellValueFactory(
-				new PropertyValueFactory<Book, String>("title"));
-		title.setCellFactory(TextFieldTableCell.forTableColumn());
-		title.setOnEditCommit(new EventHandler<CellEditEvent<Book, String>>() {
-			@Override
-			public void handle(CellEditEvent<Book, String> t) {
-				t.getTableView().getItems().get(t.getTablePosition().getRow())
-						.setTitle(t.getNewValue());
-				saveData(book_data);
+	public void filterList(String category) {
+		final String DEFAULT_CATEGORY = "-";
+
+		FilteredList<Book> filteredData = new FilteredList<>(observable_books,
+				p -> true);
+
+		filteredData.setPredicate(book -> {
+			// If filter text is empty, display all persons.
+			if (category.equals(DEFAULT_CATEGORY)) {
+				return true;
 			}
+
+			// Filter matches title
+			if (book.getCategory().equals(category)) {
+				return true;
+			}
+			// Filter does not match
+			return false;
 		});
+		// 3. Wrap the FilteredList in a SortedList.
+		sortedData = new SortedList<Book>(filteredData);
+		// 4. Bind the SortedList comparator to the TableView comparator.
+		sortedData.comparatorProperty().bind(items.comparatorProperty());
+
+		items.setItems(sortedData);
 	}
 
 	public void processBooks() {
@@ -441,7 +498,7 @@ public class AdminPanel implements Initializable {
 				e.printStackTrace();
 			}
 		}
-		stack = stack.sort();
+		stack.sort();
 		return stack;
 	}
 
@@ -492,8 +549,8 @@ public class AdminPanel implements Initializable {
 					Book book = (Book) ButtonCell.this.getTableView().getItems()
 							.get(ButtonCell.this.getIndex());
 					// remove selected item from the table list
-					book_data.remove(book);
-					saveData(book_data);
+					observable_books.remove(book);
+					saveData(observable_books);
 				}
 			});
 		}

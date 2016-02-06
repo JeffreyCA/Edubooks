@@ -12,6 +12,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -38,6 +39,10 @@ public class StoreFront implements Initializable {
 	@FXML
 	private javafx.scene.control.Tab logout;
 	@FXML
+	private javafx.scene.control.TextField search;
+	@FXML
+	private javafx.scene.control.ComboBox<String> category;
+	@FXML
 	private javafx.scene.text.Text subtotal;
 	@FXML
 	private javafx.scene.text.Text tax;
@@ -47,9 +52,10 @@ public class StoreFront implements Initializable {
 	private javafx.scene.text.Text order_qty;
 
 	Instance i;
-	ArrayList<Book> list = new ArrayList<Book>();
+	ArrayList<Book> book_list = new ArrayList<Book>();
 	ArrayList<Order> order_list = new ArrayList<Order>();
-	ObservableList<Order> data;
+	ObservableList<Order> observable_orders;
+	ObservableList<Book> observable_books;
 	OrderStack order_stack;
 
 	@FXML
@@ -63,7 +69,7 @@ public class StoreFront implements Initializable {
 			Scene scene = new Scene(root);
 
 			// Pass data to controller
-			controller.setObservableList(data);
+			controller.setObservableList(observable_orders);
 			controller.setInstance(i);
 			controller.setSubtotalText(subtotal);
 			controller.setTaxText(tax);
@@ -96,10 +102,65 @@ public class StoreFront implements Initializable {
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		processBooks();
-		i = new Instance(list);
 
-		ObservableList<Book> items = FXCollections.observableArrayList(list);
+		processBooks();
+		setLogoutButton();
+		initializeCells();
+		initializeList();
+		initializeCategory();
+	}
+
+	public void initializeCategory() {
+		StringStack stack = new StringStack();
+
+		for (Book b : observable_books) {
+			String genre_main = b.getCategory();
+			if (stack.isEmpty()) {
+				stack.push(genre_main);
+			}
+			else {
+				if (!stack.contains(genre_main)) {
+					stack.push(genre_main);
+				}
+			}
+		}
+		stack.sort();
+
+		ObservableList<String> categories = FXCollections
+				.observableArrayList(stack.toArrayList());
+		category.getItems().add("-");
+		category.getItems().addAll(categories);
+
+		category.valueProperty()
+				.addListener((observable, oldValue, newValue) -> {
+					filterList(newValue);
+				});
+	}
+
+	public void filterList(String category) {
+		final String DEFAULT_CATEGORY = "-";
+
+		FilteredList<Book> filteredData = new FilteredList<>(observable_books,
+				p -> true);
+
+		filteredData.setPredicate(book -> {
+			// If filter text is empty, display all persons.
+			if (category.equals(DEFAULT_CATEGORY)) {
+				return true;
+			}
+
+			// Filter matches title
+			if (book.getCategory().equals(category)) {
+				return true;
+			}
+			// Filter does not match
+			return false;
+		});
+
+		books.setItems(filteredData);
+	}
+
+	public void initializeCells() {
 		books.setCellFactory(
 				new Callback<ListView<Book>, javafx.scene.control.ListCell<Book>>() {
 					@Override
@@ -107,8 +168,9 @@ public class StoreFront implements Initializable {
 						return new BookCell(i);
 					}
 				});
-		books.setItems(items);
-		// books.refresh();
+	}
+
+	public void setLogoutButton() {
 		// Manage logout button click behaviour
 		logout.getTabPane().getSelectionModel().selectedItemProperty()
 				.addListener(new ChangeListener<Tab>() {
@@ -132,9 +194,41 @@ public class StoreFront implements Initializable {
 				});
 	}
 
+	public void initializeList() {
+		i = new Instance(book_list);
+		observable_books = FXCollections.observableArrayList(book_list);
+		// 1. Wrap the ObservableList in a FilteredList (initially display all
+		// data).
+		FilteredList<Book> filteredData = new FilteredList<>(observable_books,
+				p -> true);
+		// 2. Set the filter Predicate whenever the filter changes.
+		search.textProperty().addListener((observable, oldValue, newValue) -> {
+			filteredData.setPredicate(book -> {
+				// If filter text is empty, display all persons.
+				if (newValue == null || newValue.isEmpty()) {
+					return true;
+				}
+
+				// Compare book title, author, and category of every book with
+				// filter text
+				String filter = newValue.toLowerCase();
+
+				// Filter matches title
+				if (book.getTitle().toLowerCase().contains(filter)
+						|| book.getAuthor().toLowerCase().contains(filter)) {
+					return true;
+				}
+				// Filter does not match
+				return false;
+			});
+		});
+
+		books.setItems(filteredData);
+	}
+
 	public void initializeOrders(OrderStack stack) {
 		order_list = stack.toArrayList();
-		data = FXCollections.observableArrayList(order_list);
+		observable_orders = FXCollections.observableArrayList(order_list);
 
 		orders.setCellFactory(
 				new Callback<ListView<Order>, javafx.scene.control.ListCell<Order>>() {
@@ -143,7 +237,7 @@ public class StoreFront implements Initializable {
 						return new OrderCell();
 					}
 				});
-		orders.setItems(data);
+		orders.setItems(observable_orders);
 		order_qty.setText(stack.size + " Orders");
 	}
 
@@ -218,7 +312,7 @@ public class StoreFront implements Initializable {
 					valid = false;
 
 				if (valid)
-					list.add(new Book(title, author, category,
+					book_list.add(new Book(title, author, category,
 							Integer.parseInt(quantity),
 							Double.parseDouble(price)));
 

@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class OrderStack {
-	protected OrderNode top;
+public class StringStack {
+	protected StringNode top;
 	protected int size;
 
-	public OrderStack() {
+	public StringStack() {
 		top = null;
 		size = 0;
 	}
@@ -18,14 +18,14 @@ public class OrderStack {
 	}
 
 	public void sort() {
-		OrderStack temp = new OrderStack();
+		StringStack temp = new StringStack();
 
 		if (isEmpty())
 			return;
+
 		while (!isEmpty()) {
-			Order o = pop();
-			while (!temp.isEmpty()
-					&& (temp.peek().getDate().isAfter(o.getDate()))) {
+			String o = pop();
+			while (!temp.isEmpty() && ((temp.peek().compareTo(o) < 0))) {
 				push(temp.pop());
 			}
 			temp.push(o);
@@ -34,9 +34,9 @@ public class OrderStack {
 		this.top = temp.top;
 	}
 
-	public Order pop() {
+	public String pop() {
 		if (top != null) {
-			Order data = top.getValue();
+			String data = top.getValue();
 			top = top.getLink();
 			size--;
 			return data;
@@ -46,31 +46,43 @@ public class OrderStack {
 		}
 	}
 
-	public void push(Order item) {
-		OrderNode temp = new OrderNode(item, top);
+	public void push(String item) {
+		StringNode temp = new StringNode(item, top);
 		top = temp;
 		size++;
 	}
 
-	public Order peek() {
+	public String peek() {
 		if (top == null) {
 			throw new RuntimeException("Empty stack");
 		}
 		else {
-			Order data = top.getValue();
+			String data = top.getValue();
 			return data;
 		}
 	}
 
-	public void merge(OrderStack stack) {
+	public void merge(StringStack stack) {
 		while (!stack.isEmpty()) {
 			push(stack.pop());
 		}
 	}
 
-	public Iterator<Order> iterator() {
-		Iterator<Order> it = new Iterator<Order>() {
-			OrderNode node = top;
+	public boolean contains(String s) {
+		StringNode node = top;
+
+		while (node != null) {
+			if (node.getValue().equals(s)) {
+				return true;
+			}
+			node = node.getLink();
+		}
+		return false;
+	}
+
+	public Iterator<String> iterator() {
+		Iterator<String> it = new Iterator<String>() {
+			StringNode node = top;
 			private int currentIndex = 0;
 
 			@Override
@@ -79,7 +91,7 @@ public class OrderStack {
 			}
 
 			@Override
-			public Order next() {
+			public String next() {
 
 				if (currentIndex != 0) {
 					currentIndex++;
@@ -102,11 +114,11 @@ public class OrderStack {
 		return it;
 	}
 
-	private void bottomPop(Order o) {
+	private void bottomPop(String o) {
 		if (isEmpty())
 			push(o);
 		else {
-			Order a = top.getValue();
+			String a = top.getValue();
 			pop();
 			bottomPop(o);
 			push(a);
@@ -116,16 +128,16 @@ public class OrderStack {
 	// Recursion
 	public void reverse() {
 		if (!isEmpty()) {
-			Order o = top.getValue();
+			String o = top.getValue();
 			pop();
 			reverse();
 			bottomPop(o);
 		}
 	}
 
-	public ArrayList<Order> toArrayList() {
-		OrderNode node = top;
-		ArrayList<Order> list = new ArrayList<Order>();
+	public ArrayList<String> toArrayList() {
+		StringNode node = top;
+		ArrayList<String> list = new ArrayList<String>();
 
 		while (node != null) {
 			list.add(node.getValue());
