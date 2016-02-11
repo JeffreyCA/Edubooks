@@ -45,6 +45,14 @@ public class Account {
 		wishlist.add(book);
 	}
 
+	public void clearWishlist() {
+		wishlist = new Wishlist();
+	}
+
+	public void removeFromWishlist(Book book) {
+		wishlist.delete(book);
+	}
+
 	public void save(Instance i) {
 		// File writers
 		FileWriter file;
@@ -126,6 +134,7 @@ public class Account {
 						&& book_list.get(index).getQuantity() > 0)
 					wishlist.add(book_list.get(index));
 			}
+
 			int orders = Integer.parseInt(reader.readLine());
 
 			for (int j = 0; j < orders; j++) {
@@ -170,8 +179,6 @@ public class Account {
 		}
 		catch (NumberFormatException e) {
 			e.printStackTrace();
-			// System.out.println("error");
-			// cart = new ShoppingCart();
 		}
 	}
 

@@ -54,7 +54,7 @@
                           <items>
                             <AnchorPane maxWidth="596.0" minHeight="0.0" minWidth="0.0" prefHeight="469.0" prefWidth="596.0">
                                  <children>
-                                    <ListView fx:id="shopping_cart" layoutX="163.0" layoutY="102.0" prefHeight="469.0" prefWidth="596.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                    <ListView fx:id="shopping_cart" layoutX="163.0" layoutY="102.0" prefHeight="469.0" prefWidth="596.0" stylesheets="@application.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                  </children>
                               </AnchorPane>
                             <AnchorPane maxWidth="196.0" minHeight="0.0" minWidth="0.0" prefHeight="394.0" prefWidth="196.0">
@@ -106,7 +106,7 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <ListView fx:id="books1" prefHeight="471.0" prefWidth="800.0" stylesheets="@application.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <ListView fx:id="wishlist" prefHeight="471.0" prefWidth="800.0" stylesheets="@application.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children></AnchorPane>
               </content>
             </Tab>

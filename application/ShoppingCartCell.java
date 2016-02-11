@@ -18,35 +18,46 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
 public class ShoppingCartCell extends ListCell<Book> {
+
+	// Dimensions
 	final int ICON_WIDTH = 40;
 	final int ICON_HEIGHT = 50;
 	final int LABEL_SIZE = 10;
 	final int PRICE_SIZE = 20;
 	final int SPACING = 10;
 
-	final String CART_BUTTON = "Remove from cart";
+	// Button text
+	final String REMOVE_BUTTON_TEXT = "Remove from cart";
+	final String TRANSFER_BUTTON_TEXT = "Move to wishlist";
+
+	// Colour codes
 	final String BOOK_COLOUR = "#D2B394"; // Light brown
-	final String IN_STOCK = "In stock";
 	final String IN_STOCK_COLOUR = "#009900"; // Green
-	final String NO_STOCK = "Out of stock";
 	final String NO_STOCK_COLOUR = "FF0000"; // Red
 
-	Button cart;
-	Account account;
-	Instance i;
-	int qty;
+	// Button to remove item from shopping cart
+	Button remove;
+	// Button to move item to wishlist
+	Button transfer;
+
+	// Text objects to display the prices of the items in the cart
 	Text subtotal;
 	Text tax;
 	Text total;
 
+	Account account;
+	Instance i;
+	int qty;
+
+	// Default constructor
 	public ShoppingCartCell(Instance i, Text subtotal, Text tax, Text total) {
 		super();
 		this.i = i;
 		account = i.account;
-		qty = 1;
 		this.subtotal = subtotal;
 		this.tax = tax;
 		this.total = total;
+		qty = 1;
 	}
 
 	@Override
@@ -63,16 +74,23 @@ public class ShoppingCartCell extends ListCell<Book> {
 			Label text_overlay = new Label();
 			Text price = new Text();
 			VBox vbox = new VBox();
-			long q = b.getQuantity();
-			cart = new Button();
 
+			// Initialize Buttons
+			remove = new Button();
+			transfer = new Button();
+
+			// Check if cart needs to be cleared
 			if (account.getCart().isEmpty()) {
 				i.cart_list.clear();
 			}
-			else
+			else {
+				// Update quantity
 				qty = account.getCart().getNode(b).getQuantity();
+			}
+			// Initialize spinner to select the quantity
+			Spinner<Number> quantity = new Spinner<Number>(1, b.getQuantity(),
+					qty);
 
-			Spinner<Number> quantity = new Spinner<Number>(1, q, qty);
 			// Set spacing between elements
 			book_info.setSpacing(SPACING);
 			buttons.setSpacing(SPACING);
@@ -105,12 +123,15 @@ public class ShoppingCartCell extends ListCell<Book> {
 			book_info.getChildren().addAll(book_icon, vbox);
 
 			// Add buttons to the cell
-			cart.setText(CART_BUTTON);
-			price.setText("$" + String.format("%.2f", (qty * b.getPrice())));
-			price.setFont(new Font(PRICE_SIZE));
+			remove.setText(REMOVE_BUTTON_TEXT);
+			transfer.setText(TRANSFER_BUTTON_TEXT);
 
+			// Set price text
+			price.setFont(new Font(PRICE_SIZE));
+			price.setText("$" + String.format("%.2f", (qty * b.getPrice())));
 			updatePrices();
 
+			// Listener for changes in quantitiy spinner
 			quantity.valueProperty().addListener((obs, oldValue, newValue) -> {
 				price.setText("$" + String.format("%.2f",
 						(b.getPrice() * newValue.doubleValue())));
@@ -119,21 +140,33 @@ public class ShoppingCartCell extends ListCell<Book> {
 				updatePrices();
 			});
 
-			buttons.getChildren().addAll(price, cart);
-			buttons.setAlignment(Pos.CENTER_RIGHT);
-			outer.getChildren().addAll(book_info, buttons);
-
-			cart.setOnAction(new EventHandler<ActionEvent>() {
+			// On-click actions for the buttons
+			remove.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					i.cart_list.remove(b);
-					// account.getCart().getNode(b).setQuantity(1);
-					account.getCart().delete(b);
+					i.removeFromCart(b);
 					account.save(i);
 					qty = 1;
 					updatePrices();
 				}
 			});
+
+			transfer.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					i.removeFromCart(b);
+					i.addToWishlist(b);
+					account.save(i);
+					qty = 1;
+					updatePrices();
+				}
+			});
+
+			// Set UI elements
+			buttons.getChildren().addAll(price, transfer, remove);
+			buttons.setAlignment(Pos.CENTER_RIGHT);
+			outer.getChildren().addAll(book_info, buttons);
+
 			setGraphic(outer);
 		}
 		else {
@@ -141,22 +174,19 @@ public class ShoppingCartCell extends ListCell<Book> {
 		}
 	}
 
+	/**
+	 * Update the price labels after a change in quantity or shopping cart items
+	 */
 	public void updatePrices() {
+		// Update total value of shopping cart
 		account.getCart().updateTotal();
 		double sub_price = i.account.getCart().getTotal();
 		double tax_price = Utilities.TAX * sub_price;
 		double total_price = sub_price + tax_price;
 
+		// Set new prices to the Text elements
 		subtotal.setText(String.format("$%.2f", sub_price));
 		tax.setText(String.format("$%.2f", tax_price));
 		total.setText(String.format("$%.2f", total_price));
-	}
-
-	public boolean existsInCart(Book b, ShoppingCart c) {
-		for (int i = 0; i < c.getSize(); i++) {
-			if (b.equals(c.getBook(i)))
-				return true;
-		}
-		return false;
 	}
 }

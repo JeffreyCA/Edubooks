@@ -7,9 +7,15 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
+/*
+ * TODO Commented Classes:
+ *
+ * WishlistCell ShoppingCartCell OrderCell AdminOrderCell
+ *
+ */
+
 public class Main extends Application {
 
-	final String VERSION = "0.8";
 	private Stage primaryStage;
 
 	public static void main(String[] args) {
@@ -20,7 +26,7 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
 		this.primaryStage.getIcons().add(Utilities.ICON);
-		this.primaryStage.setTitle("Your Bookstore v" + VERSION);
+		this.primaryStage.setTitle("Your Bookstore");
 		showLandingScreen();
 	}
 

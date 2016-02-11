@@ -4,7 +4,6 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -19,55 +18,41 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
-public class BookCell extends ListCell<Book> {
+public class WishlistCell extends ListCell<Book> {
+	// Dimensions
 	final int ICON_WIDTH = 40;
 	final int ICON_HEIGHT = 50;
 	final int LABEL_SIZE = 10;
 	final int PRICE_SIZE = 20;
 	final int SPACING = 10;
 
-	final String CART_BUTTON = "Add to cart";
-	final String BOOK_COLOUR = "#D2B394"; // Light brown
-	final String IN_STOCK = "In stock";
-	final String IN_STOCK_COLOUR = "#009900"; // Green
-	final String NO_STOCK = "Out of stock";
-	final String NO_STOCK_COLOUR = "FF0000"; // Red
-	final String WISHLIST_BUTTON = "Add to wishlist";
+	// Button text
+	final String REMOVE_BUTTON_TEXT = "Remove from wishlist";
+	final String TRANSFER_BUTTON_TEXT = "Move to cart";
 
-	@FXML
-	private javafx.scene.control.ListView<Book> shopping_cart;
-	Button cart = new Button();
-	Button wishlist = new Button();
-	Book item;
+	// Colour codes
+	final String BOOK_COLOUR = "#D2B394"; // Light brown
+	final String IN_STOCK_COLOUR = "#009900"; // Green
+	final String NO_STOCK_COLOUR = "FF0000"; // Red
+
+	// Button to remove item from wishlist
+	Button remove;
+	// Button to move item to shopping cart
+	Button transfer;
+
 	Account account;
 	Instance i;
 
-	public BookCell(Instance i) {
+	public WishlistCell(Instance i) {
 		super();
 		this.i = i;
 		account = i.account;
-
-		cart.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				i.addToCart(item);
-				account.save(i);
-			}
-		});
-
-		wishlist.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				i.addToWishlist(item);
-				account.save(i);
-			}
-		});
 	}
 
 	@Override
 	public void updateItem(Book b, boolean empty) {
 		super.updateItem(b, empty);
-		item = b;
+
 		if (b != null) {
 			// Declare and initialize book cell elements
 			HBox book_info = new HBox();
@@ -77,8 +62,16 @@ public class BookCell extends ListCell<Book> {
 			Rectangle book_shape = new Rectangle();
 			Label text_overlay = new Label();
 			Text price = new Text();
-			Text stock_availability = new Text();
 			VBox vbox = new VBox();
+
+			// Initialize Buttons
+			remove = new Button();
+			transfer = new Button();
+
+			// Check if wishlist needs to be cleared
+			if (account.getWishlist().isEmpty()) {
+				i.wish_list.clear();
+			}
 
 			// Set spacing between elements
 			book_info.setSpacing(SPACING);
@@ -108,34 +101,45 @@ public class BookCell extends ListCell<Book> {
 			// Add book information beside the icon
 			vbox.getChildren().add(new Text(b.getTitle()));
 			vbox.getChildren().add(new Text(b.getAuthor()));
-			vbox.getChildren().add(stock_availability);
 			book_info.getChildren().addAll(book_icon, vbox);
 
 			// Add buttons to the cell
-			cart.setText(CART_BUTTON);
-			wishlist.setText(WISHLIST_BUTTON);
-			price.setText("$" + String.format("%.2f", b.getPrice()));
+			remove.setText(REMOVE_BUTTON_TEXT);
+			transfer.setText(TRANSFER_BUTTON_TEXT);
+
+			// Set price text
 			price.setFont(new Font(PRICE_SIZE));
+			price.setText("$" + String.format("%.2f", b.getPrice()));
 
-			// Stock availability
-			if (b.getQuantity() > 0) {
-				stock_availability.setText(IN_STOCK);
-				stock_availability.setFill(Color.web(IN_STOCK_COLOUR));
-			}
-			else {
-				stock_availability.setText(NO_STOCK);
-				stock_availability.setFill(Color.web(NO_STOCK_COLOUR));
-			}
-
-			BooleanBinding cart_binding = Bindings.createBooleanBinding(
-					() -> i.cart_list.contains(b) || b.getQuantity() <= 0,
-					i.cart_list);
+			/*
+			 * The "Move to Cart" button is disabled when the book is already in
+			 * the shopping cart
+			 */
 			BooleanBinding wishlist_binding = Bindings.createBooleanBinding(
-					() -> i.wish_list.contains(b), i.wish_list);
-			cart.disableProperty().bind(cart_binding);
-			wishlist.disableProperty().bind(wishlist_binding);
+					() -> i.cart_list.contains(b), i.cart_list);
+			transfer.disableProperty().bind(wishlist_binding);
 
-			buttons.getChildren().addAll(price, wishlist, cart);
+			// On-click actions for the buttons
+			remove.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					// Remove item from wishlist
+					i.removeFromWishlist(b);
+					account.save(i);
+				}
+			});
+			transfer.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					// Move item from wishlist to shopping cart
+					i.removeFromWishlist(b);
+					i.addToCart(b);
+					account.save(i);
+				}
+			});
+
+			// Set UI elements
+			buttons.getChildren().addAll(price, transfer, remove);
 			buttons.setAlignment(Pos.CENTER_RIGHT);
 			outer.getChildren().addAll(book_info, buttons);
 
@@ -144,13 +148,5 @@ public class BookCell extends ListCell<Book> {
 		else {
 			setGraphic(null);
 		}
-	}
-
-	public boolean existsInCart(Book b, ShoppingCart c) {
-		for (int i = 0; i < c.getSize(); i++) {
-			if (b.equals(c.getBook(i)))
-				return true;
-		}
-		return false;
 	}
 }

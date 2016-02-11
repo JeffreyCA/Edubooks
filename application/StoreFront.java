@@ -33,6 +33,8 @@ public class StoreFront implements Initializable {
 	@FXML
 	private javafx.scene.control.ListView<Book> shopping_cart;
 	@FXML
+	private javafx.scene.control.ListView<Book> wishlist;
+	@FXML
 	private javafx.scene.control.ListView<Order> orders;
 	@FXML
 	private javafx.scene.control.Button checkout;
@@ -261,6 +263,18 @@ public class StoreFront implements Initializable {
 		total.setText(String.format("$%.2f", total_price));
 		BooleanBinding n = Bindings.isEmpty(cart_list);
 		checkout.disableProperty().bind(n);
+	}
+
+	public void initializeWishlist(CartList wish_list) {
+		i.wish_list = wish_list;
+		wishlist.setCellFactory(
+				new Callback<ListView<Book>, javafx.scene.control.ListCell<Book>>() {
+					@Override
+					public ListCell<Book> call(ListView<Book> listView) {
+						return new WishlistCell(i);
+					}
+				});
+		wishlist.setItems(wish_list);
 	}
 
 	public Instance getInstance() {
