@@ -1,6 +1,12 @@
 package application;
 
+/**
+ * Address class that stores address information of customers
+ * @author Jeffrey
+ *
+ */
 public class Address {
+	// Private fields
 	private String name;
 	private String street;
 	private String city;
@@ -9,6 +15,7 @@ public class Address {
 	private String country;
 	private String phone;
 
+	// Default constructor
 	public Address(String name, String street, String city, String province,
 			String postal, String country, String phone) {
 
@@ -21,18 +28,21 @@ public class Address {
 		this.phone = phone;
 	}
 
+	// Raw address info, with each info displayed on a separate line
 	@Override
 	public String toString() {
 		return name + "\n" + street + "\n" + city + "\n" + province + "\n"
 				+ postal + "\n" + country + "\n " + phone;
 	}
 
+	// Formatted address with headings
 	public String formated() {
 		return "Name: " + name + "\nAddress: " + street + "\nCity: " + city
 				+ "\nProvince: " + province + "\nPostal Code: " + postal
 				+ "\nCountry: " + country + "\nPhone Number: " + phone;
 	}
 
+	// Getters and setters
 	public String getName() {
 		return name;
 	}

@@ -102,10 +102,6 @@ public class AdminOrderCell extends ListCell<Order> {
 
 			right.setAlignment(Pos.CENTER_RIGHT);
 			right.getChildren().addAll(prices);
-			buttons.getChildren().addAll(right, details);
-			buttons.setAlignment(Pos.CENTER_RIGHT);
-			outer.getChildren().addAll(left, buttons);
-			outer.setAlignment(Pos.CENTER);
 
 			// View details button
 			details = new Button();
@@ -118,6 +114,10 @@ public class AdminOrderCell extends ListCell<Order> {
 				}
 			});
 
+			buttons.getChildren().addAll(right, details);
+			buttons.setAlignment(Pos.CENTER_RIGHT);
+			outer.getChildren().addAll(left, buttons);
+			outer.setAlignment(Pos.CENTER);
 			setGraphic(outer);
 		}
 		else {

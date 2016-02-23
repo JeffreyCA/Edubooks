@@ -8,10 +8,14 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 /*
- * TODO Commented Classes:
+ * TODO Uncommented Classes:
  *
- * WishlistCell ShoppingCartCell OrderCell AdminOrderCell
+ * BookNode CartList Checkout CustomerEntrance Instance Landing Main Order
+ * OrderController OrderNode OrderStack ShoppingCart StoreFront StringNode
+ * StringStack Utilities Wishlist
  *
+ * Improvements: Payment methods Change password Save address Save payment
+ * method Change tax rate Add shipping fee
  */
 
 public class Main extends Application {

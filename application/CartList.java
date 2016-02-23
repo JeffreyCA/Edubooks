@@ -10,7 +10,7 @@ public class CartList extends SimpleListProperty<Book> {
 	}
 
 	public void copy(BookList list) {
-		BookNode n = list.getHead();
+		BookNode n = list.head;
 
 		while (n != null) {
 			this.add(n.getValue());

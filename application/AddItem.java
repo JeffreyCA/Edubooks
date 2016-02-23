@@ -12,24 +12,29 @@ import javafx.stage.Stage;
 
 public class AddItem implements Initializable {
 
-	@FXML
-	private javafx.scene.control.Button ok;
+	// FXML fields
 	@FXML
 	private javafx.scene.control.Button cancel;
 	@FXML
-	private javafx.scene.control.TextField title;
+	private javafx.scene.control.Button ok;
 	@FXML
 	private javafx.scene.control.TextField author;
 	@FXML
 	private javafx.scene.control.TextField category;
 	@FXML
-	private javafx.scene.control.TextField quantity;
+	private javafx.scene.control.TextField title;
 	@FXML
 	private javafx.scene.control.TextField price;
+	@FXML
+	private javafx.scene.control.TextField quantity;
 
-	private javafx.scene.control.TableView<Book> items;
+	// Underlying TableView for book database
+	private javafx.scene.control.TableView<Book> table;
 	private ObservableList<Book> data;
 
+	/**
+	 * Close window the "Cancel" button is clicked
+	 */
 	@FXML
 	private void closeButtonAction() {
 		// get a handle to the stage
@@ -37,19 +42,26 @@ public class AddItem implements Initializable {
 		stage.close();
 	}
 
+	/**
+	 *  Add new item to book list when the "Okay" button is clicked
+	 */
 	@FXML
 	private void okButtonAction() {
-		int nextIndex = items.getSelectionModel().getSelectedIndex() + 1;
+		// Next index in the book list
+		int nextIndex = table.getSelectionModel().getSelectedIndex() + 1;
+
 		try {
-			Book new_book = new Book(title.getText(), author.getText(),
+			Book book = new Book(title.getText(), author.getText(),
 					category.getText(), Long.valueOf(quantity.getText()),
 					Double.valueOf(price.getText()));
-			data.add(nextIndex, new_book);
-			items.getSelectionModel().select(nextIndex);
+			data.add(nextIndex, book);
+
+			table.getSelectionModel().select(nextIndex);
 			Stage stage = (Stage) ok.getScene().getWindow();
 			stage.close();
 		}
 		catch (NumberFormatException e) {
+			// Display error if fields contain invalid characters
 			Alert alert = new Alert(Alert.AlertType.ERROR);
 			alert.setContentText("Invalid Input!");
 			alert.showAndWait();
@@ -58,18 +70,18 @@ public class AddItem implements Initializable {
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
+		// Only enable button when all fields are filled in
 		BooleanBinding filled = title.textProperty().isEqualTo("")
 				.or(author.textProperty().isEqualTo(""))
 				.or(category.textProperty().isEqualTo(""))
 				.or(quantity.textProperty().isEqualTo(""))
 				.or(price.textProperty().isEqualTo(""));
-
-		// only enable the ok button when there has been some text entered.
 		ok.disableProperty().bind(filled);
 	}
 
+	// Setter methods for book list and table
 	public void setTable(TableView<Book> table) {
-		items = table;
+		this.table = table;
 	}
 
 	public void setList(ObservableList<Book> list) {

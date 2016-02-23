@@ -155,7 +155,7 @@ public class Checkout implements Initializable {
 	}
 
 	public void deductStock(ShoppingCart cart) {
-		for (int i = 0; i < cart.size; i++) {
+		for (int i = 0; i < cart.getSize(); i++) {
 			Book b = cart.getBook(i);
 			int quantity_ordered = cart.getNode(i).getQuantity();
 			b.setQuantity(b.getQuantity() - quantity_ordered);

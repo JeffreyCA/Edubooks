@@ -4,7 +4,6 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -20,33 +19,40 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
 public class BookCell extends ListCell<Book> {
+
+	// Dimensions
 	final int ICON_WIDTH = 40;
 	final int ICON_HEIGHT = 50;
 	final int LABEL_SIZE = 10;
 	final int PRICE_SIZE = 20;
 	final int SPACING = 10;
 
-	final String CART_BUTTON = "Add to cart";
-	final String BOOK_COLOUR = "#D2B394"; // Light brown
-	final String IN_STOCK = "In stock";
-	final String IN_STOCK_COLOUR = "#009900"; // Green
-	final String NO_STOCK = "Out of stock";
-	final String NO_STOCK_COLOUR = "FF0000"; // Red
-	final String WISHLIST_BUTTON = "Add to wishlist";
+	// Button text
+	final String CART_BUTTON_TEXT = "Add to cart";
+	final String IN_STOCK_TEXT = "In stock";
+	final String NO_STOCK_TEXT = "Out of stock";
+	final String WISHLIST_BUTTON_TEXT = "Add to wishlist";
 
-	@FXML
-	private javafx.scene.control.ListView<Book> shopping_cart;
+	// Button colour
+	final String BOOK_COLOUR = "#D2B394"; // Light brown
+	final String IN_STOCK_COLOUR = "#009900"; // Green
+	final String NO_STOCK_COLOUR = "FF0000"; // Red
+
+	// Initialize buttons
 	Button cart = new Button();
 	Button wishlist = new Button();
+
 	Book item;
 	Account account;
 	Instance i;
 
+	// Default constructors
 	public BookCell(Instance i) {
 		super();
 		this.i = i;
 		account = i.account;
 
+		// Add book to cart
 		cart.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -55,6 +61,7 @@ public class BookCell extends ListCell<Book> {
 			}
 		});
 
+		// Add book to wishlist
 		wishlist.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -73,12 +80,12 @@ public class BookCell extends ListCell<Book> {
 			HBox book_info = new HBox();
 			HBox buttons = new HBox();
 			HBox outer = new HBox();
+			VBox vbox = new VBox();
 			StackPane book_icon = new StackPane();
 			Rectangle book_shape = new Rectangle();
 			Label text_overlay = new Label();
 			Text price = new Text();
 			Text stock_availability = new Text();
-			VBox vbox = new VBox();
 
 			// Set spacing between elements
 			book_info.setSpacing(SPACING);
@@ -112,26 +119,30 @@ public class BookCell extends ListCell<Book> {
 			book_info.getChildren().addAll(book_icon, vbox);
 
 			// Add buttons to the cell
-			cart.setText(CART_BUTTON);
-			wishlist.setText(WISHLIST_BUTTON);
+			cart.setText(CART_BUTTON_TEXT);
+			wishlist.setText(WISHLIST_BUTTON_TEXT);
 			price.setText("$" + String.format("%.2f", b.getPrice()));
 			price.setFont(new Font(PRICE_SIZE));
 
 			// Stock availability
 			if (b.getQuantity() > 0) {
-				stock_availability.setText(IN_STOCK);
+				stock_availability.setText(IN_STOCK_TEXT);
 				stock_availability.setFill(Color.web(IN_STOCK_COLOUR));
 			}
 			else {
-				stock_availability.setText(NO_STOCK);
+				stock_availability.setText(NO_STOCK_TEXT);
 				stock_availability.setFill(Color.web(NO_STOCK_COLOUR));
 			}
 
+			// Disable cart button if item is not in stock or if item is already
+			// in the cart
 			BooleanBinding cart_binding = Bindings.createBooleanBinding(
 					() -> i.cart_list.contains(b) || b.getQuantity() <= 0,
 					i.cart_list);
+			// Disable wishlist if item is already in the wishlist
 			BooleanBinding wishlist_binding = Bindings.createBooleanBinding(
 					() -> i.wish_list.contains(b), i.wish_list);
+
 			cart.disableProperty().bind(cart_binding);
 			wishlist.disableProperty().bind(wishlist_binding);
 
@@ -144,13 +155,5 @@ public class BookCell extends ListCell<Book> {
 		else {
 			setGraphic(null);
 		}
-	}
-
-	public boolean existsInCart(Book b, ShoppingCart c) {
-		for (int i = 0; i < c.getSize(); i++) {
-			if (b.equals(c.getBook(i)))
-				return true;
-		}
-		return false;
 	}
 }
