@@ -15,12 +15,10 @@
     -fx-text-background-color: black;
 }
 
-.table-view:row-selection .table-row-cell:filled:hover {
-	-fx-background-color: #f0f0f0;
-}
 
 /* Selected row hovered */
 .table-view:focused .table-row-cell:filled:focused:selected:hover {
     -fx-background-color: #add8e6; 
     -fx-text-background-color: black;
 }
+

@@ -57,7 +57,7 @@
                                  <children>
                                     <TextField fx:id="search" layoutX="341.0" layoutY="22.0" prefHeight="25.0" prefWidth="158.0" promptText="Search by title or author" />
                                     <Label layoutX="300.0" layoutY="26.0" text="Search: " />
-                                    <ComboBox fx:id="category_box" layoutX="586.0" layoutY="22.0" prefWidth="150.0" />
+                                    <ComboBox fx:id="category_box" layoutX="586.0" layoutY="22.0" prefWidth="150.0" promptText="Sort by category" stylesheets="@combobox.css" />
                                     <Label layoutX="531.0" layoutY="26.0" text="Category:" />
                                  </children>
                               </Pane>
@@ -96,8 +96,8 @@
                                           <Font name="System Bold" size="24.0" />
                                        </font>
                                     </Text>
-                                    <Label layoutX="498.0" layoutY="27.0" text="Sort by account:" />
-                                    <ComboBox fx:id="accounts" layoutX="587.0" layoutY="23.0" prefWidth="150.0" />
+                                    <Label layoutX="537.0" layoutY="27.0" text="Account:" />
+                                    <ComboBox fx:id="accounts" layoutX="587.0" layoutY="23.0" prefWidth="150.0" promptText="Sort by account" stylesheets="@combobox.css" />
                                  </children>
                               </AnchorPane>
                            </children>

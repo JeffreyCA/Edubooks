@@ -52,6 +52,7 @@ public class StoreFront implements Initializable {
 	private javafx.scene.text.Text total;
 	@FXML
 	private javafx.scene.text.Text order_qty;
+	final String DEFAULT_CATEGORY = "-";
 
 	Instance i;
 	ArrayList<Book> book_list = new ArrayList<Book>();
@@ -59,6 +60,21 @@ public class StoreFront implements Initializable {
 	ObservableList<Order> observable_orders;
 	ObservableList<Book> observable_books;
 	OrderStack order_stack;
+
+	@Override
+	public void initialize(URL arg0, ResourceBundle arg1) {
+		processBooks();
+		setLogoutButton();
+		initializeCells();
+		initializeList();
+		filterList(DEFAULT_CATEGORY);
+		initializeCategories();
+	}
+
+	public void initializeList() {
+		i = new Instance(book_list);
+		observable_books = FXCollections.observableArrayList(book_list);
+	}
 
 	@FXML
 	private void checkoutButtonAction() {
@@ -102,17 +118,7 @@ public class StoreFront implements Initializable {
 		stage.close();
 	}
 
-	@Override
-	public void initialize(URL arg0, ResourceBundle arg1) {
-
-		processBooks();
-		setLogoutButton();
-		initializeCells();
-		initializeList();
-		initializeCategory();
-	}
-
-	public void initializeCategory() {
+	public void initializeCategories() {
 		StringStack stack = new StringStack();
 
 		for (Book b : observable_books) {
@@ -140,26 +146,58 @@ public class StoreFront implements Initializable {
 	}
 
 	public void filterList(String category) {
-		final String DEFAULT_CATEGORY = "-";
-
-		FilteredList<Book> filteredData = new FilteredList<>(observable_books,
+		// Wrap the ObservableList in a FilteredList
+		FilteredList<Book> filtered_list = new FilteredList<>(observable_books,
 				p -> true);
 
-		filteredData.setPredicate(book -> {
-			// If filter text is empty, display all persons.
-			if (category.equals(DEFAULT_CATEGORY)) {
-				return true;
+		// Set conditions for search bar queries
+		filtered_list.setPredicate(book -> {
+
+			String author = book.getAuthor().toLowerCase();
+			String title = book.getTitle().toLowerCase();
+			String filter = search.getText().toLowerCase();
+
+			if (book.getCategory().equals(category)
+					|| category.equals(DEFAULT_CATEGORY)) {
+				// If filter text is empty, display all books
+				if (search.getText().isEmpty())
+					return true;
+				// Compare search query to book list
+				else if (author.contains(filter) || title.contains(filter))
+					return true;
 			}
 
-			// Filter matches title
-			if (book.getCategory().equals(category)) {
-				return true;
-			}
-			// Filter does not match
+			// Hide the books that do not match the search query
 			return false;
 		});
 
-		books.setItems(filteredData);
+		// Listen for additional changes in the search text field
+		search.textProperty().addListener((observable, oldValue, newValue) -> {
+
+			// Conditions same as above
+			filtered_list.setPredicate(book -> {
+				String author = book.getAuthor().toLowerCase();
+				String title = book.getTitle().toLowerCase();
+				String filter = newValue.toLowerCase();
+
+				if (book.getCategory().equals(category)
+						|| category.equals(DEFAULT_CATEGORY)) {
+
+					// Different condition than above
+					if ((newValue == null || newValue.isEmpty()))
+						return true;
+
+					else if (title.contains(filter) || author.contains(filter))
+						return true;
+				}
+
+				// Filter does not match
+				return false;
+			});
+		});
+
+		// Set TableView data
+		books.setItems(filtered_list);
 	}
 
 	public void initializeCells() {
@@ -194,38 +232,6 @@ public class StoreFront implements Initializable {
 						}
 					}
 				});
-	}
-
-	public void initializeList() {
-		i = new Instance(book_list);
-		observable_books = FXCollections.observableArrayList(book_list);
-		// 1. Wrap the ObservableList in a FilteredList (initially display all
-		// data).
-		FilteredList<Book> filteredData = new FilteredList<>(observable_books,
-				p -> true);
-		// 2. Set the filter Predicate whenever the filter changes.
-		search.textProperty().addListener((observable, oldValue, newValue) -> {
-			filteredData.setPredicate(book -> {
-				// If filter text is empty, display all persons.
-				if (newValue == null || newValue.isEmpty()) {
-					return true;
-				}
-
-				// Compare book title, author, and category of every book with
-				// filter text
-				String filter = newValue.toLowerCase();
-
-				// Filter matches title
-				if (book.getTitle().toLowerCase().contains(filter)
-						|| book.getAuthor().toLowerCase().contains(filter)) {
-					return true;
-				}
-				// Filter does not match
-				return false;
-			});
-		});
-
-		books.setItems(filteredData);
 	}
 
 	public void initializeOrders(OrderStack stack) {

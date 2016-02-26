@@ -77,7 +77,9 @@ public class AdminPanel implements Initializable {
 		initializeCategoryCell();
 		initializeQuantityCell();
 		initializePriceCell();
-		initializeCategory();
+		// Initialize filter showing all books
+		filterList(DEFAULT_CATEGORY);
+		initializeCategories();
 		initializeButton();
 		initializeOrders();
 		initializeOrderAccounts();
@@ -124,7 +126,7 @@ public class AdminPanel implements Initializable {
 	 *
 	 * @param category Category selected in the combo box
 	 */
-	public void changeList(String category) {
+	public void filterList(String category) {
 		SortedList<Book> sorted_book_list;
 
 		// Wrap the ObservableList in a FilteredList
@@ -207,7 +209,7 @@ public class AdminPanel implements Initializable {
 		orders.setItems(filteredData);
 	}
 
-	public void initializeCategory() {
+	public void initializeCategories() {
 		StringStack stack = new StringStack();
 
 		for (Book b : observable_books) {
@@ -230,7 +232,7 @@ public class AdminPanel implements Initializable {
 
 		category_box.valueProperty()
 				.addListener((observable, oldValue, newValue) -> {
-					changeList(newValue);
+					filterList(newValue);
 				});
 	}
 
@@ -298,10 +300,6 @@ public class AdminPanel implements Initializable {
 		catch (IOException e) {
 			System.out.println(ERROR);
 		}
-
-		// Set default combo box values to "-"
-		accounts.getSelectionModel().select(DEFAULT_CATEGORY);
-		category_box.getSelectionModel().select(DEFAULT_CATEGORY);
 
 		// Update table
 		observable_books = FXCollections
