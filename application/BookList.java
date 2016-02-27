@@ -88,7 +88,7 @@ public class BookList {
 	 * @return Book object
 	 */
 	public Book getBook(int position) {
-		return traverse(position).getValue();
+		return get(position).getValue();
 	}
 
 	/**
@@ -97,7 +97,7 @@ public class BookList {
 	 * @return BookNode node
 	 */
 	public BookNode getNode(int position) {
-		return traverse(position);
+		return get(position);
 	}
 
 	/**
@@ -107,18 +107,10 @@ public class BookList {
 	 */
 	public BookNode getNode(Book b) {
 		for (int i = 0; i < size; i++) {
-			if (traverse(i).getValue().equals(b))
-				return traverse(i);
+			if (get(i).getValue().equals(b))
+				return get(i);
 		}
 		return null;
-	}
-
-	/**
-	 * Return size of list
-	 * @return
-	 */
-	public int getSize() {
-		return size;
 	}
 
 	/**
@@ -143,7 +135,7 @@ public class BookList {
 	 * @param i position
 	 * @return BookNode of the book
 	 */
-	public BookNode traverse(int i) {
+	public BookNode get(int i) {
 		BookNode n = head;
 
 		if (i < 0)
@@ -157,9 +149,30 @@ public class BookList {
 		return n;
 	}
 
+	/**
+	 * Returns index value of the book
+	 * @param book
+	 * @return
+	 */
+	public int indexOf(Book book) {
+		int index = 0;
+		BookNode node = head;
+
+		for (int i = 0; i < size; i++) {
+			if (node.getValue().equals(book)) {
+				return index;
+			}
+			else {
+				index++;
+				node = node.getLink();
+			}
+		}
+		return -1;
+	}
+
 	// Replace contents of a node
 	public boolean replace(Book item, int position) {
-		BookNode node = traverse(position);
+		BookNode node = get(position);
 
 		// Node does not exist
 		if (node == null) {

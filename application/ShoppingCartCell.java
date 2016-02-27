@@ -1,5 +1,8 @@
 package application;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -45,15 +48,19 @@ public class ShoppingCartCell extends ListCell<Book> {
 	Text tax;
 	Text total;
 
+	ObservableList<Book> observable_wishlist;
 	Account account;
 	Instance i;
 	int qty;
 
 	// Default constructor
-	public ShoppingCartCell(Instance i, Text subtotal, Text tax, Text total) {
+	public ShoppingCartCell(Instance i, Text subtotal, Text tax, Text total,
+			ObservableList<Book> observable_wishlist) {
 		super();
 		this.i = i;
 		account = i.account;
+		this.observable_wishlist = observable_wishlist;
+
 		this.subtotal = subtotal;
 		this.tax = tax;
 		this.total = total;
@@ -81,7 +88,7 @@ public class ShoppingCartCell extends ListCell<Book> {
 
 			// Check if cart needs to be cleared
 			if (account.getCart().isEmpty()) {
-				i.cart_list.clear();
+				i.observable_wishlist.clear();
 			}
 			else {
 				// Update quantity
@@ -139,6 +146,14 @@ public class ShoppingCartCell extends ListCell<Book> {
 				account.getCart().getNode(b).setQuantity(qty);
 				updatePrices();
 			});
+
+			/*
+			 * The "Move to Wishlist" button is disabled when the book is
+			 * already in the wishlist
+			 */
+			BooleanBinding transfer_binding = Bindings.createBooleanBinding(
+					() -> observable_wishlist.contains(b), observable_wishlist);
+			transfer.disableProperty().bind(transfer_binding);
 
 			// On-click actions for the buttons
 			remove.setOnAction(new EventHandler<ActionEvent>() {

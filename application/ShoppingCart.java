@@ -15,6 +15,9 @@ public class ShoppingCart extends BookList {
 		while (node != null) {
 			s += node.getValue().formatted() + "Quantity: "
 					+ node.getQuantity();
+			if (node.getLink() != null)
+				s += "\n\n";
+
 			node = node.getLink();
 		}
 		return s;
@@ -49,7 +52,7 @@ public class ShoppingCart extends BookList {
 		BookNode n;
 		subtotal = 0;
 		for (int i = 0; i < size; i++) {
-			n = traverse(i);
+			n = get(i);
 			subtotal += n.getQuantity() * n.getValue().getPrice();
 		}
 	}
@@ -60,7 +63,7 @@ public class ShoppingCart extends BookList {
 
 	public boolean contains(Book b) {
 		for (int i = 0; i < size; i++) {
-			if (traverse(i).getValue().equals(b))
+			if (get(i).getValue().equals(b))
 				return true;
 		}
 		return false;

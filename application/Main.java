@@ -10,12 +10,14 @@ import javafx.stage.Stage;
 /*
  * TODO Uncommented Classes:
  *
- * BookNode CartList Checkout CustomerEntrance Instance Landing Main Order
- * OrderController OrderNode OrderStack ShoppingCart StoreFront StringNode
- * StringStack Utilities Wishlist
+ * CustomerEntrance Instance Landing Main Order OrderController OrderNode
+ * OrderStack ShoppingCart StoreFront StringNode StringStack Utilities Wishlist
  *
  * Improvements: Payment methods Change password Save address Save payment
  * method Change tax rate Add shipping fee
+ *
+ * Modifying inventory (adding book or deleting book) messes up customer
+ * shopping cart + wishlist
  */
 
 public class Main extends Application {

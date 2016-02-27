@@ -32,7 +32,7 @@ public class Address {
 	@Override
 	public String toString() {
 		return name + "\n" + street + "\n" + city + "\n" + province + "\n"
-				+ postal + "\n" + country + "\n " + phone;
+				+ postal + "\n" + country + "\n" + phone;
 	}
 
 	// Formatted address with headings

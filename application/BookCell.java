@@ -2,6 +2,7 @@ package application;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -41,16 +42,22 @@ public class BookCell extends ListCell<Book> {
 	// Initialize buttons
 	Button cart = new Button();
 	Button wishlist = new Button();
-
+	ObservableList<Book> observable_cart;
+	ObservableList<Book> observable_wishlist;
 	Book item;
 	Account account;
 	Instance i;
 
 	// Default constructors
-	public BookCell(Instance i) {
+	public BookCell(Instance i, ObservableList<Book> observable_cart,
+			ObservableList<Book> observable_wishlist) {
 		super();
 		this.i = i;
 		account = i.account;
+		this.observable_cart = observable_cart;
+		this.observable_wishlist = observable_wishlist;
+		i.observable_cart = observable_cart;
+		i.observable_wishlist = observable_wishlist;
 
 		// Add book to cart
 		cart.setOnAction(new EventHandler<ActionEvent>() {
@@ -137,11 +144,11 @@ public class BookCell extends ListCell<Book> {
 			// Disable cart button if item is not in stock or if item is already
 			// in the cart
 			BooleanBinding cart_binding = Bindings.createBooleanBinding(
-					() -> i.cart_list.contains(b) || b.getQuantity() <= 0,
-					i.cart_list);
+					() -> observable_cart.contains(b) || b.getQuantity() <= 0,
+					observable_cart);
 			// Disable wishlist if item is already in the wishlist
 			BooleanBinding wishlist_binding = Bindings.createBooleanBinding(
-					() -> i.wish_list.contains(b), i.wish_list);
+					() -> observable_wishlist.contains(b), observable_wishlist);
 
 			cart.disableProperty().bind(cart_binding);
 			wishlist.disableProperty().bind(wishlist_binding);

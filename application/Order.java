@@ -22,8 +22,8 @@ public class Order {
 	@Override
 	public String toString() {
 		String s = "";
-		s += items.getSize() + "\n";
-		for (int i = 0; i < items.getSize(); i++) {
+		s += items.size + "\n";
+		for (int i = 0; i < items.size; i++) {
 			s += items.getBook(i) + "\n";
 			s += items.getNode(i).getQuantity() + "\n";
 		}

@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
@@ -55,10 +54,11 @@ public class StoreFront implements Initializable {
 	final String DEFAULT_CATEGORY = "-";
 
 	Instance i;
-	ArrayList<Book> book_list = new ArrayList<Book>();
-	ArrayList<Order> order_list = new ArrayList<Order>();
+	BookList book_list;
 	ObservableList<Order> observable_orders;
 	ObservableList<Book> observable_books;
+	ObservableList<Book> observable_cart;
+	ObservableList<Book> observable_wishlist;
 	OrderStack order_stack;
 
 	@Override
@@ -73,7 +73,15 @@ public class StoreFront implements Initializable {
 
 	public void initializeList() {
 		i = new Instance(book_list);
-		observable_books = FXCollections.observableArrayList(book_list);
+		observable_books = FXCollections
+				.observableArrayList(book_list.toArrayList());
+	}
+
+	public void initializeCartWishlist() {
+		observable_cart = FXCollections
+				.observableArrayList(i.account.getCart().toArrayList());
+		observable_wishlist = FXCollections
+				.observableArrayList(i.account.getWishlist().toArrayList());
 	}
 
 	@FXML
@@ -87,7 +95,9 @@ public class StoreFront implements Initializable {
 			Scene scene = new Scene(root);
 
 			// Pass data to controller
-			controller.setObservableList(observable_orders);
+			controller.setObservableBooks(observable_books);
+			controller.setObservableOrders(observable_orders);
+
 			controller.setInstance(i);
 			controller.setSubtotalText(subtotal);
 			controller.setTaxText(tax);
@@ -110,7 +120,7 @@ public class StoreFront implements Initializable {
 
 	public void setOrders(OrderStack order_stack) {
 		this.order_stack = order_stack;
-		order_list = order_stack.toArrayList();
+
 	}
 
 	public void closeStage() {
@@ -205,7 +215,8 @@ public class StoreFront implements Initializable {
 				new Callback<ListView<Book>, javafx.scene.control.ListCell<Book>>() {
 					@Override
 					public ListCell<Book> call(ListView<Book> listView) {
-						return new BookCell(i);
+						return new BookCell(i, observable_cart,
+								observable_wishlist);
 					}
 				});
 	}
@@ -235,8 +246,8 @@ public class StoreFront implements Initializable {
 	}
 
 	public void initializeOrders(OrderStack stack) {
-		order_list = stack.toArrayList();
-		observable_orders = FXCollections.observableArrayList(order_list);
+		observable_orders = FXCollections
+				.observableArrayList(stack.toArrayList());
 
 		orders.setCellFactory(
 				new Callback<ListView<Order>, javafx.scene.control.ListCell<Order>>() {
@@ -249,16 +260,16 @@ public class StoreFront implements Initializable {
 		order_qty.setText(stack.size + " Orders");
 	}
 
-	public void initializeCart(CartList cart_list) {
-		i.cart_list = cart_list;
+	public void initializeCart() {
 		shopping_cart.setCellFactory(
 				new Callback<ListView<Book>, javafx.scene.control.ListCell<Book>>() {
 					@Override
 					public ListCell<Book> call(ListView<Book> listView) {
-						return new ShoppingCartCell(i, subtotal, tax, total);
+						return new ShoppingCartCell(i, subtotal, tax, total,
+								observable_wishlist);
 					}
 				});
-		shopping_cart.setItems(cart_list);
+		shopping_cart.setItems(observable_cart);
 
 		double sub_price = i.account.getCart().getTotal();
 		double tax_price = Utilities.TAX * sub_price;
@@ -267,20 +278,19 @@ public class StoreFront implements Initializable {
 		subtotal.setText(String.format("$%.2f", sub_price));
 		tax.setText(String.format("$%.2f", tax_price));
 		total.setText(String.format("$%.2f", total_price));
-		BooleanBinding n = Bindings.isEmpty(cart_list);
+		BooleanBinding n = Bindings.isEmpty(observable_cart);
 		checkout.disableProperty().bind(n);
 	}
 
-	public void initializeWishlist(CartList wish_list) {
-		i.wish_list = wish_list;
+	public void initializeWishlist() {
 		wishlist.setCellFactory(
 				new Callback<ListView<Book>, javafx.scene.control.ListCell<Book>>() {
 					@Override
 					public ListCell<Book> call(ListView<Book> listView) {
-						return new WishlistCell(i);
+						return new WishlistCell(i, observable_cart);
 					}
 				});
-		wishlist.setItems(wish_list);
+		wishlist.setItems(observable_wishlist);
 	}
 
 	public Instance getInstance() {
@@ -310,6 +320,7 @@ public class StoreFront implements Initializable {
 		// File readers
 		FileReader file_reader;
 		BufferedReader reader;
+		book_list = new BookList();
 
 		try {
 			// Initialize file readers for customer file

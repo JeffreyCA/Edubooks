@@ -94,16 +94,13 @@ public class CustomerEntrance implements Initializable {
 			Stage stage = (Stage) login.getScene().getWindow();
 			Scene scene = new Scene(root);
 			Instance i = controller.getInstance();
-			CartList c = new CartList();
-			CartList w = new CartList();
 
 			i.account = a;
 			i.loadData();
-			c.copy(a.getCart());
-			w.copy(a.getWishlist());
 
-			controller.initializeCart(c);
-			controller.initializeWishlist(w);
+			controller.initializeCartWishlist();
+			controller.initializeCart();
+			controller.initializeWishlist();
 			controller.initializeOrders(a.getOrderStack());
 			controller.setOrders(a.getOrderStack());
 

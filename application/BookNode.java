@@ -1,28 +1,41 @@
 package application;
 
+/**
+ * BookNode class, which stores Book objects
+ */
 public class BookNode {
-
+	// Private fields
 	private Book value;
-	private int quantity;
 	private BookNode link;
+	// This quantity refers to the quantity of a book in shopping cart
+	private int quantity;
 
-	// Constructor
+	/**
+	 * Default constructor
+	 */
+	public BookNode(Book value) {
+		this.value = value;
+		this.quantity = 1;
+		this.link = null;
+	}
+
+	/**
+	 * Used in context of a shopping cart
+	 */
 	public BookNode(Book value, int quantity, BookNode link) {
 		this.value = value;
 		this.quantity = quantity;
 		this.link = link;
 	}
 
+	/**
+	 * Used in other contexts (list, wishlist, which do not require the
+	 * quantity)
+	 */
 	public BookNode(Book value, BookNode link) {
 		this.value = value;
 		this.quantity = 1;
 		this.link = link;
-	}
-
-	public BookNode(Book value) {
-		this.value = value;
-		this.quantity = 1;
-		this.link = null;
 	}
 
 	// Getters and setters

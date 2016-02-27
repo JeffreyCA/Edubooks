@@ -2,6 +2,7 @@ package application;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -28,7 +29,7 @@ public class WishlistCell extends ListCell<Book> {
 
 	// Button text
 	final String REMOVE_BUTTON_TEXT = "Remove from wishlist";
-	final String TRANSFER_BUTTON_TEXT = "Move to cart";
+	final String TRANSFER_BUTTON_TEXT = "Add to cart";
 
 	// Colour codes
 	final String BOOK_COLOUR = "#D2B394"; // Light brown
@@ -40,13 +41,15 @@ public class WishlistCell extends ListCell<Book> {
 	// Button to move item to shopping cart
 	Button transfer;
 
+	ObservableList<Book> observable_cart;
 	Account account;
 	Instance i;
 
-	public WishlistCell(Instance i) {
+	public WishlistCell(Instance i, ObservableList<Book> observable_cart) {
 		super();
 		this.i = i;
 		account = i.account;
+		this.observable_cart = observable_cart;
 	}
 
 	@Override
@@ -67,11 +70,6 @@ public class WishlistCell extends ListCell<Book> {
 			// Initialize Buttons
 			remove = new Button();
 			transfer = new Button();
-
-			// Check if wishlist needs to be cleared
-			if (account.getWishlist().isEmpty()) {
-				i.wish_list.clear();
-			}
 
 			// Set spacing between elements
 			book_info.setSpacing(SPACING);
@@ -115,9 +113,9 @@ public class WishlistCell extends ListCell<Book> {
 			 * The "Move to Cart" button is disabled when the book is already in
 			 * the shopping cart
 			 */
-			BooleanBinding wishlist_binding = Bindings.createBooleanBinding(
-					() -> i.cart_list.contains(b), i.cart_list);
-			transfer.disableProperty().bind(wishlist_binding);
+			BooleanBinding transfer_binding = Bindings.createBooleanBinding(
+					() -> observable_cart.contains(b), observable_cart);
+			transfer.disableProperty().bind(transfer_binding);
 
 			// On-click actions for the buttons
 			remove.setOnAction(new EventHandler<ActionEvent>() {
@@ -132,7 +130,7 @@ public class WishlistCell extends ListCell<Book> {
 				@Override
 				public void handle(ActionEvent event) {
 					// Move item from wishlist to shopping cart
-					i.removeFromWishlist(b);
+					// i.removeFromWishlist(b);
 					i.addToCart(b);
 					account.save(i);
 				}

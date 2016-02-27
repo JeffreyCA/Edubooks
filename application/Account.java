@@ -6,7 +6,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 // Account class for customer objects
 public class Account {
@@ -98,7 +97,7 @@ public class Account {
 		String name = this.email + ".dat";
 
 		// Database list of books
-		ArrayList<Book> book_list = i.list;
+		BookList book_list = i.book_list;
 
 		try {
 			// Initialize file writers
@@ -106,27 +105,27 @@ public class Account {
 			writer = new BufferedWriter(file);
 
 			// Get number of items in the shopping cart
-			writer.write(String.valueOf(cart.getSize()));
+			writer.write(String.valueOf(cart.size));
 			writer.newLine();
 
 			/*
 			 * Write index value of the book that is in the shopping cart. The
 			 * index value refers to the book's position in the store database
 			 */
-			for (int j = 0; j < cart.getSize(); j++) {
+			for (int j = 0; j < cart.size; j++) {
 				writer.write(
 						String.valueOf(book_list.indexOf(cart.getBook(j))));
 				writer.newLine();
 			}
 
 			// Get number of items in the wishlist
-			writer.write(String.valueOf(wishlist.getSize()));
+			writer.write(String.valueOf(wishlist.size));
 			writer.newLine();
 			/*
 			 * Write index value of the book that is in the wishlist. The index
 			 * value refers to the book's position in the store database
 			 */
-			for (int j = 0; j < wishlist.getSize(); j++) {
+			for (int j = 0; j < wishlist.size; j++) {
 				writer.write(
 						String.valueOf(book_list.indexOf(wishlist.getBook(j))));
 				writer.newLine();
@@ -164,7 +163,7 @@ public class Account {
 
 		// File name
 		String name = this.email + ".dat";
-		ArrayList<Book> book_list = i.list;
+		BookList book_list = i.book_list;
 
 		// Initialize lists
 		cart = new ShoppingCart();
@@ -182,18 +181,19 @@ public class Account {
 			// Add book located at the index value in the book database
 			for (int j = 0; j < cart_items; j++) {
 				int index = Integer.parseInt(reader.readLine());
-				if (index < book_list.size()
+				if (index < book_list.size
 						&& book_list.get(index).getQuantity() > 0)
-					cart.add(book_list.get(index));
+					cart.add(book_list.get(index).getValue());
 			}
 
 			// Get number of items in the wishlist
 			int wishlist_items = Integer.parseInt(reader.readLine());
+			System.out.println("Wishlist: " + wishlist_items);
 			for (int j = 0; j < wishlist_items; j++) {
 				int index = Integer.parseInt(reader.readLine());
-				if (index < book_list.size()
+				if (index < book_list.size
 						&& book_list.get(index).getQuantity() > 0)
-					wishlist.add(book_list.get(index));
+					wishlist.add(book_list.get(index).getValue());
 			}
 
 			// Get number of orders
