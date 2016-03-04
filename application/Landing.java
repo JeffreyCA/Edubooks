@@ -9,16 +9,23 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class Landing {
+	// FXML fields
 	@FXML
 	private javafx.scene.control.Button admin;
 	@FXML
 	private javafx.scene.control.Button customer;
 
+	/**
+	 * Show customer login/registration window when Customer button is clicked
+	 */
 	@FXML
 	private void customerButtonAction() {
 		showCustomerScreen();
 	}
 
+	/**
+	 * Show admin login window when Administrator button is clicked
+	 */
 	@FXML
 	private void adminButtonAction() {
 		showAdminLogin();
@@ -67,7 +74,7 @@ public class Landing {
 
 	/**
 	 * Show admin registration screen
-	 * Asks for admin password to be used for the admin panel
+	 * Ask for admin password to be used for the admin panel
 	 */
 	public void showAdminRegister() {
 		try {
@@ -82,7 +89,7 @@ public class Landing {
 			stage.show();
 		}
 		catch (Exception e) {
-			System.out.println("Error!");
+			System.out.println("Error");
 		}
 	}
 }

@@ -10,9 +10,7 @@ public class BookNode {
 	// This quantity refers to the quantity of a book in shopping cart
 	private int quantity;
 
-	/**
-	 * Default constructor
-	 */
+	// Default constructor
 	public BookNode(Book value) {
 		this.value = value;
 		this.quantity = 1;

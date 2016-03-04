@@ -135,7 +135,6 @@ public class AdminPanel implements Initializable {
 
 		// Set conditions for search bar queries
 		filteredData.setPredicate(book -> {
-
 			String author = book.getAuthor().toLowerCase();
 			String title = book.getTitle().toLowerCase();
 			String filter = search.getText().toLowerCase();
@@ -210,23 +209,23 @@ public class AdminPanel implements Initializable {
 	}
 
 	public void initializeCategories() {
-		StringStack stack = new StringStack();
+		StringStack category_stack = new StringStack();
 
-		for (Book b : observable_books) {
-			String genre_main = b.getCategory();
-			if (stack.isEmpty()) {
-				stack.push(genre_main);
+		for (Book book : observable_books) {
+			String genre_main = book.getCategory();
+			if (category_stack.isEmpty()) {
+				category_stack.push(genre_main);
 			}
 			else {
-				if (!stack.contains(genre_main)) {
-					stack.push(genre_main);
+				if (!category_stack.contains(genre_main)) {
+					category_stack.push(genre_main);
 				}
 			}
 		}
-		stack.sort();
+		category_stack.sort();
 
 		ObservableList<String> categories = FXCollections
-				.observableArrayList(stack.toArrayList());
+				.observableArrayList(category_stack.toArrayList());
 		category_box.getItems().add(DEFAULT_CATEGORY);
 		category_box.getItems().addAll(categories);
 
@@ -242,7 +241,6 @@ public class AdminPanel implements Initializable {
 	public void processBooks() {
 		// Constant Declaration
 		final int LINES_PER_BOOK = 5;
-		final String ERROR = "Error reading file.";
 
 		// Variable Declaration
 		boolean valid;
@@ -298,7 +296,7 @@ public class AdminPanel implements Initializable {
 			file_reader.close();
 		}
 		catch (IOException e) {
-			System.out.println(ERROR);
+			System.out.println("Error reading file");
 		}
 
 		// Update table
@@ -351,9 +349,8 @@ public class AdminPanel implements Initializable {
 	public OrderStack processOrders() {
 		// Constant declaration
 		final String FILE_TYPE = ".dat";
-		final String ERROR = "Error!";
 		// Stack containing all orders
-		OrderStack stack = new OrderStack();
+		OrderStack order_stack = new OrderStack();
 		// Store data filenames in array
 		String[] customers = countCustomers();
 		int accounts = customers.length;
@@ -419,13 +416,13 @@ public class AdminPanel implements Initializable {
 							province, postal, country, phone);
 
 					// Email is the file name minus the .dat extension
-					Order o = new Order(order_cart, tax, date, address,
+					Order order = new Order(order_cart, tax, date, address,
 							file_name.replace(FILE_TYPE, ""));
-					customer_stack.push(o);
+					customer_stack.push(order);
 				}
 
 				// Merge the customer order stack to the master order stack
-				stack.merge(customer_stack);
+				order_stack.merge(customer_stack);
 
 				// Close readers
 				reader.close();
@@ -433,16 +430,16 @@ public class AdminPanel implements Initializable {
 			}
 			// Handle exception
 			catch (IOException e) {
-				System.out.println(ERROR);
+				System.out.println("Error");
 			}
 			catch (NumberFormatException e) {
-				System.out.println(ERROR);
+				System.out.println("Error");
 			}
 		}
 		// Sort stack according to date (most recent at top, oldest at
 		// bottom
-		stack.sort();
-		return stack;
+		order_stack.sort();
+		return order_stack;
 	}
 
 	/**
@@ -460,17 +457,17 @@ public class AdminPanel implements Initializable {
 			writer = new BufferedWriter(file);
 
 			// Write all book info to the file
-			for (Book b : data) {
-				writer.write(b.getTitle());
+			for (Book book : data) {
+				writer.write(book.getTitle());
 				writer.newLine();
-				writer.write(b.getAuthor());
+				writer.write(book.getAuthor());
 				writer.newLine();
-				writer.write(b.getCategory());
+				writer.write(book.getCategory());
 				writer.newLine();
 				// BufferedWriter can only write Strings properly
-				writer.write(String.valueOf(b.getQuantity()));
+				writer.write(String.valueOf(book.getQuantity()));
 				writer.newLine();
-				writer.write(String.valueOf(b.getPrice()));
+				writer.write(String.valueOf(book.getPrice()));
 				writer.newLine();
 			}
 
@@ -589,26 +586,28 @@ public class AdminPanel implements Initializable {
 	 * Initialize combobox for selecting account in order view
 	 */
 	public void initializeOrderAccounts() {
-		StringStack stack = new StringStack();
+		StringStack account_stack = new StringStack();
 
-		for (Order o : observable_orders) {
-			String email = o.getEmail();
-			if (stack.isEmpty()) {
-				stack.push(email);
+		// Add all accounts to a list
+		for (Order order : observable_orders) {
+			String email = order.getEmail();
+			if (account_stack.isEmpty()) {
+				account_stack.push(email);
 			}
 			else {
-				if (!stack.contains(email)) {
-					stack.push(email);
+				if (!account_stack.contains(email)) {
+					account_stack.push(email);
 				}
 			}
 		}
-		stack.sort();
+		account_stack.sort();
 
 		ObservableList<String> categories = FXCollections
-				.observableArrayList(stack.toArrayList());
+				.observableArrayList(account_stack.toArrayList());
 		accounts.getItems().add(DEFAULT_CATEGORY);
 		accounts.getItems().addAll(categories);
 
+		// When combobox is changed
 		accounts.valueProperty()
 				.addListener((observable, oldValue, newValue) -> {
 					filterOrderList(newValue);

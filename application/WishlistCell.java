@@ -19,7 +19,11 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
+/**
+ * Layout of a wishlist cell (ListView)
+ */
 public class WishlistCell extends ListCell<Book> {
+
 	// Dimensions
 	final int ICON_WIDTH = 40;
 	final int ICON_HEIGHT = 50;
@@ -53,10 +57,10 @@ public class WishlistCell extends ListCell<Book> {
 	}
 
 	@Override
-	public void updateItem(Book b, boolean empty) {
-		super.updateItem(b, empty);
+	public void updateItem(Book book, boolean empty) {
+		super.updateItem(book, empty);
 
-		if (b != null) {
+		if (book != null) {
 			// Declare and initialize book cell elements
 			HBox book_info = new HBox();
 			HBox buttons = new HBox();
@@ -90,15 +94,15 @@ public class WishlistCell extends ListCell<Book> {
 
 			// Add text overlay
 			text_overlay.setFont(new Font(LABEL_SIZE));
-			text_overlay.setText(b.getCategory());
+			text_overlay.setText(book.getCategory());
 			text_overlay.setWrapText(true);
 			text_overlay.setTextAlignment(TextAlignment.CENTER);
 			text_overlay.setTextFill(Color.BLACK);
 			book_icon.getChildren().addAll(book_shape, text_overlay);
 
 			// Add book information beside the icon
-			vbox.getChildren().add(new Text(b.getTitle()));
-			vbox.getChildren().add(new Text(b.getAuthor()));
+			vbox.getChildren().add(new Text(book.getTitle()));
+			vbox.getChildren().add(new Text(book.getAuthor()));
 			book_info.getChildren().addAll(book_icon, vbox);
 
 			// Add buttons to the cell
@@ -107,14 +111,14 @@ public class WishlistCell extends ListCell<Book> {
 
 			// Set price text
 			price.setFont(new Font(PRICE_SIZE));
-			price.setText("$" + String.format("%.2f", b.getPrice()));
+			price.setText("$" + String.format("%.2f", book.getPrice()));
 
 			/*
 			 * The "Move to Cart" button is disabled when the book is already in
 			 * the shopping cart
 			 */
 			BooleanBinding transfer_binding = Bindings.createBooleanBinding(
-					() -> observable_cart.contains(b), observable_cart);
+					() -> observable_cart.contains(book), observable_cart);
 			transfer.disableProperty().bind(transfer_binding);
 
 			// On-click actions for the buttons
@@ -122,16 +126,15 @@ public class WishlistCell extends ListCell<Book> {
 				@Override
 				public void handle(ActionEvent event) {
 					// Remove item from wishlist
-					i.removeFromWishlist(b);
+					i.removeFromWishlist(book);
 					account.save(i);
 				}
 			});
 			transfer.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					// Move item from wishlist to shopping cart
-					// i.removeFromWishlist(b);
-					i.addToCart(b);
+					// Copy item from wishlist to shopping cart
+					i.addToCart(book);
 					account.save(i);
 				}
 			});

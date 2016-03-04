@@ -31,7 +31,6 @@ public class AdminRegistration implements Initializable {
 	 */
 	@FXML
 	private void doneButtonAction() {
-		final String ERROR = "File error!";
 		try {
 			// Open file
 			RandomAccessFile file = new RandomAccessFile(Utilities.ADMIN_LOGIN,
@@ -41,10 +40,10 @@ public class AdminRegistration implements Initializable {
 			file.close();
 		}
 		catch (FileNotFoundException e) {
-			System.out.println(ERROR);
+			System.out.println("File Error");
 		}
 		catch (IOException e) {
-			System.out.println(ERROR);
+			System.out.println("Error");
 		}
 
 		// Close window when done

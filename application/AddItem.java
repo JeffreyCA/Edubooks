@@ -32,6 +32,17 @@ public class AddItem implements Initializable {
 	private javafx.scene.control.TableView<Book> table;
 	private ObservableList<Book> data;
 
+	@Override
+	public void initialize(URL arg0, ResourceBundle arg1) {
+		// Only enable button when all fields are filled in
+		BooleanBinding filled = title.textProperty().isEqualTo("")
+				.or(author.textProperty().isEqualTo(""))
+				.or(category.textProperty().isEqualTo(""))
+				.or(quantity.textProperty().isEqualTo(""))
+				.or(price.textProperty().isEqualTo(""));
+		ok.disableProperty().bind(filled);
+	}
+
 	/**
 	 * Close window the "Cancel" button is clicked
 	 */
@@ -48,15 +59,16 @@ public class AddItem implements Initializable {
 	@FXML
 	private void okButtonAction() {
 		// Next index in the book list
-		int nextIndex = table.getSelectionModel().getSelectedIndex() + 1;
+		table.getSelectionModel().selectLast();
+		int next_index = table.getSelectionModel().getSelectedIndex() + 1;
 
 		try {
 			Book book = new Book(title.getText(), author.getText(),
 					category.getText(), Long.valueOf(quantity.getText()),
 					Double.valueOf(price.getText()));
-			data.add(nextIndex, book);
+			data.add(next_index, book);
 
-			table.getSelectionModel().select(nextIndex);
+			table.getSelectionModel().select(next_index);
 			Stage stage = (Stage) ok.getScene().getWindow();
 			stage.close();
 		}
@@ -66,17 +78,6 @@ public class AddItem implements Initializable {
 			alert.setContentText("Invalid Input!");
 			alert.showAndWait();
 		}
-	}
-
-	@Override
-	public void initialize(URL arg0, ResourceBundle arg1) {
-		// Only enable button when all fields are filled in
-		BooleanBinding filled = title.textProperty().isEqualTo("")
-				.or(author.textProperty().isEqualTo(""))
-				.or(category.textProperty().isEqualTo(""))
-				.or(quantity.textProperty().isEqualTo(""))
-				.or(price.textProperty().isEqualTo(""));
-		ok.disableProperty().bind(filled);
 	}
 
 	// Setter methods for book list and table

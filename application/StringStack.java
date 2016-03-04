@@ -1,57 +1,50 @@
 package application;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
 
+/**
+ * Stack of strings
+ */
 public class StringStack {
 	protected StringNode top;
 	protected int size;
 
+	// Default Constructor
 	public StringStack() {
 		top = null;
 		size = 0;
 	}
 
+	/**
+	 * Check if the stack contains a given string
+	 * @param s String to be checked
+	 * @return true, if the stack contains the string, otherwise false
+	 */
+	public boolean contains(String s) {
+		StringNode node = top;
+
+		// Search node-by-node
+		while (node != null) {
+			if (node.getValue().equals(s)) {
+				return true;
+			}
+			node = node.getLink();
+		}
+		return false;
+	}
+
+	/**
+	 * Check if stack is empty
+	 * @return true, if empty, otherwise false
+	 */
 	public boolean isEmpty() {
 		return top == null;
 	}
 
-	public void sort() {
-		StringStack temp = new StringStack();
-
-		if (isEmpty())
-			return;
-
-		while (!isEmpty()) {
-			String o = pop();
-			while (!temp.isEmpty() && ((temp.peek().compareTo(o) < 0))) {
-				push(temp.pop());
-			}
-			temp.push(o);
-		}
-
-		this.top = temp.top;
-	}
-
-	public String pop() {
-		if (top != null) {
-			String data = top.getValue();
-			top = top.getLink();
-			size--;
-			return data;
-		}
-		else {
-			return null;
-		}
-	}
-
-	public void push(String item) {
-		StringNode temp = new StringNode(item, top);
-		top = temp;
-		size++;
-	}
-
+	/**
+	 * Get the top string in the stack
+	 * @return String at the top of the stack
+	 */
 	public String peek() {
 		if (top == null) {
 			throw new RuntimeException("Empty stack");
@@ -62,79 +55,58 @@ public class StringStack {
 		}
 	}
 
-	public void merge(StringStack stack) {
-		while (!stack.isEmpty()) {
-			push(stack.pop());
+	/**
+	 * Remove the String at the top of the stack
+	 * @return the String at the top
+	 */
+	public String pop() {
+		// Stack is not empty
+		if (top != null) {
+			String data = top.getValue();
+			top = top.getLink();
+			size--;
+			return data;
 		}
-	}
-
-	public boolean contains(String s) {
-		StringNode node = top;
-
-		while (node != null) {
-			if (node.getValue().equals(s)) {
-				return true;
-			}
-			node = node.getLink();
-		}
-		return false;
-	}
-
-	public Iterator<String> iterator() {
-		Iterator<String> it = new Iterator<String>() {
-			StringNode node = top;
-			private int currentIndex = 0;
-
-			@Override
-			public boolean hasNext() {
-				return currentIndex < size && node.getValue() != null;
-			}
-
-			@Override
-			public String next() {
-
-				if (currentIndex != 0) {
-					currentIndex++;
-					node = node.getLink();
-				}
-
-				currentIndex++;
-
-				if (node == null) {
-					throw new NoSuchElementException();
-				}
-				return node.getValue();
-			}
-
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException();
-			}
-		};
-		return it;
-	}
-
-	private void bottomPop(String o) {
-		if (isEmpty())
-			push(o);
+		// Empty stack
 		else {
-			String a = top.getValue();
-			pop();
-			bottomPop(o);
-			push(a);
+			return null;
 		}
 	}
 
-	// Recursion
-	public void reverse() {
-		if (!isEmpty()) {
-			String o = top.getValue();
-			pop();
-			reverse();
-			bottomPop(o);
-		}
+	/**
+	 * Add String to top of stack
+	 * @param string String to be added
+	 */
+	public void push(String string) {
+		StringNode temp = new StringNode(string, top);
+		top = temp;
+		size++;
 	}
 
+	/**
+	 * Sort Strings in stack in alphabetical order
+	 */
+	public void sort() {
+		StringStack temp = new StringStack();
+
+		if (isEmpty())
+			return;
+
+		while (!isEmpty()) {
+			String s = pop();
+			while (!temp.isEmpty() && ((temp.peek().compareTo(s) < 0))) {
+				push(temp.pop());
+			}
+			temp.push(s);
+		}
+
+		this.top = temp.top;
+	}
+
+	/**
+	 * Convert stack to an ArrayList
+	 * @return ArrayList of Strings
+	 */
 	public ArrayList<String> toArrayList() {
 		StringNode node = top;
 		ArrayList<String> list = new ArrayList<String>();

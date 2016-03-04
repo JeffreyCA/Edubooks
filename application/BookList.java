@@ -38,17 +38,17 @@ public class BookList {
 
 	/**
 	 * Delete a book in the list
-	 * @param b Book to be deleted
+	 * @param book Book to be deleted
 	 * @return True if book is deleted, otherwise false if book is not in
 	 *         the list
 	 */
-	public boolean delete(Book b) {
+	public boolean delete(Book book) {
 		BookNode current = head;
 		BookNode previous = null;
 
 		// Iterate through list
 		while (current != null) {
-			if (current.getValue().equals(b)) {
+			if (current.getValue().equals(book)) {
 				if (current == head) {
 					head = head.getLink();
 				}
@@ -102,12 +102,12 @@ public class BookList {
 
 	/**
 	 * Given a book, return its encompassing node
-	 * @param b Book considered
+	 * @param book Book considered
 	 * @return BookNode which Book is part of
 	 */
-	public BookNode getNode(Book b) {
+	public BookNode getNode(Book book) {
 		for (int i = 0; i < size; i++) {
-			if (get(i).getValue().equals(b))
+			if (get(i).getValue().equals(book))
 				return get(i);
 		}
 		return null;

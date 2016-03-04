@@ -47,14 +47,19 @@ public class CustomerEntrance implements Initializable {
 		stage.close();
 	}
 
+	/**
+	 * Proceed to storefront when use logs in
+	 */
 	@FXML
 	private void loginButtonAction() {
+		Account customer = null;
+		boolean success = false;
+
 		String email_address = email.getText();
 		String password = pw.getText();
-		boolean success = false;
 		String error = "Invalid login information";
-		Account customer = null;
 
+		// Error messages
 		// Empty email
 		if (email_address.length() == 0)
 			error = "Please enter an email!";
@@ -75,17 +80,72 @@ public class CustomerEntrance implements Initializable {
 				}
 			}
 		}
+		// Display alert popup if user enters invalid information
 		if (!success) {
 			Alert alert = new Alert(Alert.AlertType.ERROR);
 			alert.setContentText(error);
 			alert.showAndWait();
 		}
+		// Otherwise proceed to storefront
 		else {
 			launchStore(customer);
 		}
 	}
 
+	/**
+	 * Use data files to create a list of customer Accounts
+	 */
+	private void importAccounts() {
+		// One line for email, another line for password
+		final int LINES_PER_ACCOUNT = 2;
+
+		// Variables
+		boolean valid;
+		// Calculate number of customers from the number of lines in the
+		// customer data file
+		int lines = Utilities.countLines(Utilities.CUSTOMER_FILE);
+		int accounts = lines / LINES_PER_ACCOUNT;
+		String email;
+		String password;
+
+		// File readers
+		FileReader file_reader;
+		BufferedReader reader;
+
+		try {
+			// Initialize file readers for customer file
+			file_reader = new FileReader(Utilities.CUSTOMER_FILE);
+			reader = new BufferedReader(file_reader);
+
+			// Loop through all customers
+			for (int i = 0; i < accounts; i++) {
+				valid = true;
+				// Read and process input
+				email = reader.readLine();
+				if (!isEmail(email))
+					valid = false;
+				password = Account.rot13(reader.readLine());
+
+				if (valid)
+					list.add(new Account(email, password));
+
+			}
+			// Close readers
+			reader.close();
+			file_reader.close();
+		}
+		// Handle exception
+		catch (IOException e) {
+			System.out.println("Error reading file.");
+		}
+	}
+
+	/**
+	 * Display storefront after successful login
+	 * @param a Customer's account
+	 */
 	private void launchStore(Account a) {
+
 		try {
 			FXMLLoader loader = new FXMLLoader(
 					getClass().getResource("StoreFront.fxml"));
@@ -98,7 +158,8 @@ public class CustomerEntrance implements Initializable {
 			i.account = a;
 			i.loadData();
 
-			controller.initializeCartWishlist();
+			// Grab customer cart, wishlist, and order data
+			controller.initializeObservableLists();
 			controller.initializeCart();
 			controller.initializeWishlist();
 			controller.initializeOrders(a.getOrderStack());
@@ -110,16 +171,19 @@ public class CustomerEntrance implements Initializable {
 			stage.show();
 		}
 		catch (IOException e) {
-			e.printStackTrace();
+			System.out.println("Error");
 		}
 	}
 
+	/**
+	 * Create new customer account
+	 */
 	@FXML
 	private void registerButtonAction() {
+		boolean success = true;
+		String alert = "";
 		String email_address = email.getText();
 		String password = pw.getText();
-		String alert = "";
-		boolean success = true;
 
 		// Empty email
 		if (email_address.length() == 0) {
@@ -150,7 +214,7 @@ public class CustomerEntrance implements Initializable {
 		// Display message
 		if (success) {
 			list.add(new Account(email_address, password));
-			saveData(Utilities.CUSTOMER_FILE, list);
+			saveData(list);
 			alert = "Account created! You may login now.";
 		}
 		Alert dialog = new Alert(Alert.AlertType.INFORMATION);
@@ -175,61 +239,22 @@ public class CustomerEntrance implements Initializable {
 		return is_email;
 	}
 
-	private void importAccounts() {
-		// Constant Declaration
-		final int LINES_PER_ACCOUNT = 2;
-		final String ERROR = "Error reading file.";
-
-		// Variable Declaration
-		boolean valid;
-		// Calculate number of customers from the number of lines in the
-		// customer data file
-		int lines = Utilities.countLines(Utilities.CUSTOMER_FILE);
-		int accounts = lines / LINES_PER_ACCOUNT;
-		String email;
-		String password;
-		// File readers
-		FileReader file_reader;
-		BufferedReader reader;
-
-		try {
-			// Initialize file readers for customer file
-			file_reader = new FileReader(Utilities.CUSTOMER_FILE);
-			reader = new BufferedReader(file_reader);
-
-			// Loop through all customers
-			for (int i = 0; i < accounts; i++) {
-				valid = true;
-				// Read and process input
-				email = reader.readLine();
-				if (!isEmail(email))
-					valid = false;
-				password = Account.rot13(reader.readLine());
-
-				if (valid)
-					list.add(new Account(email, password));
-
-			}
-			// Close readers
-			reader.close();
-			file_reader.close();
-		}
-		// Handle exception
-		catch (IOException e) {
-			System.out.println(ERROR);
-		}
-	}
-
-	private void saveData(String customer_file, ArrayList<Account> data) {
+	/**
+	 * Save account info to customer.dat
+	 * @param customer_file
+	 * @param data
+	 */
+	private void saveData(ArrayList<Account> data) {
 		// File writers
 		FileWriter file;
 		BufferedWriter writer;
 
 		try {
 			// Initialize file writers
-			file = new FileWriter(customer_file, false);
+			file = new FileWriter(Utilities.CUSTOMER_FILE, false);
 			writer = new BufferedWriter(file);
 
+			// Write account email and encrypted password
 			for (Account a : data) {
 				writer.write(a.getEmail());
 				writer.newLine();

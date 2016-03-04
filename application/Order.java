@@ -2,14 +2,19 @@ package application;
 
 import java.time.LocalDateTime;
 
+/**
+ * Order class stores information on a customer order, which contains the
+ * orders bought and purchase information
+ */
 public class Order {
-
-	private ShoppingCart items;
+	// Private fields
 	private double tax;
-	private LocalDateTime date;
-	private Address address;
 	private String email;
+	private Address address;
+	private LocalDateTime date;
+	private ShoppingCart items;
 
+	// Default constructor
 	public Order(ShoppingCart items, double tax, LocalDateTime date,
 			Address address, String email) {
 		this.items = items;
@@ -19,6 +24,9 @@ public class Order {
 		this.email = email;
 	}
 
+	/**
+	 * Display order info, one piece of information per line
+	 */
 	@Override
 	public String toString() {
 		String s = "";
@@ -33,6 +41,7 @@ public class Order {
 		return s;
 	}
 
+	// Getters - No setters because orders cannot be modified
 	public Address getAddress() {
 		return address;
 	}
@@ -85,15 +94,7 @@ public class Order {
 		return tax + items.getTotal();
 	}
 
-	public void setTax(double tax) {
-		this.tax = tax;
-	}
-
 	public String getEmail() {
 		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
 	}
 }

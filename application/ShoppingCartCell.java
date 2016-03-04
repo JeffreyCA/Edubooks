@@ -20,6 +20,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
+/**
+ * Layout of an shopping cart cell (ListView)
+ */
 public class ShoppingCartCell extends ListCell<Book> {
 
 	// Dimensions
@@ -67,11 +70,14 @@ public class ShoppingCartCell extends ListCell<Book> {
 		qty = 1;
 	}
 
+	/**
+	 * Initialize cell elements
+	 */
 	@Override
-	public void updateItem(Book b, boolean empty) {
-		super.updateItem(b, empty);
+	public void updateItem(Book book, boolean empty) {
+		super.updateItem(book, empty);
 
-		if (b != null) {
+		if (book != null) {
 			// Declare and initialize book cell elements
 			HBox book_info = new HBox();
 			HBox buttons = new HBox();
@@ -92,11 +98,11 @@ public class ShoppingCartCell extends ListCell<Book> {
 			}
 			else {
 				// Update quantity
-				qty = account.getCart().getNode(b).getQuantity();
+				qty = account.getCart().getNode(book).getQuantity();
 			}
 			// Initialize spinner to select the quantity
-			Spinner<Number> quantity = new Spinner<Number>(1, b.getQuantity(),
-					qty);
+			Spinner<Number> quantity = new Spinner<Number>(1,
+					book.getQuantity(), qty);
 
 			// Set spacing between elements
 			book_info.setSpacing(SPACING);
@@ -117,15 +123,15 @@ public class ShoppingCartCell extends ListCell<Book> {
 
 			// Add text overlay
 			text_overlay.setFont(new Font(LABEL_SIZE));
-			text_overlay.setText(b.getCategory());
+			text_overlay.setText(book.getCategory());
 			text_overlay.setWrapText(true);
 			text_overlay.setTextAlignment(TextAlignment.CENTER);
 			text_overlay.setTextFill(Color.BLACK);
 			book_icon.getChildren().addAll(book_shape, text_overlay);
 
 			// Add book information beside the icon
-			vbox.getChildren().add(new Text(b.getTitle()));
-			vbox.getChildren().add(new Text(b.getAuthor()));
+			vbox.getChildren().add(new Text(book.getTitle()));
+			vbox.getChildren().add(new Text(book.getAuthor()));
 			vbox.getChildren().add(quantity);
 			book_info.getChildren().addAll(book_icon, vbox);
 
@@ -135,15 +141,15 @@ public class ShoppingCartCell extends ListCell<Book> {
 
 			// Set price text
 			price.setFont(new Font(PRICE_SIZE));
-			price.setText("$" + String.format("%.2f", (qty * b.getPrice())));
+			price.setText("$" + String.format("%.2f", (qty * book.getPrice())));
 			updatePrices();
 
 			// Listener for changes in quantitiy spinner
 			quantity.valueProperty().addListener((obs, oldValue, newValue) -> {
 				price.setText("$" + String.format("%.2f",
-						(b.getPrice() * newValue.doubleValue())));
+						(book.getPrice() * newValue.doubleValue())));
 				qty = newValue.intValue();
-				account.getCart().getNode(b).setQuantity(qty);
+				account.getCart().getNode(book).setQuantity(qty);
 				updatePrices();
 			});
 
@@ -152,14 +158,15 @@ public class ShoppingCartCell extends ListCell<Book> {
 			 * already in the wishlist
 			 */
 			BooleanBinding transfer_binding = Bindings.createBooleanBinding(
-					() -> observable_wishlist.contains(b), observable_wishlist);
+					() -> observable_wishlist.contains(book),
+					observable_wishlist);
 			transfer.disableProperty().bind(transfer_binding);
 
 			// On-click actions for the buttons
 			remove.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					i.removeFromCart(b);
+					i.removeFromCart(book);
 					account.save(i);
 					qty = 1;
 					updatePrices();
@@ -169,8 +176,8 @@ public class ShoppingCartCell extends ListCell<Book> {
 			transfer.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					i.removeFromCart(b);
-					i.addToWishlist(b);
+					i.removeFromCart(book);
+					i.addToWishlist(book);
 					account.save(i);
 					qty = 1;
 					updatePrices();

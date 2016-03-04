@@ -126,12 +126,12 @@ public class Checkout implements Initializable {
 			Address address = new Address(fullname_value, street_value,
 					city_value, province_value, postal_value, country_value,
 					phone_value);
-			Order o = new Order(i.account.getCart(),
+			Order order = new Order(i.account.getCart(),
 					i.account.getCart().getTaxPrice(), LocalDateTime.now(),
 					address, i.account.getEmail());
 
 			// Save order information to data file
-			saveOrder(i.account, o);
+			saveOrder(i.account, order);
 
 			// Close window and display success message
 			Stage stage = (Stage) submit.getScene().getWindow();
@@ -247,17 +247,16 @@ public class Checkout implements Initializable {
 	 */
 	public void deductStock(ShoppingCart cart) {
 		for (int i = 0; i < cart.size; i++) {
-			Book b = cart.getBook(i);
+			Book book = cart.getBook(i);
 			int quantity_ordered = cart.getNode(i).getQuantity();
 			// Deduct from the book quantity ordered
-			b.setQuantity(b.getQuantity() - quantity_ordered);
+			book.setQuantity(book.getQuantity() - quantity_ordered);
 			deductBook();
 		}
 	}
 
 	/**
 	 * Write book data to the data file
-	 * @param data ObservableList of Book objects
 	 */
 	public void deductBook() {
 		// File writers
@@ -270,17 +269,17 @@ public class Checkout implements Initializable {
 			writer = new BufferedWriter(file);
 
 			// Write all book info to the file
-			for (Book b : observable_books) {
-				writer.write(b.getTitle());
+			for (Book book : observable_books) {
+				writer.write(book.getTitle());
 				writer.newLine();
-				writer.write(b.getAuthor());
+				writer.write(book.getAuthor());
 				writer.newLine();
-				writer.write(b.getCategory());
+				writer.write(book.getCategory());
 				writer.newLine();
 				// BufferedWriter can write only Strings
-				writer.write(String.valueOf(b.getQuantity()));
+				writer.write(String.valueOf(book.getQuantity()));
 				writer.newLine();
-				writer.write(String.valueOf(b.getPrice()));
+				writer.write(String.valueOf(book.getPrice()));
 				writer.newLine();
 			}
 
@@ -296,16 +295,16 @@ public class Checkout implements Initializable {
 	/**
 	 * Save customer order in his/her history
 	 * @param a Account of customer
-	 * @param o Order
+	 * @param order Order
 	 */
-	public void saveOrder(Account a, Order o) {
-		a.addOrder(o);
-		observable_orders.add(0, o);
+	public void saveOrder(Account account, Order order) {
+		account.addOrder(order);
+		observable_orders.add(0, order);
 		deductStock(i.account.getCart());
 		// Clear shopping cart and refresh storefront
 		list_view.refresh();
-		a.clearCart();
-		a.save(i);
+		account.clearCart();
+		account.save(i);
 
 		i.observable_cart.clear();
 		subtotal.setText(String.format("$%.2f", 0F));

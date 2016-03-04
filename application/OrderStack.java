@@ -4,36 +4,74 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+/**
+ * Stack of customer Orders
+ */
 public class OrderStack {
 	protected OrderNode top;
 	protected int size;
 
+	/**
+	 * Default constructor
+	 */
 	public OrderStack() {
 		top = null;
 		size = 0;
 	}
 
+	/**
+	 * Remove Order at bottom of the stack
+	 * @param order Order at the bottom of the stack
+	 */
+	private void bottomPop(Order order) {
+		if (isEmpty())
+			push(order);
+		else {
+			Order a = top.getValue();
+			pop();
+			bottomPop(order);
+			push(a);
+		}
+	}
+
+	/**
+	 * Check if stack is empty
+	 * @return true, if empty, otherwise false
+	 */
 	public boolean isEmpty() {
 		return top == null;
 	}
 
-	public void sort() {
-		OrderStack temp = new OrderStack();
-
-		if (isEmpty())
-			return;
-		while (!isEmpty()) {
-			Order o = pop();
-			while (!temp.isEmpty()
-					&& (temp.peek().getDate().isAfter(o.getDate()))) {
-				push(temp.pop());
-			}
-			temp.push(o);
+	/**
+	 * Merge elements of another stack into the current stack
+	 * @param stack Stack to be merged
+	 */
+	public void merge(OrderStack stack) {
+		// Push out all elements of the stack and push them into the current
+		// stack
+		while (!stack.isEmpty()) {
+			push(stack.pop());
 		}
-
-		this.top = temp.top;
 	}
 
+	/**
+	 * Get newest order in stack
+	 * @return Order at the top of the stack (newest order)
+	 */
+	public Order peek() {
+		if (top == null) {
+			throw new RuntimeException("Empty stack");
+		}
+		else {
+			Order data = top.getValue();
+			return data;
+		}
+	}
+
+	/**
+	 * Remove top Order
+	 * @return the top Order
+	 */
 	public Order pop() {
 		if (top != null) {
 			Order data = top.getValue();
@@ -46,28 +84,53 @@ public class OrderStack {
 		}
 	}
 
-	public void push(Order item) {
-		OrderNode temp = new OrderNode(item, top);
+	/**
+	 * Add Order to top of stack
+	 * @param order Order to be added
+	 */
+	public void push(Order order) {
+		OrderNode temp = new OrderNode(order, top);
 		top = temp;
 		size++;
 	}
 
-	public Order peek() {
-		if (top == null) {
-			throw new RuntimeException("Empty stack");
-		}
-		else {
-			Order data = top.getValue();
-			return data;
-		}
-	}
-
-	public void merge(OrderStack stack) {
-		while (!stack.isEmpty()) {
-			push(stack.pop());
+	/**
+	 * Reverses stack contents
+	 */
+	public void reverse() {
+		if (!isEmpty()) {
+			Order order = top.getValue();
+			pop();
+			reverse();
+			bottomPop(order);
 		}
 	}
 
+	/**
+	 * Sort Orders by date, from most recent to oldest
+	 */
+	public void sort() {
+		// Create a temporary stack to sort contents
+		OrderStack temp = new OrderStack();
+
+		if (isEmpty())
+			return;
+		while (!isEmpty()) {
+			Order order = pop();
+			while (!temp.isEmpty()
+					&& (temp.peek().getDate().isAfter(order.getDate()))) {
+				push(temp.pop());
+			}
+			temp.push(order);
+		}
+
+		this.top = temp.top;
+	}
+
+	/**
+	 * Allows for iteration through the stack
+	 * @return Iterator
+	 */
 	public Iterator<Order> iterator() {
 		Iterator<Order> it = new Iterator<Order>() {
 			OrderNode node = top;
@@ -102,27 +165,10 @@ public class OrderStack {
 		return it;
 	}
 
-	private void bottomPop(Order o) {
-		if (isEmpty())
-			push(o);
-		else {
-			Order a = top.getValue();
-			pop();
-			bottomPop(o);
-			push(a);
-		}
-	}
-
-	// Recursion
-	public void reverse() {
-		if (!isEmpty()) {
-			Order o = top.getValue();
-			pop();
-			reverse();
-			bottomPop(o);
-		}
-	}
-
+	/**
+	 * Convert stack to an ArrayList
+	 * @return ArrayList of Orders
+	 */
 	public ArrayList<Order> toArrayList() {
 		OrderNode node = top;
 		ArrayList<Order> list = new ArrayList<Order>();

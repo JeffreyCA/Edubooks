@@ -188,7 +188,7 @@ public class Account {
 
 			// Get number of items in the wishlist
 			int wishlist_items = Integer.parseInt(reader.readLine());
-			System.out.println("Wishlist: " + wishlist_items);
+
 			for (int j = 0; j < wishlist_items; j++) {
 				int index = Integer.parseInt(reader.readLine());
 				if (index < book_list.size
@@ -226,8 +226,8 @@ public class Account {
 				Address address = new Address(fullname, street, city, province,
 						postal, country, phone);
 
-				Order o = new Order(order_cart, tax, date, address, email);
-				this.order_stack.push(o);
+				Order order = new Order(order_cart, tax, date, address, email);
+				this.order_stack.push(order);
 			}
 
 			// Stack needs to be reversed since newer orders were imported
@@ -318,8 +318,8 @@ public class Account {
 		this.wishlist = wishlist;
 	}
 
-	public void addOrder(Order o) {
-		order_stack.push(o);
+	public void addOrder(Order order) {
+		order_stack.push(order);
 	}
 
 	public OrderStack getOrderStack() {

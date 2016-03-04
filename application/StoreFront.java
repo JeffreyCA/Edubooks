@@ -77,7 +77,7 @@ public class StoreFront implements Initializable {
 				.observableArrayList(book_list.toArrayList());
 	}
 
-	public void initializeCartWishlist() {
+	public void initializeObservableLists() {
 		observable_cart = FXCollections
 				.observableArrayList(i.account.getCart().toArrayList());
 		observable_wishlist = FXCollections
@@ -131,8 +131,8 @@ public class StoreFront implements Initializable {
 	public void initializeCategories() {
 		StringStack stack = new StringStack();
 
-		for (Book b : observable_books) {
-			String genre = b.getCategory();
+		for (Book book : observable_books) {
+			String genre = book.getCategory();
 			if (stack.isEmpty()) {
 				stack.push(genre);
 			}
@@ -304,7 +304,6 @@ public class StoreFront implements Initializable {
 	public void processBooks() {
 		// Constant Declaration
 		final int LINES_PER_BOOK = 5;
-		final String ERROR = "Error reading file.";
 
 		// Variable Declaration
 		boolean valid;
@@ -354,7 +353,7 @@ public class StoreFront implements Initializable {
 		}
 		// Handle exception
 		catch (IOException e) {
-			System.out.println(ERROR);
+			System.out.println("Error");
 		}
 	}
 }

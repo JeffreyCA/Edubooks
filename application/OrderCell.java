@@ -37,15 +37,19 @@ public class OrderCell extends ListCell<Order> {
 	// Button to view order details
 	Button details;
 
+	// Default constructor
 	public OrderCell() {
 		super();
 	}
 
+	/**
+	 * Initialize cell elements
+	 */
 	@Override
-	public void updateItem(Order o, boolean empty) {
-		super.updateItem(o, empty);
+	public void updateItem(Order order, boolean empty) {
+		super.updateItem(order, empty);
 
-		if (o != null) {
+		if (order != null) {
 			// Declare and initialize order cell elements
 			HBox buttons = new HBox();
 			HBox left = new HBox();
@@ -72,8 +76,8 @@ public class OrderCell extends ListCell<Order> {
 			// Set date and time text
 			date.setFont(new Font(DATE_FONT_SIZE));
 			time.setFont(new Font(DATE_FONT_SIZE));
-			date.setText(o.getDate().format(date_format));
-			time.setText(o.getDate().format(time_format));
+			date.setText(order.getDate().format(date_format));
+			time.setText(order.getDate().format(time_format));
 
 			// Group date and time in a box
 			date_box.getChildren().addAll(date, time);
@@ -83,15 +87,15 @@ public class OrderCell extends ListCell<Order> {
 			// Item counter
 			number_items.setFont(new Font(DATE_FONT_SIZE));
 			number_items.setText(String
-					.valueOf(o.getItems().getItemQuantity() + " item(s)"));
+					.valueOf(order.getItems().getItemQuantity() + " item(s)"));
 
 			left.setAlignment(Pos.CENTER_LEFT);
 			left.getChildren().addAll(date_box, number_items);
 
 			// Add book information beside the icon
-			String tax = String.format("$%.2f", o.getTax());
-			String subtotal = String.format("$%.2f", o.getSubtotal());
-			String total = String.format("$%.2f", o.getTotal());
+			String tax = String.format("$%.2f", order.getTax());
+			String subtotal = String.format("$%.2f", order.getSubtotal());
+			String total = String.format("$%.2f", order.getTotal());
 			Text total_text = new Text("Total: " + total);
 
 			total_text.setFont(new Font(PRICE_FONT_SIZE));
@@ -108,7 +112,7 @@ public class OrderCell extends ListCell<Order> {
 			details.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					viewOrderDetails(o);
+					viewOrderDetails(order);
 				}
 			});
 
@@ -126,9 +130,9 @@ public class OrderCell extends ListCell<Order> {
 	/**
 	 * View order details in a new window
 	 *
-	 * @param o the order to be viewed
+	 * @param order the order to be viewed
 	 */
-	public void viewOrderDetails(Order o) {
+	public void viewOrderDetails(Order order) {
 		try {
 			FXMLLoader loader = new FXMLLoader(
 					getClass().getResource("OrderDetails.fxml"));
@@ -136,7 +140,7 @@ public class OrderCell extends ListCell<Order> {
 			OrderController controller = loader.getController();
 			Stage stage = new Stage();
 
-			controller.initializeOrder(o);
+			controller.initializeOrder(order);
 			stage.setTitle("Order Details");
 			stage.getIcons().add(Utilities.ICON);
 			stage.setScene(new Scene(root));

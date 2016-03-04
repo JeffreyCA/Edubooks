@@ -8,10 +8,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 /*
- * TODO Uncommented Classes:
+ * TODO Undocumented Classes:
  *
- * CustomerEntrance Instance Landing Main Order OrderController OrderNode
- * OrderStack ShoppingCart StoreFront StringNode StringStack Utilities Wishlist
+ * StoreFront
  *
  * Improvements: Payment methods Change password Save address Save payment
  * method Change tax rate Add shipping fee
@@ -22,17 +21,21 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
-	private Stage primaryStage;
+	// Primary stage
+	private Stage stage;
 
+	/**
+	 * Initial execution
+	 */
 	public static void main(String[] args) {
 		launch(args);
 	}
 
 	@Override
 	public void start(Stage primaryStage) {
-		this.primaryStage = primaryStage;
-		this.primaryStage.getIcons().add(Utilities.ICON);
-		this.primaryStage.setTitle("Your Bookstore");
+		this.stage = primaryStage;
+		this.stage.getIcons().add(Utilities.ICON);
+		this.stage.setTitle("Your Bookstore");
 		showLandingScreen();
 	}
 
@@ -47,13 +50,13 @@ public class Main extends Application {
 
 			// Show the scene containing the root layout.
 			Scene scene = new Scene(l);
-			primaryStage.setScene(scene);
-			primaryStage.setResizable(false);
-			primaryStage.show();
+			stage.setScene(scene);
+			stage.setResizable(false);
+			stage.show();
 
 		}
 		catch (IOException e) {
-			System.out.println("Error!");
+			System.out.println("Error");
 		}
 	}
 }

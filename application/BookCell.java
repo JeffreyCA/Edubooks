@@ -19,6 +19,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
+/**
+ * Layout of an book cell as viewed from the storefront (ListView)
+ */
 public class BookCell extends ListCell<Book> {
 
 	// Dimensions
@@ -78,11 +81,14 @@ public class BookCell extends ListCell<Book> {
 		});
 	}
 
+	/**
+	 * Initialize cell elements
+	 */
 	@Override
-	public void updateItem(Book b, boolean empty) {
-		super.updateItem(b, empty);
-		item = b;
-		if (b != null) {
+	public void updateItem(Book book, boolean empty) {
+		super.updateItem(book, empty);
+		item = book;
+		if (book != null) {
 			// Declare and initialize book cell elements
 			HBox book_info = new HBox();
 			HBox buttons = new HBox();
@@ -113,26 +119,26 @@ public class BookCell extends ListCell<Book> {
 
 			// Add text overlay
 			text_overlay.setFont(new Font(LABEL_SIZE));
-			text_overlay.setText(b.getCategory());
+			text_overlay.setText(book.getCategory());
 			text_overlay.setWrapText(true);
 			text_overlay.setTextAlignment(TextAlignment.CENTER);
 			text_overlay.setTextFill(Color.BLACK);
 			book_icon.getChildren().addAll(book_shape, text_overlay);
 
 			// Add book information beside the icon
-			vbox.getChildren().add(new Text(b.getTitle()));
-			vbox.getChildren().add(new Text(b.getAuthor()));
+			vbox.getChildren().add(new Text(book.getTitle()));
+			vbox.getChildren().add(new Text(book.getAuthor()));
 			vbox.getChildren().add(stock_availability);
 			book_info.getChildren().addAll(book_icon, vbox);
 
 			// Add buttons to the cell
 			cart.setText(CART_BUTTON_TEXT);
 			wishlist.setText(WISHLIST_BUTTON_TEXT);
-			price.setText("$" + String.format("%.2f", b.getPrice()));
+			price.setText("$" + String.format("%.2f", book.getPrice()));
 			price.setFont(new Font(PRICE_SIZE));
 
 			// Stock availability
-			if (b.getQuantity() > 0) {
+			if (book.getQuantity() > 0) {
 				stock_availability.setText(IN_STOCK_TEXT);
 				stock_availability.setFill(Color.web(IN_STOCK_COLOUR));
 			}
@@ -143,12 +149,15 @@ public class BookCell extends ListCell<Book> {
 
 			// Disable cart button if item is not in stock or if item is already
 			// in the cart
-			BooleanBinding cart_binding = Bindings.createBooleanBinding(
-					() -> observable_cart.contains(b) || b.getQuantity() <= 0,
-					observable_cart);
+			BooleanBinding cart_binding = Bindings
+					.createBooleanBinding(
+							() -> observable_cart.contains(book)
+									|| book.getQuantity() <= 0,
+							observable_cart);
 			// Disable wishlist if item is already in the wishlist
 			BooleanBinding wishlist_binding = Bindings.createBooleanBinding(
-					() -> observable_wishlist.contains(b), observable_wishlist);
+					() -> observable_wishlist.contains(book),
+					observable_wishlist);
 
 			cart.disableProperty().bind(cart_binding);
 			wishlist.disableProperty().bind(wishlist_binding);
