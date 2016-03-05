@@ -2,8 +2,6 @@ package application;
 
 /**
  * Address class that stores address information of customers
- * @author Jeffrey
- *
  */
 public class Address {
 	// Private fields

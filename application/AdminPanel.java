@@ -187,18 +187,22 @@ public class AdminPanel implements Initializable {
 		items.setItems(sorted_book_list);
 	}
 
-	public void filterOrderList(String category) {
+	/**
+	 * Update order view when combobox is changed
+	 * @param account Email of the selected account
+	 */
+	public void filterOrderList(String account) {
 		FilteredList<Order> filteredData = new FilteredList<>(observable_orders,
 				p -> true);
 
 		filteredData.setPredicate(order -> {
-			// If filter text is empty, display all persons.
-			if (category.equals(DEFAULT_CATEGORY)) {
+			// If filter text is empty, display all orders
+			if (account.equals(DEFAULT_CATEGORY)) {
 				return true;
 			}
 
 			// Filter matches title
-			if (order.getEmail().equals(category)) {
+			if (order.getEmail().equals(account)) {
 				return true;
 			}
 			// Filter does not match

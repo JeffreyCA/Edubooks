@@ -10,7 +10,6 @@ import javafx.stage.Stage;
 /*
  * TODO Undocumented Classes:
  *
- * StoreFront
  *
  * Improvements: Payment methods Change password Save address Save payment
  * method Change tax rate Add shipping fee

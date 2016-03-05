@@ -19,6 +19,7 @@ import javafx.stage.Stage;
  * Checkout class for submitting purchases
  */
 public class Checkout implements Initializable {
+	// FXML elements
 	@FXML
 	private javafx.scene.control.Button submit;
 	@FXML
