@@ -309,7 +309,7 @@ public class StoreFront implements Initializable {
 			});
 		});
 
-		// Set TableView data
+		// Set ListView data
 		books.setItems(filtered_list);
 	}
 

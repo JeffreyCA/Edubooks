@@ -16,6 +16,8 @@ import javafx.stage.Stage;
  *
  * Modifying inventory (adding book or deleting book) messes up customer
  * shopping cart + wishlist
+ *
+ * Error-proof postal code & dropdown window for province
  */
 
 public class Main extends Application {

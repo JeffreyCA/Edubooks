@@ -7,6 +7,7 @@ import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 import javafx.beans.binding.BooleanBinding;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -31,13 +32,17 @@ public class Checkout implements Initializable {
 	@FXML
 	private javafx.scene.control.TextField city;
 	@FXML
-	private javafx.scene.control.TextField province;
+	private javafx.scene.control.ComboBox<String> province;
 	@FXML
 	private javafx.scene.control.TextField postal;
 	@FXML
 	private javafx.scene.control.TextField country;
 	@FXML
 	private javafx.scene.control.TextField phone;
+
+	// Canadian provinces for province selector
+	final String[] PROVINCES = { "AB", "BC", "MB", "NB", "NL", "NT", "NS", "NU",
+			"ON", "PE", "QC", "SK", "YT" };
 
 	// Textboxes containing shopping cart numbers
 	Text subtotal;
@@ -56,10 +61,12 @@ public class Checkout implements Initializable {
 	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
+		province.setItems(FXCollections.observableArrayList(PROVINCES));
+		province.getSelectionModel().select(0);
+
 		BooleanBinding filled = fullname.textProperty().isEqualTo("")
 				.or(street.textProperty().isEqualTo(""))
 				.or(city.textProperty().isEqualTo(""))
-				.or(province.textProperty().isEqualTo(""))
 				.or(postal.textProperty().isEqualTo(""))
 				.or(country.textProperty().isEqualTo(""))
 				.or(phone.textProperty().isEqualTo(""));
@@ -86,7 +93,8 @@ public class Checkout implements Initializable {
 		String fullname_value = fullname.getText();
 		String street_value = street.getText();
 		String city_value = city.getText();
-		String province_value = province.getText();
+		String province_value = province.getSelectionModel().getSelectedItem()
+				.toString();
 		String postal_value = postal.getText();
 		String country_value = country.getText();
 		String phone_value = phone.getText();
@@ -106,6 +114,8 @@ public class Checkout implements Initializable {
 		if (hasNumbers(province_value)) {
 			error += "The province field should not have any numbers.\n";
 		}
+		if (!isValidPostalCode(postal_value))
+			error += "The postal code is not valid.\n";
 		if (hasLetters(phone_value)) {
 			error += "The phone number field should not have any letters.\n";
 		}
@@ -205,8 +215,6 @@ public class Checkout implements Initializable {
 	 */
 	public boolean isValidName(String s) {
 		String[] array = s.split(" ");
-
-		System.out.println((array.length > 1));
 		return (array.length > 1);
 	}
 
@@ -220,11 +228,45 @@ public class Checkout implements Initializable {
 	 */
 	public boolean isValidPhone(String s) {
 		final int PHONE_DIGITS = 10;
-		// Eliminate all characters in the phone number string
+		// Eliminate additional characters in the phone number string
 		s = removeChars(s);
 
 		if (s.length() == PHONE_DIGITS && s.charAt(0) != '0')
 			return true;
+		return false;
+	}
+
+	/**
+	 * Check if the postal code is valid
+	 * so it contains alternating letters and numbers and is 6 digits long
+	 * @param s Postal code
+	 * @return true, if it is a valid postal code, otherwise false
+	 */
+	public boolean isValidPostalCode(String s) {
+		final int EVEN_DIGIT = 2;
+		final int POSTAL_CODE_DIGITS = 6;
+
+		// Eliminate additional characters in the postal code string
+		s = removeChars(s).toLowerCase();
+
+		if (s.length() == POSTAL_CODE_DIGITS) {
+			// Cycle through each character
+			for (int i = 0; i < POSTAL_CODE_DIGITS; i++) {
+				// Invalid if even indices of the string do not contain letters
+				if (i % EVEN_DIGIT == 0) {
+					if (!(s.charAt(i) >= 'a' && s.charAt(i) <= 'z'))
+						return false;
+				}
+				// Invalid if odd indices of the string do not contain numbers
+				else {
+					if (!(s.charAt(i) > '0' && s.charAt(i) < '9'))
+						return false;
+				}
+			}
+			// Otherwise it is a valid postal code
+			return true;
+		}
+		// Incorrect length
 		return false;
 	}
 
@@ -289,7 +331,7 @@ public class Checkout implements Initializable {
 			file.close();
 		}
 		catch (IOException e) {
-			System.out.println("File write error!");
+			System.out.println("File write error");
 		}
 	}
 

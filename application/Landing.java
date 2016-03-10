@@ -1,6 +1,7 @@
 package application;
 
 import java.io.File;
+import java.io.IOException;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -20,7 +21,19 @@ public class Landing {
 	 */
 	@FXML
 	private void customerButtonAction() {
-		showCustomerScreen();
+		try {
+			Parent root = (Parent) new FXMLLoader(
+					getClass().getResource("Customer.fxml")).load();
+			Stage stage = new Stage();
+			stage.setTitle("Customer Entrance");
+			stage.getIcons().add(Utilities.ICON);
+			stage.setScene(new Scene(root));
+			stage.setResizable(false);
+			stage.show();
+		}
+		catch (IOException e) {
+			System.out.println("Error");
+		}
 	}
 
 	/**
@@ -32,25 +45,6 @@ public class Landing {
 		// Create admin account if first time accessing the admin panel
 		if (!new File(Utilities.ADMIN_LOGIN).isFile())
 			showAdminRegister();
-	}
-
-	/**
-	 * Show customer login screen
-	 */
-	private void showCustomerScreen() {
-		try {
-			Parent root = (Parent) new FXMLLoader(
-					getClass().getResource("Customer.fxml")).load();
-			Stage stage = new Stage();
-			stage.setTitle("Customer Entrance");
-			stage.getIcons().add(Utilities.ICON);
-			stage.setScene(new Scene(root));
-			stage.setResizable(false);
-			stage.show();
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 	/**
@@ -67,8 +61,8 @@ public class Landing {
 			stage.setResizable(false);
 			stage.show();
 		}
-		catch (Exception e) {
-			e.printStackTrace();
+		catch (IOException e) {
+			System.out.println("Error");
 		}
 	}
 
@@ -88,7 +82,7 @@ public class Landing {
 			stage.setResizable(false);
 			stage.show();
 		}
-		catch (Exception e) {
+		catch (IOException e) {
 			System.out.println("Error");
 		}
 	}

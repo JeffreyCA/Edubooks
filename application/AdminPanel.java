@@ -103,7 +103,7 @@ public class AdminPanel implements Initializable {
 			stage.getIcons().add(Utilities.ICON);
 			stage.setScene(new Scene(root));
 			stage.initStyle(StageStyle.UNIFIED);
-			stage.initModality(Modality.APPLICATION_MODAL);
+			stage.initModality(Modality.WINDOW_MODAL);
 			stage.setResizable(false);
 			stage.show();
 
