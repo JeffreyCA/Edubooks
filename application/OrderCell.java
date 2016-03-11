@@ -17,6 +17,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+/**
+ *Layout of an order cell as viewed by the customer (ListView)
+ */
 public class OrderCell extends ListCell<Order> {
 
 	// Dimensions
@@ -99,8 +102,9 @@ public class OrderCell extends ListCell<Order> {
 			Text total_text = new Text("Total: " + total);
 
 			total_text.setFont(new Font(PRICE_FONT_SIZE));
-			prices.getChildren().add(new Text("Tax:\t\t" + tax));
+
 			prices.getChildren().add(new Text("Subtotal:\t" + subtotal));
+			prices.getChildren().add(new Text("Tax:\t\t" + tax));
 			prices.getChildren().add(total_text);
 
 			right.setAlignment(Pos.CENTER_RIGHT);

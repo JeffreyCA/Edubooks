@@ -7,19 +7,9 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
-/*
- * TODO Undocumented Classes:
- *
- *
- * Improvements: Payment methods Change password Save address Save payment
- * method Change tax rate Add shipping fee
- *
- * Modifying inventory (adding book or deleting book) messes up customer
- * shopping cart + wishlist
- *
- * Error-proof postal code & dropdown window for province
+/**
+ * Main Class
  */
-
 public class Main extends Application {
 
 	// Primary stage

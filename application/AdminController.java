@@ -9,6 +9,9 @@ import javafx.scene.control.Alert;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
+/**
+ * Controller for admin panel login
+ */
 public class AdminController {
 
 	// Declare FXML elements
@@ -70,8 +73,7 @@ public class AdminController {
 			stage.show();
 		}
 		catch (IOException e) {
-			System.out.println("Error!");
-			e.printStackTrace();
+			System.out.println("Error");
 		}
 	}
 }

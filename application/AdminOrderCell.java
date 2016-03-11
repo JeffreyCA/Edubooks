@@ -103,8 +103,8 @@ public class AdminOrderCell extends ListCell<Order> {
 			Text total_text = new Text("Total: " + total);
 
 			total_text.setFont(new Font(PRICE_SIZE));
-			prices.getChildren().add(new Text("Tax:\t\t" + tax));
 			prices.getChildren().add(new Text("Subtotal:\t" + subtotal));
+			prices.getChildren().add(new Text("Tax:\t\t" + tax));
 			prices.getChildren().add(total_text);
 
 			right.setAlignment(Pos.CENTER_RIGHT);

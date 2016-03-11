@@ -10,6 +10,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.stage.Stage;
 
+/**
+ * Controller for admin registration dialog
+ */
 public class AdminRegistration implements Initializable {
 	// FXML elements
 	@FXML

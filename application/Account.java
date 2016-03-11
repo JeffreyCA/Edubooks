@@ -7,7 +7,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
-// Account class for customer objects
+/**
+ * Account class for customers
+ */
+
 public class Account {
 
 	// Login details

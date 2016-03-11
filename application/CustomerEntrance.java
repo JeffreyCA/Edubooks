@@ -18,6 +18,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 
+/**
+ * Controller for customer entrance login
+ */
 public class CustomerEntrance implements Initializable {
 
 	@FXML

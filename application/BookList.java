@@ -2,6 +2,9 @@ package application;
 
 import java.util.ArrayList;
 
+/**
+ * Linked list of Book objects
+ */
 public class BookList {
 
 	// Needs to be accessible by ShoppingCart class

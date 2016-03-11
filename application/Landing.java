@@ -9,6 +9,9 @@ import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+/**
+ * Class for landing screen
+ */
 public class Landing {
 	// FXML fields
 	@FXML

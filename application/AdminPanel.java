@@ -39,6 +39,9 @@ import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import javafx.util.converter.NumberStringConverter;
 
+/**
+ * Controller for main admin panel
+ */
 public class AdminPanel implements Initializable {
 
 	// FXML elements
@@ -112,6 +115,7 @@ public class AdminPanel implements Initializable {
 				@Override
 				public void handle(WindowEvent we) {
 					saveData(observable_books);
+					initializeCategories();
 				}
 			});
 		}
